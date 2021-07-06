@@ -1,0 +1,25 @@
+.slider {
+  background-color: aqua;
+  position: relative;
+  height: 10px;
+}
+
+.slider-range {
+  background-color: blue;
+  height: 100%;
+  z-index: 2;
+  position: absolute;
+}
+
+.slider-handle {
+  background-color: black;
+  transition: all 0.2s linear;
+  width: 10px;
+  height: 10px;
+  z-index: 5;
+  border-radius: 50%;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translate(0, -50%);
+}

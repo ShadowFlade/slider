@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "rootDir": "ts-src"
+  },
+  "files": ["ts-src/jquery.slider.ts"]
+}
