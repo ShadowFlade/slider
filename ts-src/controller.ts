@@ -1,35 +1,40 @@
+import EventMixin from './eventemitter'
 import Model from './model'
-
+import View from './view'
 class Controller {
   _slider: HTMLElement
   _slider_range: HTMLElement
   _slider_handle: HTMLElement
   _model: Model
-  constructor(item, options, model) {
+  _view: View
+  constructor(item, options, model, view, elements) {
+    // super()
     this._model = model
-    this._slider = Array.from(
-      item.getElementsByClassName(
-        model._innerOptions.className
-      ) as HTMLCollectionOf<HTMLElement>
-    )[0]
-    this._slider_range = Array.from(
-      item.getElementsByClassName(
-        `${model._innerOptions.className}-range`
-      ) as HTMLCollectionOf<HTMLElement>
-    )[0]
-    this._slider_handle = Array.from(
-      item.getElementsByClassName(
-        `${this._model._innerOptions.className}-handle`.trim()
-      ) as HTMLCollectionOf<HTMLElement>
-    )[0]
+    this._view = view
+    // {slider:this._slider,handle:this._slider_handle,range:this._slider_range}=elements
+    this._slider = elements[0]
+    this._slider_handle = elements[1]
+    this._slider_range = elements[2]
+    this._view.on('handleMovement', this.transfer_data)
+    // console.log(this._view._eventHandlers, ' event handlers')
+  }
+  transfer_data(data: object) {
+    // console.log(data, ' data in controller')
+    // console.log(this._view._eventHandlers)
+    // console.log(this)
+    this._model.renew(data)
 
-    this._slider_handle.addEventListener('mousedown', function (event) {
-      event.preventDefault()
-      console.log('im moveing')
-      let target = event.target as HTMLDivElement
-      document.addEventListener('mousemove', (e) => {
-        this.style.left = e.pageX + 'px'
-      })
+    // console.log('data transfered ', data)
+  }
+  bindMouseMove(handle, slider) {
+    handle.ondragstart = function () {
+      return false
+    }
+    handle.addEventListener('mousedown', function (event) {
+      // function mouseUp() {
+      //   document.removeEventListener('mouseup', mouseUp)
+      //   document.removeEventListener('mousemove', mouseMove)
+      // }
     })
   }
 }

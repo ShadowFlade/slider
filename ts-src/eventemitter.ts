@@ -29,20 +29,17 @@ class EventMixin implements eventmixin {
   //   this.events[eventName] = this.events[eventName].filter(eventCallback => callback !== eventCallback);
   // }
 
-  /**
-   * Сгенерировать событие с указанным именем и данными
-   * this.trigger('select', data1, data2);
-   */
-  trigger(eventName: string, ...args: []) {
+  trigger(eventName: string, args) {
     if (!this._eventHandlers || !this._eventHandlers[eventName]) {
-      // console.log('no')
-      return // обработчиков для этого события нет
+      return
     }
 
     // вызовем обработчики
     this._eventHandlers[eventName].forEach((handler) => {
-      handler.apply(this, args) //??
-      // console.log(`this is this: ${this.name} and this is args: ${args}`)
+      // console.log('inside eventemtiier', args, ' ', this)
+      // console.log(this, ' event emitter this')
+      let that = this
+      handler.call(this, args) //??
     })
   }
 }

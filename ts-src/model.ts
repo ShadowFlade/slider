@@ -7,6 +7,11 @@ interface InnerOptions {
   stepSize: number
   toolTip: boolean
 }
+
+interface ICoords {
+  x: number
+  y: number
+}
 // interface IType {
 //   single: string
 //   double:string
@@ -31,6 +36,30 @@ class Model extends EventMixin {
   options = {
     width: 200,
     height: 5,
+  }
+  coords = {
+    x: 0,
+    xMin: 0,
+    xMax: 0,
+    y: 0,
+    yMin: 0,
+    yMax: 0,
+  }
+  renew(data) {
+    // console.log('renewing data')
+    // console.log(data, ' data')
+    for (let i in data) {
+      // console.log(i, 'should be either x or y')
+      if (i in this.coords) {
+        this.coords[i] = data[i]
+        // console.log(this.coords)
+      } else {
+        continue
+      }
+    }
+    // console.log(this._eventHandlers, ' model event handlers')
+    this.trigger('handleMoved', this.coords)
+    return this.coords
   }
   public _innerOptions: InnerOptions = {
     className: 'slider',
