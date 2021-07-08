@@ -37,14 +37,12 @@ class View extends EventMixin {
     let clone: Node = this._slider_handle.cloneNode(true)
     if (model._innerOptions.type == 'single') {
       // console.log('signle', this._slider_handle)
-      return
+      // return
     } else {
       // this._slider.insertAdjacentHTML('beforeend', clone)
       this._slider_handle.after(clone)
     }
-    console.log('test')
-
-    console.log(model._eventHandlers, ' hahaahahahahaaahahahahhahahahaha')
+    this._model.on('handleMoved', this.refresh.bind(this))
   }
 
   convertOptions(options: object) {
@@ -67,34 +65,33 @@ class View extends EventMixin {
   }
 
   refresh(data) {
-    // console.log('refreshing data from view', data)
-    // console.log(this, ' view this')
-    console.log('refreshing', this, ' this from view')
-    console.log(this._slider_handle, ' slider handle')
-    // let shiftX = data.x - this._slider_handle.offsetLeft
     // let newLeft = data.x - shiftX - this._slider.offsetLeft
-    let newLeft = data.x
-    let rightEdge = this._slider.offsetWidth - this._slider_handle.offsetWidth
-    // console.log('refreshing data from view', newLeft)
+    // let newLeft = data.x - shiftX - this._slider.getBoundingClientRect().left
+    let newLeft = data.x - this._slider_handle.offsetWidth
+
     this._slider_handle.style.left = newLeft + 'px'
   }
   onMouseDown() {
     this._slider_handle.addEventListener('mousedown', (event) => {
       // console.log('mousedowned')
       event.preventDefault()
-      this._model.on('handleMoved', this.refresh.bind(this))
       if (event.target == this._slider_handle) {
         // console.log('event target is handle')
         let handle = this._slider_handle
         let slider = this._slider
         let target = event.target as HTMLDivElement
-
+        let shiftX = event.x - this._slider_handle.getBoundingClientRect().left
         let mouseMove = (e) => {
           // console.log('handle should be moving')
           // console.log({ y: e.clientY, x: e.clientX })
           this.trigger('handleMovement', { y: e.clientY, x: e.clientX })
         }
+        let onMouseUp = (e) => {
+          document.removeEventListener('mousemove', mouseMove)
+          document.removeEventListener('mouseUp', onMouseUp)
+        }
         document.addEventListener('mousemove', mouseMove)
+        document.addEventListener('mouseup', onMouseUp)
       }
     })
   }
