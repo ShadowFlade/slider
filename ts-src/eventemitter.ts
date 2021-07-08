@@ -2,7 +2,7 @@ interface eventmixin {
   _eventHandlers: {}
   on(eventname: string, handler: Function): void
   off(eventname: string, handler: Function): void
-  trigger(eventaname: string, args: any): void
+  trigger(eventaname: string, args: any, context?): void
 }
 
 class EventMixin implements eventmixin {
@@ -38,6 +38,7 @@ class EventMixin implements eventmixin {
     this._eventHandlers[eventName].forEach((handler) => {
       // console.log('inside eventemtiier', args, ' ', this)
       // console.log(this, ' event emitter this')
+
       let that = this
       handler.call(this, args) //??
     })

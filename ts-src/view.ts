@@ -2,7 +2,7 @@ import App from './app'
 import * as slider from './jquery.slider'
 import Model from './model'
 import EventMixin from './eventemitter'
-//TODO do we subscribe with view?
+
 class View extends EventMixin {
   _slider: HTMLElement
   _slider_range: HTMLElement
@@ -36,18 +36,14 @@ class View extends EventMixin {
     this.initiateOptions(this.convertOptions(options))
     let clone: Node = this._slider_handle.cloneNode(true)
     if (model._innerOptions.type == 'single') {
-      // console.log('signle', this._slider_handle)
-      // return
     } else {
-      // this._slider.insertAdjacentHTML('beforeend', clone)
       this._slider_handle.after(clone)
     }
-    this._model.on('handleMoved', this.refresh.bind(this))
   }
 
   convertOptions(options: object) {
     let newOptions = {}
-    Object.assign(newOptions, this._model.getOptins(), options)
+    Object.assign(newOptions, this._model.getOptions(), options)
     for (let i in newOptions) {
       if (this.pxOptions.includes(i)) {
         newOptions[i] = `${newOptions[i]}px`
@@ -68,32 +64,8 @@ class View extends EventMixin {
     // let newLeft = data.x - shiftX - this._slider.offsetLeft
     // let newLeft = data.x - shiftX - this._slider.getBoundingClientRect().left
     let newLeft = data.x - this._slider_handle.offsetWidth
-
+    console.log(newLeft)
     this._slider_handle.style.left = newLeft + 'px'
-  }
-  onMouseDown() {
-    this._slider_handle.addEventListener('mousedown', (event) => {
-      // console.log('mousedowned')
-      event.preventDefault()
-      if (event.target == this._slider_handle) {
-        // console.log('event target is handle')
-        let handle = this._slider_handle
-        let slider = this._slider
-        let target = event.target as HTMLDivElement
-        let shiftX = event.x - this._slider_handle.getBoundingClientRect().left
-        let mouseMove = (e) => {
-          // console.log('handle should be moving')
-          // console.log({ y: e.clientY, x: e.clientX })
-          this.trigger('handleMovement', { y: e.clientY, x: e.clientX })
-        }
-        let onMouseUp = (e) => {
-          document.removeEventListener('mousemove', mouseMove)
-          document.removeEventListener('mouseUp', onMouseUp)
-        }
-        document.addEventListener('mousemove', mouseMove)
-        document.addEventListener('mouseup', onMouseUp)
-      }
-    })
   }
 }
 export default View

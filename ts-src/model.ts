@@ -10,7 +10,12 @@ interface InnerOptions {
 
 interface ICoords {
   x: number
+  xMin: number
+  xMax: number
   y: number
+  yMin: number
+  yMax: number
+  caller: string
 }
 // interface IType {
 //   single: string
@@ -37,28 +42,30 @@ class Model extends EventMixin {
     width: 200,
     height: 5,
   }
-  coords = {
+  coords: ICoords = {
     x: 0,
     xMin: 0,
-    xMax: 0,
+    xMax: 200,
     y: 0,
     yMin: 0,
     yMax: 0,
+    caller: '',
+  }
+  validate(data) {
+    if (data.x > data.xMax) {
+      data.x = data.xMax
+    } else if (data.x < data.xMin) {
+      data.x = data.xMin
+    }
   }
   renew(data) {
-    // console.log('renewing data')
-    // console.log(data, ' data')
     for (let i in data) {
-      // console.log(i, 'should be either x or y')
-      if (i in this.coords) {
-        this.coords[i] = data[i]
-        // console.log(this.coords)
-      } else {
-        continue
-      }
+      this.coords[i] = data[i]
     }
-    // console.log(this._eventHandlers, ' model event handlers')
+    this.coords.caller = 'model' //TODO this shouldnt be here,have to think of a better way
+    this.validate(this.coords)
     this.trigger('handleMoved', this.coords)
+
     return this.coords
   }
   public _innerOptions: InnerOptions = {
@@ -87,7 +94,7 @@ class Model extends EventMixin {
   public getOption(option: string) {
     return this.options[option]
   }
-  public getOptins() {
+  public getOptions() {
     return this.options
   }
   public setOptions(object) {
@@ -98,4 +105,5 @@ class Model extends EventMixin {
     return this._item
   }
 }
+export { ICoords }
 export default Model

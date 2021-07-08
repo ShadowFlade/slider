@@ -14,7 +14,7 @@ class App {
       this._view._slider_range,
     ])
     // this._observer = new EventMixin()
-    this._view.onMouseDown()
+    this._controller.onMouseDown()
 
     // return item
   }
