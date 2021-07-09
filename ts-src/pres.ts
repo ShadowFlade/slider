@@ -30,7 +30,12 @@ class Pres extends EventMixin {
 
   init() {
     const options = this.convertOptions(this._model.getOptions())
+    const behaviour = this._model._innerOptions
     this._view.show(this._model.template, options)
+    if (behaviour.type !== 'single') {
+      let clone: Node = this._slider_handle.cloneNode(true)
+      this._slider_handle.after(clone)
+    }
   }
 
   getView(view) {

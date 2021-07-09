@@ -23,10 +23,10 @@ class View extends EventMixin {
     this._pres = pres
     this._item = item
 
-    // let clone: Node = this._slider_handle.cloneNode(true)
+    //
     // if (model._innerOptions.type == 'single') {
     // } else {
-    //   this._slider_handle.after(clone)
+    //
     // }
   }
   show(template, options) {
@@ -52,7 +52,6 @@ class View extends EventMixin {
     // let newLeft = data.x - shiftX - this._slider.offsetLeft
     // let newLeft = data.x - shiftX - this._slider.getBoundingClientRect().left
     let newLeft = data.x - this._slider_handle.offsetWidth
-    console.log(newLeft)
     this._slider_handle.style.left = newLeft + 'px'
   }
 }

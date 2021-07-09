@@ -37,7 +37,6 @@ class EventMixin implements eventmixin {
     this._eventHandlers[eventName].forEach((handler) => {
       let that = this
       let result = handler.call(this, args)
-      console.log(result, ': reslt from eventemitter')
       return result //??
     })
   }

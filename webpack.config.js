@@ -1,5 +1,6 @@
 var path = require('path')
 var webpack = require('webpack')
+const ESLintPlugin = require('eslint-webpack-plugin')
 module.exports = {
   mode: 'development',
   devServer: {
@@ -19,6 +20,7 @@ module.exports = {
       $: 'jquery',
       jQuery: 'jquery',
     }),
+    new ESLintPlugin(),
   ],
   module: {
     rules: [
