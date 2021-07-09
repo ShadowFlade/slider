@@ -81,11 +81,12 @@ class Model extends EventMixin {
     this._item = item
     this.initOptions(options)
   }
+
   initOptions(options) {
     for (let option in options) {
-      if (this.modifiable_options[option]) {
+      if (this.modifiable_options.includes(option)) {
         this.options[option] = options[option]
-      } else if (this.unmodifiable_options[option]) {
+      } else if (this.unmodifiable_options.includes(option)) {
         this._innerOptions[option] = options[option]
       }
     }

@@ -2,7 +2,7 @@ import App from './app'
 import EventMixin from './eventemitter'
 import Model from './model'
 import View from './view'
-import Controller from './controller'
+import Controller from './pres'
 declare let jQuery: any
 declare let $: any
 
