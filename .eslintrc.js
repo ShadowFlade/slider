@@ -11,6 +11,9 @@ module.exports = {
   },
   plugins: ['@typescript-eslint'],
   rules: {
-    // 'no-var': 'error',
+    'eslint no-underscore-dangle': 'allow',
+    'eslint semi': ['error', 'never'],
+    'comma-dangle': 'off',
+    'eslint quotes': 'off',
   },
 }

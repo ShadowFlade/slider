@@ -24,24 +24,31 @@ interface ICoords {
 // type Type=keyof IType
 class Model extends EventMixin {
   private _slider: Element
-  private _slider_range: Element
-  private _slider_handle: Element
+
+  private _sliderRange: Element
+
+  private _sliderHandle: Element
+
   private _item: Element
+
   // public _options: object
-  public template: string =
+  public template =
     "<div class='slider' id='x'><div class='slider-range'></div><div class='slider-handle'></div></div>"
+
   modifiable_options: Array<string> = [
     'width',
     'height',
     'color',
     'background-color',
   ]
-  unmodifiable_options: Array<string> = [] //TODO можно ли это изменить на условие, что если не соответствует интерфейсу, то в зависимости от соответствия перекидывать в нужный объект, то есть если
+
+  unmodifiable_options: Array<string> = [] // TODO можно ли это изменить на условие, что если не соответствует интерфейсу, то в зависимости от соответствия перекидывать в нужный объект, то есть если
 
   options = {
     width: 200,
     height: 5,
   }
+
   coords: ICoords = {
     x: 0,
     xMin: 0,
@@ -51,6 +58,7 @@ class Model extends EventMixin {
     yMax: 0,
     caller: '',
   }
+
   validate(data) {
     if (data.x > data.xMax) {
       data.x = data.xMax
@@ -58,16 +66,18 @@ class Model extends EventMixin {
       data.x = data.xMin
     }
   }
+
   renew(data) {
-    for (let i in data) {
+    for (const i in data) {
       this.coords[i] = data[i]
     }
-    this.coords.caller = 'model' //TODO this shouldnt be here,have to think of a better way
+    this.coords.caller = 'model' // TODO this shouldnt be here,have to think of a better way
     this.validate(this.coords)
     this.trigger('handleMoved', this.coords)
 
     return this.coords
   }
+
   public _innerOptions: InnerOptions = {
     className: 'slider',
     position: 'horizontal',
@@ -75,6 +85,7 @@ class Model extends EventMixin {
     stepSize: 1,
     toolTip: false,
   }
+
   constructor(options, item) {
     super()
     // this._options = options
@@ -83,7 +94,7 @@ class Model extends EventMixin {
   }
 
   initOptions(options) {
-    for (let option in options) {
+    for (const option in options) {
       if (this.modifiable_options.includes(option)) {
         this.options[option] = options[option]
       } else if (this.unmodifiable_options.includes(option)) {
@@ -95,13 +106,16 @@ class Model extends EventMixin {
   public getOption(option: string) {
     return this.options[option]
   }
+
   public getOptions() {
     return this.options
   }
+
   public setOptions(object) {
     Object.assign(this._innerOptions, object)
     return this._innerOptions
   }
+
   public getItem() {
     return this._item
   }

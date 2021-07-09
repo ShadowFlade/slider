@@ -8,7 +8,7 @@
     "dev": "webpack",
     "start": "webpack serve --open",
     "lint": "eslint --debug ts-src/",
-    "lint:write": "eslint --debug src/ --fix"
+    "lint:write": "eslint --debug ts-src/ --fix"
   },
   "keywords": [],
   "author": "",

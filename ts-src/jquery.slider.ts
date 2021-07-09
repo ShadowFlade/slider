@@ -1,10 +1,10 @@
-import App from './app'
-import EventMixin from './eventemitter'
-import Model from './model'
-import View from './view'
-import Controller from './pres'
-declare let jQuery: any
-declare let $: any
+import App from './app';
+import EventMixin from './eventemitter';
+import Model from './model';
+import View from './view';
+import Controller from './pres';
+declare let jQuery: any;
+declare let $: any;
 
 interface MyPlugin {
   settings: MyPluginSettings
@@ -24,27 +24,27 @@ interface JQuery {
   slider: HTMLElement
 }
 
-;(function ($) {
+(function ($) {
   $.fn.slider = function (options: object): JQuery {
-    var settings = $.extend(
+    const settings = $.extend(
       {
         'background-color': 'blue',
-        color: 'red',
+        color: 'red'
       },
       options
-    )
+    );
 
     return this.each(function () {
-      const app = new App(this, settings)
-    })
-  }
-})(jQuery)
+      const app = new App(this, settings);
+    });
+  };
+}(jQuery));
 
 $(function () {
   $('#slider').slider({
-    color: 'green',
-  })
-})
+    color: 'green'
+  });
+});
 
 // $.fn.slider =Object.assign<MyPlugin, MyPluginSettings>(
 //   function (this: JQuery, options: MyPluginSettings): JQuery {

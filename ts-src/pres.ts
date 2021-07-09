@@ -4,21 +4,26 @@ import View from './view'
 // import {ICoords} from './model'
 class Pres extends EventMixin {
   _slider: HTMLElement
-  _slider_range: HTMLElement
-  _slider_handle: HTMLElement
+
+  _sliderRange: HTMLElement
+
+  _sliderHandle: HTMLElement
+
   _model: Model
+
   _view: View
+
   pxOptions: Array<string> = ['height', 'width']
-  constructor(options, model) {
+
+  constructor(model) {
     super()
     this._model = model
-
-    // this._view.on('handleMovement', this.transfer_data)
   }
+
   convertOptions(options: object) {
-    let newOptions = {}
+    const newOptions = {}
     Object.assign(newOptions, this._model.getOptions(), options)
-    for (let i in newOptions) {
+    for (const i in newOptions) {
       if (this.pxOptions.includes(i)) {
         newOptions[i] = `${newOptions[i]}px`
       } else {
@@ -30,15 +35,15 @@ class Pres extends EventMixin {
 
   init() {
     const options = this.convertOptions(this._model.getOptions())
-    const behaviour = this._model._innerOptions
+    const behavior = this._model._innerOptions
     this._view.show(this._model.template, options)
-    if (behaviour.type !== 'single') {
-      let clone: Node = this._slider_handle.cloneNode(true)
-      this._slider_handle.after(clone)
+    if (behavior.type !== 'single') {
+      const clone: Node = this._sliderHandle.cloneNode(true)
+      this._sliderHandle.after(clone)
     }
   }
 
-  getView(view) {
+  getView(view): void {
     this._view = view
     view.on('optionsRequired', this.getOptions.bind(this))
     view.on('built', this.sendItems.bind(this))
@@ -50,6 +55,7 @@ class Pres extends EventMixin {
     this._view.items = items
     return items
   }
+
   fetchItems(): object {
     const item = this._model.getItem()
     this._slider = Array.from(
@@ -57,37 +63,38 @@ class Pres extends EventMixin {
         this._model._innerOptions.className
       ) as HTMLCollectionOf<HTMLElement>
     )[0]
-    this._slider_range = Array.from(
+    this._sliderRange = Array.from(
       item.getElementsByClassName(
         `${this._model._innerOptions.className}-range`
       ) as HTMLCollectionOf<HTMLElement>
     )[0]
-    this._slider_handle = Array.from(
+    this._sliderHandle = Array.from(
       item.getElementsByClassName(
         `${this._model._innerOptions.className}-handle`.trim()
       ) as HTMLCollectionOf<HTMLElement>
     )[0]
     return {
       slider: this._slider,
-      range: this._slider_range,
-      handle: this._slider_handle,
+      range: this._sliderRange,
+      handle: this._sliderHandle,
     }
   }
-  onMouseDown() {
-    this._slider_handle.addEventListener('mousedown', (event) => {
+
+  onMouseDown(): void {
+    this._sliderHandle.addEventListener('mousedown', (event) => {
       event.preventDefault()
-      if (event.target == this._slider_handle) {
+      if (event.target == this._sliderHandle) {
         // console.log('event target is handle')
         this._model.on('handleMoved', this.transferData.bind(this))
-        let handle = this._slider_handle
-        let slider = this._slider
-        let target = event.target as HTMLDivElement
-        let shiftX = event.x - this._slider_handle.getBoundingClientRect().left
+        const handle = this._sliderHandle
+        const slider = this._slider
+        const target = event.target as HTMLDivElement
+        const shiftX = event.x - this._sliderHandle.getBoundingClientRect().left
 
-        let mouseMove = (e) => {
+        const mouseMove = (e) => {
           this.transferData({ y: e.clientY, x: e.clientX })
         }
-        let onMouseUp = (e) => {
+        const onMouseUp = (e) => {
           document.removeEventListener('mousemove', mouseMove)
           document.removeEventListener('mouseUp', onMouseUp)
         }

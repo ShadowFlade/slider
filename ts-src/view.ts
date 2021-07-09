@@ -6,16 +6,24 @@ import Pres from './pres'
 
 class View extends EventMixin {
   _slider: HTMLElement
-  _slider_range: HTMLElement
-  _slider_handle: HTMLElement
+
+  _sliderRange: HTMLElement
+
+  _sliderHandle: HTMLElement
+
   items
+
   _model: Model
+
   _pres: Pres
+
   _item
+
   handle_state: object = {
     x: 0,
     y: 0,
   }
+
   constructor(pres, options, item, model: Model) {
     super()
     item.innerHTML = model.template
@@ -29,6 +37,7 @@ class View extends EventMixin {
     //
     // }
   }
+
   show(template, options) {
     this._item.innnerHTML = template
 
@@ -37,13 +46,13 @@ class View extends EventMixin {
     this.trigger('built')
     const { slider, range, handle } = this.items
     this._slider = slider
-    this._slider_range = range
-    this._slider_handle = handle
+    this._sliderRange = range
+    this._sliderHandle = handle
     this.initiateOptions(options)
   }
 
   initiateOptions(options) {
-    for (let option of Object.keys(options)) {
+    for (const option of Object.keys(options)) {
       this._slider.style[option] = options[option]
     }
   }
@@ -51,8 +60,8 @@ class View extends EventMixin {
   refresh(data) {
     // let newLeft = data.x - shiftX - this._slider.offsetLeft
     // let newLeft = data.x - shiftX - this._slider.getBoundingClientRect().left
-    let newLeft = data.x - this._slider_handle.offsetWidth
-    this._slider_handle.style.left = newLeft + 'px'
+    const newLeft = data.x - this._sliderHandle.offsetWidth
+    this._sliderHandle.style.left = newLeft + 'px'
   }
 }
 export default View
