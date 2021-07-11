@@ -38,9 +38,7 @@ class View extends EventMixin {
     // }
   }
 
-  show(template, options) {
-    this._item.innnerHTML = template
-
+  show(node, options) {
     // const items = this.trigger('built') //TODO this should be working,but its not,trigget should return an object,it does,but the we cant get it in View.show()
     // const { slider, range, handle } = items
     this.trigger('built')
@@ -57,10 +55,13 @@ class View extends EventMixin {
     }
   }
 
-  refresh(data) {
+  refreshCoords(data) {
     // let newLeft = data.x - shiftX - this._slider.offsetLeft
     // let newLeft = data.x - shiftX - this._slider.getBoundingClientRect().left
     const newLeft = data.x - this._sliderHandle.offsetWidth
+    const newProgressRight = data.x
+    const newProgressLeft = 0
+    this._sliderRange.style.width = data.x + 'px'
     this._sliderHandle.style.left = newLeft + 'px'
   }
 }

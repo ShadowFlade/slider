@@ -20,6 +20,31 @@ class Pres extends EventMixin {
     this._model = model
   }
 
+  getView(view): void {
+    this._view = view
+    view.on('optionsRequired', this.getOptions.bind(this))
+    view.on('built', this.sendItems.bind(this))
+  }
+
+  makeSlider(behavior) {
+    const slider = document.createElement('slider')
+    const range = document.createElement('slider-range')
+    const handle = document.createElement('slider-handle')
+    slider.appendChild(range)
+    slider.appendChild(handle)
+    if (behavior.type !== 'single') {
+      const clone: Node = handle.cloneNode(true)
+      handle.after(clone)
+      slider.appendChild(range)
+    }
+    return slider
+  }
+  init() {
+    const options = this.convertOptions(this._model.getOptions())
+    const behavior = this._model._innerOptions
+    this._view.show(this.makeSlider(behavior), options)
+  }
+
   convertOptions(options: object) {
     const newOptions = {}
     Object.assign(newOptions, this._model.getOptions(), options)
@@ -31,22 +56,6 @@ class Pres extends EventMixin {
       }
     }
     return newOptions
-  }
-
-  init() {
-    const options = this.convertOptions(this._model.getOptions())
-    const behavior = this._model._innerOptions
-    this._view.show(this._model.template, options)
-    if (behavior.type !== 'single') {
-      const clone: Node = this._sliderHandle.cloneNode(true)
-      this._sliderHandle.after(clone)
-    }
-  }
-
-  getView(view): void {
-    this._view = view
-    view.on('optionsRequired', this.getOptions.bind(this))
-    view.on('built', this.sendItems.bind(this))
   }
 
   sendItems(): object {
@@ -106,7 +115,7 @@ class Pres extends EventMixin {
 
   transferData(data) {
     if (data.caller == 'model') {
-      this._view.refresh(data)
+      this._view.refreshCoords(data)
       return
     }
     this._model.renew(data)

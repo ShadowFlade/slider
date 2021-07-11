@@ -15,6 +15,7 @@ interface ICoords {
   y: number
   yMin: number
   yMax: number
+  progress: number
   caller: string
 }
 // interface IType {
@@ -56,6 +57,7 @@ class Model extends EventMixin {
     y: 0,
     yMin: 0,
     yMax: 0,
+    progress: 0,
     caller: '',
   }
 
