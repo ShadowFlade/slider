@@ -30,6 +30,8 @@ interface JQuery {
       {
         'background-color': 'green',
         color: 'red',
+        max: 500,
+        min: 0,
       },
       options
     )

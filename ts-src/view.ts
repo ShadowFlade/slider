@@ -10,6 +10,7 @@ class View extends EventMixin {
   _sliderRange: HTMLElement
 
   _sliderHandle: HTMLElement
+  _sliderTooltip
 
   items
 
@@ -19,34 +20,49 @@ class View extends EventMixin {
 
   _item
 
-  handle_state: object = {
-    x: 0,
-    y: 0,
-  }
-
   constructor(pres, options, item, model: Model) {
     super()
-    item.innerHTML = model.template
     this._model = model
     this._pres = pres
     this._item = item
-
-    //
-    // if (model._innerOptions.type == 'single') {
-    // } else {
-    //
-    // }
   }
 
   show(node, options) {
     // const items = this.trigger('built') //TODO this should be working,but its not,trigget should return an object,it does,but the we cant get it in View.show()
     // const { slider, range, handle } = items
-    this.trigger('built')
-    const { slider, range, handle } = this.items
-    this._slider = slider
-    this._sliderRange = range
-    this._sliderHandle = handle
+    // this._item.innerHTML = node.toString()
+    this._item.appendChild(node)
+    this._slider = Array.from(
+      this._item.getElementsByClassName(
+        this._model._innerOptions.className
+      ) as HTMLCollectionOf<HTMLElement>
+    )[0]
+    this._sliderRange = Array.from(
+      this._item.getElementsByClassName(
+        `${this._model._innerOptions.className}-range`
+      ) as HTMLCollectionOf<HTMLElement>
+    )[0]
+    this._sliderHandle = Array.from(
+      this._item.getElementsByClassName(
+        `${this._model._innerOptions.className}-handle`.trim()
+      ) as HTMLCollectionOf<HTMLElement>
+    )[0]
+    this._sliderTooltip = Array.from(
+      this._item.getElementsByClassName(
+        'tooltip'
+      ) as HTMLCollectionOf<HTMLElement>
+    )[0]
     this.initiateOptions(options)
+    return {
+      slider: this._slider,
+      range: this._sliderRange,
+      handle: this._sliderHandle,
+    }
+    // this.trigger('built')
+    // const { slider, range, handle } = this.items
+    // this._slider = slider
+    // this._sliderRange = range
+    // this._sliderHandle = handle
   }
 
   initiateOptions(options) {
@@ -63,6 +79,7 @@ class View extends EventMixin {
     const newProgressLeft = 0
     this._sliderRange.style.width = data.x + 'px'
     this._sliderHandle.style.left = newLeft + 'px'
+    this._sliderTooltip.textContent = data.value
   }
 }
 export default View

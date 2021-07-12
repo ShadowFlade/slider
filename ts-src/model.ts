@@ -6,6 +6,9 @@ interface InnerOptions {
   position: string
   stepSize: number
   toolTip: boolean
+  max: number
+  min: number
+  maxMinDifference: number
 }
 
 interface ICoords {
@@ -16,7 +19,12 @@ interface ICoords {
   yMin: number
   yMax: number
   progress: number
+  stepSize: number
+  value: number
   caller: string
+  valuePerPx: number
+  max: number
+  min: number
 }
 // interface IType {
 //   single: string
@@ -31,10 +39,6 @@ class Model extends EventMixin {
   private _sliderHandle: Element
 
   private _item: Element
-
-  // public _options: object
-  public template =
-    "<div class='slider' id='x'><div class='slider-range'></div><div class='slider-handle'></div></div>"
 
   modifiable_options: Array<string> = [
     'width',
@@ -53,12 +57,28 @@ class Model extends EventMixin {
   coords: ICoords = {
     x: 0,
     xMin: 0,
-    xMax: 200,
+    xMax: 0,
     y: 0,
     yMin: 0,
     yMax: 0,
     progress: 0,
+    stepSize: 0,
+    value: 0,
     caller: '',
+    max: 0,
+    min: 0,
+    valuePerPx: 1,
+  }
+
+  public _innerOptions: InnerOptions = {
+    className: 'slider',
+    position: 'horizontal',
+    type: 'single',
+    stepSize: 50,
+    toolTip: false,
+    max: 0,
+    min: 0,
+    maxMinDifference: 0,
   }
 
   validate(data) {
@@ -75,17 +95,10 @@ class Model extends EventMixin {
     }
     this.coords.caller = 'model' // TODO this shouldnt be here,have to think of a better way
     this.validate(this.coords)
+    this.coords.value = this.coords.x * this.coords.valuePerPx
     this.trigger('handleMoved', this.coords)
 
     return this.coords
-  }
-
-  public _innerOptions: InnerOptions = {
-    className: 'slider',
-    position: 'horizontal',
-    type: 'single',
-    stepSize: 1,
-    toolTip: false,
   }
 
   constructor(options, item) {
@@ -93,16 +106,22 @@ class Model extends EventMixin {
     // this._options = options
     this._item = item
     this.initOptions(options)
+    console.log(options, ':options from constructor')
   }
 
   initOptions(options) {
     for (const option in options) {
       if (this.modifiable_options.includes(option)) {
         this.options[option] = options[option]
-      } else if (this.unmodifiable_options.includes(option)) {
+      } else {
         this._innerOptions[option] = options[option]
       }
     }
+    this.coords.xMax = this.options.width
+    this._innerOptions.maxMinDifference =
+      this._innerOptions.max - this._innerOptions.min
+    const diff = this._innerOptions.maxMinDifference
+    this.coords.valuePerPx = diff / this.options.width
   }
 
   public getOption(option: string) {
@@ -113,10 +132,14 @@ class Model extends EventMixin {
     return this.options
   }
 
-  public setOptions(object) {
-    Object.assign(this._innerOptions, object)
+  public getSettings() {
     return this._innerOptions
   }
+
+  // public setOptions(object) {
+  //   Object.assign(this._innerOptions, object)
+  //   return this._innerOptions
+  // }
 
   public getItem() {
     return this._item

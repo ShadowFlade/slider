@@ -3,6 +3,7 @@ import Model from './model'
 import View from './view'
 // import {ICoords} from './model'
 class Pres extends EventMixin {
+  _item: HTMLElement
   _slider: HTMLElement
 
   _sliderRange: HTMLElement
@@ -15,21 +16,39 @@ class Pres extends EventMixin {
 
   pxOptions: Array<string> = ['height', 'width']
 
-  constructor(model) {
+  constructor(model, item) {
     super()
     this._model = model
+    this._item = item
   }
 
   getView(view): void {
     this._view = view
     view.on('optionsRequired', this.getOptions.bind(this))
-    view.on('built', this.sendItems.bind(this))
   }
 
   makeSlider(behavior) {
-    const slider = document.createElement('slider')
-    const range = document.createElement('slider-range')
-    const handle = document.createElement('slider-handle')
+    const container = document.createElement('div')
+    container.classList.add('slider-container')
+    // const sliderWrap=document.createElement('div')
+    // sliderWrap.classList.add('slider-wrap')
+    const slider = document.createElement('div')
+    slider.classList.add('slider')
+    const range = document.createElement('div')
+    range.classList.add('slider-range')
+    const handle = document.createElement('div')
+    handle.classList.add('slider-handle')
+    const tool = document.createElement('div')
+    tool.classList.add('tooltip')
+    handle.append(tool)
+    const min = document.createElement('span')
+    min.style.transform = 'translateX(-100%)'
+    min.classList.add('slider-min')
+    const max = document.createElement('span')
+    max.classList.add('slider-max')
+    container.append(min)
+    container.append(slider)
+    container.append(max)
     slider.appendChild(range)
     slider.appendChild(handle)
     if (behavior.type !== 'single') {
@@ -37,12 +56,20 @@ class Pres extends EventMixin {
       handle.after(clone)
       slider.appendChild(range)
     }
-    return slider
+    min.textContent = behavior.min
+    max.textContent = behavior.max
+    console.log(behavior)
+
+    return container
   }
   init() {
     const options = this.convertOptions(this._model.getOptions())
-    const behavior = this._model._innerOptions
-    this._view.show(this.makeSlider(behavior), options)
+    const behavior = this._model.getSettings()
+    const sliderObject = this._view.show(this.makeSlider(behavior), options)
+    const { slider, range, handle } = sliderObject
+    this._slider = slider
+    this._sliderRange = range
+    this._sliderHandle = handle
   }
 
   convertOptions(options: object) {
@@ -56,37 +83,6 @@ class Pres extends EventMixin {
       }
     }
     return newOptions
-  }
-
-  sendItems(): object {
-    // console.log(this, ': this from pres')
-    const items = this.fetchItems()
-    this._view.items = items
-    return items
-  }
-
-  fetchItems(): object {
-    const item = this._model.getItem()
-    this._slider = Array.from(
-      item.getElementsByClassName(
-        this._model._innerOptions.className
-      ) as HTMLCollectionOf<HTMLElement>
-    )[0]
-    this._sliderRange = Array.from(
-      item.getElementsByClassName(
-        `${this._model._innerOptions.className}-range`
-      ) as HTMLCollectionOf<HTMLElement>
-    )[0]
-    this._sliderHandle = Array.from(
-      item.getElementsByClassName(
-        `${this._model._innerOptions.className}-handle`.trim()
-      ) as HTMLCollectionOf<HTMLElement>
-    )[0]
-    return {
-      slider: this._slider,
-      range: this._sliderRange,
-      handle: this._sliderHandle,
-    }
   }
 
   onMouseDown(): void {
