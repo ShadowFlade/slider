@@ -87,6 +87,11 @@ class Model extends EventMixin {
     } else if (data.x < data.xMin) {
       data.x = data.xMin
     }
+    if (data.value > data.max) {
+      data.value = data.max
+    } else if (data.value < data.min) {
+      data.value = data.min
+    }
   }
 
   renew(data) {
@@ -94,10 +99,9 @@ class Model extends EventMixin {
       this.coords[i] = data[i]
     }
     this.coords.caller = 'model' // TODO this shouldnt be here,have to think of a better way
-    this.validate(this.coords)
     this.coords.value = this.coords.x * this.coords.valuePerPx
+    this.validate(this.coords)
     this.trigger('handleMoved', this.coords)
-
     return this.coords
   }
 
@@ -106,7 +110,6 @@ class Model extends EventMixin {
     // this._options = options
     this._item = item
     this.initOptions(options)
-    console.log(options, ':options from constructor')
   }
 
   initOptions(options) {
@@ -122,6 +125,9 @@ class Model extends EventMixin {
       this._innerOptions.max - this._innerOptions.min
     const diff = this._innerOptions.maxMinDifference
     this.coords.valuePerPx = diff / this.options.width
+    this.coords.stepSize = this._innerOptions.stepSize
+    this.coords.max = this._innerOptions.max
+    this.coords.min = this._innerOptions.min
   }
 
   public getOption(option: string) {

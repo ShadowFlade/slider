@@ -58,7 +58,6 @@ class Pres extends EventMixin {
     }
     min.textContent = behavior.min
     max.textContent = behavior.max
-    console.log(behavior)
 
     return container
   }
@@ -86,18 +85,21 @@ class Pres extends EventMixin {
   }
 
   onMouseDown(): void {
+    this._sliderHandle.ondragstart = function () {
+      return false
+    }
+
     this._sliderHandle.addEventListener('mousedown', (event) => {
       event.preventDefault()
       if (event.target == this._sliderHandle) {
-        // console.log('event target is handle')
         this._model.on('handleMoved', this.transferData.bind(this))
         const handle = this._sliderHandle
         const slider = this._slider
         const target = event.target as HTMLDivElement
-        const shiftX = event.x - this._sliderHandle.getBoundingClientRect().left
-
+        const shiftX =
+          event.clientX - this._sliderHandle.getBoundingClientRect().left
         const mouseMove = (e) => {
-          this.transferData({ y: e.clientY, x: e.clientX })
+          this.transferData({ y: e.clientY, x: e.clientX, shiftX: shiftX })
         }
         const onMouseUp = (e) => {
           document.removeEventListener('mousemove', mouseMove)

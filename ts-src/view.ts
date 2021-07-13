@@ -58,27 +58,28 @@ class View extends EventMixin {
       range: this._sliderRange,
       handle: this._sliderHandle,
     }
-    // this.trigger('built')
-    // const { slider, range, handle } = this.items
-    // this._slider = slider
-    // this._sliderRange = range
-    // this._sliderHandle = handle
   }
 
   initiateOptions(options) {
     for (const option of Object.keys(options)) {
       this._slider.style[option] = options[option]
     }
+    this._model.coords.xMax += this._slider.getBoundingClientRect().left
+    this._model.coords.xMin -= this._slider.getBoundingClientRect().left
+    console.log(this._model.coords.xMax, this._model.coords.xMin)
   }
 
   refreshCoords(data) {
     // let newLeft = data.x - shiftX - this._slider.offsetLeft
     // let newLeft = data.x - shiftX - this._slider.getBoundingClientRect().left
-    const newLeft = data.x - this._sliderHandle.offsetWidth
+    const shiftX = data.shiftX
+    const newLeft = data.x - shiftX - this._slider.getBoundingClientRect().left
     const newProgressRight = data.x
     const newProgressLeft = 0
-    this._sliderRange.style.width = data.x + 'px'
-    this._sliderHandle.style.left = newLeft + 'px'
+
+    // console.log(data.x, ' : datax')
+    this._sliderRange.style.width = newLeft + 'px'
+    this._sliderHandle.style.left = newLeft + 'px' //TODO figure out why handle jumps too much forward
     this._sliderTooltip.textContent = data.value
   }
 }
