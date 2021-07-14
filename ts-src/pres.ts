@@ -98,8 +98,14 @@ class Pres extends EventMixin {
         const target = event.target as HTMLDivElement
         const shiftX =
           event.clientX - this._sliderHandle.getBoundingClientRect().left
+        const leftMargin = this._slider.getBoundingClientRect().left
         const mouseMove = (e) => {
-          this.transferData({ y: e.clientY, x: e.clientX, shiftX: shiftX })
+          this.transferData({
+            y: e.clientY,
+            x: e.clientX,
+            shiftX: shiftX,
+            leftMargin: leftMargin,
+          })
         }
         const onMouseUp = (e) => {
           document.removeEventListener('mousemove', mouseMove)

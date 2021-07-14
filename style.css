@@ -1,5 +1,7 @@
 #slider {
   position: relative;
+  margin-top: 50px;
+  margin-left: 100px;
 }
 .slider {
   background-color: aqua;
@@ -25,10 +27,18 @@
   top: 50%;
   transform: translate(0, -50%);
 }
-.minmaxbox {
+/* .minmaxbox {
   width: 100%;
   display: flex;
   justify-content: space-between;
+} */
+
+.slider-max {
+  margin-left: 5px;
+}
+
+.slider-min {
+  margin-right: 5px;
 }
 
 .slider-container {
@@ -50,4 +60,5 @@
   background-color: transparent;
   width: 20px;
   height: 20px;
+  text-align: center;
 }

@@ -25,6 +25,7 @@ interface ICoords {
   valuePerPx: number
   max: number
   min: number
+  leftMargin: number
 }
 // interface IType {
 //   single: string
@@ -68,6 +69,7 @@ class Model extends EventMixin {
     max: 0,
     min: 0,
     valuePerPx: 1,
+    leftMargin: 0,
   }
 
   public _innerOptions: InnerOptions = {
@@ -86,6 +88,7 @@ class Model extends EventMixin {
       data.x = data.xMax
     } else if (data.x < data.xMin) {
       data.x = data.xMin
+      console.log('validatin min')
     }
     if (data.value > data.max) {
       data.value = data.max
@@ -99,7 +102,8 @@ class Model extends EventMixin {
       this.coords[i] = data[i]
     }
     this.coords.caller = 'model' // TODO this shouldnt be here,have to think of a better way
-    this.coords.value = this.coords.x * this.coords.valuePerPx
+    this.coords.value =
+      (this.coords.x - this.coords.leftMargin) * this.coords.valuePerPx
     this.validate(this.coords)
     this.trigger('handleMoved', this.coords)
     return this.coords

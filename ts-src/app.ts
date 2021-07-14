@@ -15,7 +15,7 @@ class App {
 
     this._pres.onMouseDown()
 
-    // return item
+    return
   }
 
   _model: Model
@@ -24,15 +24,7 @@ class App {
 
   _pres: Pres
 
-  // init(item) {}
-
   destroy() {}
 }
 
 export default App
-
-// , [
-//   this._pres._slider,
-//   this._pres._sliderHandle,
-//   this._pres._sliderRange,
-// ]
