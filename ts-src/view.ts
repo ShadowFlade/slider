@@ -66,7 +66,6 @@ class View extends EventMixin {
     }
     this._model.coords.xMax += this._slider.getBoundingClientRect().left
     this._model.coords.xMin += this._slider.getBoundingClientRect().left
-    console.log(this._model.coords.xMax, this._model.coords.xMin)
   }
 
   refreshCoords(data) {
@@ -74,9 +73,9 @@ class View extends EventMixin {
     const newLeft = data.x - shiftX - this._slider.getBoundingClientRect().left
     const newProgressRight = data.x
     const newProgressLeft = 0
-    console.log(data.x)
+    console.log(data.x, ' : datax from refresh coords')
 
-    if (data.value % data.stepSize == 0) {
+    if (data.value % data.stepSize == 0 || data.value == data.max) {
       this._sliderHandle.style.left = newLeft + 'px'
       if (data.value == 0) {
         //TODO is there a better way?
@@ -84,6 +83,13 @@ class View extends EventMixin {
       }
       this._sliderRange.style.width = newLeft + 'px'
 
+      this._sliderTooltip.textContent = data.value
+    }
+    if (data.clicked) {
+      console.log(data.x, ' :data x')
+      const newLeft = data.x - this._slider.getBoundingClientRect().left
+      this._sliderHandle.style.left = newLeft + 'px'
+      this._sliderRange.style.width = newLeft + 'px'
       this._sliderTooltip.textContent = data.value
     }
   }

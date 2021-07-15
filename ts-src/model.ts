@@ -9,6 +9,8 @@ interface InnerOptions {
   max: number
   min: number
   maxMinDifference: number
+  betweenMarkers: number
+  marker: boolean
 }
 
 interface ICoords {
@@ -26,6 +28,7 @@ interface ICoords {
   max: number
   min: number
   leftMargin: number
+  clicked: boolean
 }
 // interface IType {
 //   single: string
@@ -70,17 +73,20 @@ class Model extends EventMixin {
     min: 0,
     valuePerPx: 1,
     leftMargin: 0,
+    clicked: false,
   }
 
   public _innerOptions: InnerOptions = {
     className: 'slider',
     position: 'horizontal',
     type: 'single',
-    stepSize: 50,
-    toolTip: false,
+    stepSize: 90,
+    toolTip: true,
     max: 0,
     min: 0,
     maxMinDifference: 0,
+    marker: true,
+    betweenMarkers: 40,
   }
 
   validate(data) {
@@ -88,7 +94,6 @@ class Model extends EventMixin {
       data.x = data.xMax
     } else if (data.x < data.xMin) {
       data.x = data.xMin
-      console.log('validatin min')
     }
     if (data.value > data.max) {
       data.value = data.max
@@ -98,14 +103,26 @@ class Model extends EventMixin {
   }
 
   renew(data) {
-    for (const i in data) {
-      this.coords[i] = data[i]
-    }
     this.coords.caller = 'model' // TODO this shouldnt be here,have to think of a better way
-    this.coords.value =
-      (this.coords.x - this.coords.leftMargin) * this.coords.valuePerPx
-    this.validate(this.coords)
-    this.trigger('handleMoved', this.coords)
+    if (data.hasOwnProperty('value')) {
+      const newopt = Object.assign({}, this.coords)
+      for (const i in data) {
+        newopt[i] = data[i]
+      }
+      // this.coords.value = data.value
+      // this.coords.clicked = true
+      this.validate(newopt)
+      this.trigger('handleMoved', newopt)
+    } else {
+      for (const i in data) {
+        this.coords[i] = data[i]
+      }
+      this.coords.value =
+        (this.coords.x - this.coords.leftMargin) * this.coords.valuePerPx
+      this.validate(this.coords)
+      this.trigger('handleMoved', this.coords)
+    }
+
     return this.coords
   }
 

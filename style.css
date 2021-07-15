@@ -27,27 +27,60 @@
   top: 50%;
   transform: translate(0, -50%);
 }
-/* .minmaxbox {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-} */
 
 .slider-max {
   margin-left: 5px;
+  transform: translateY(-50%);
 }
 
 .slider-min {
   margin-right: 5px;
+  transform: translate(-100%, -50%);
+  /* //TODO разные транслейты перебивают друг друга(translateX and translateY) */
+}
+.values {
+  display: flex;
+  align-items: flex-end;
 }
 
 .slider-container {
   width: auto;
   display: flex;
   align-items: center;
-  /* justify-content: center; */
+  justify-content: center;
+  flex-direction: column;
 }
-
+.slider-main {
+  width: 100%;
+  display: flex;
+}
+.slider-marker {
+  display: flex;
+  justify-content: space-evenly;
+  position: relative;
+  top: 15%;
+  height: 20px;
+  width: 100%;
+}
+.marker--major {
+  width: 2px;
+  height: 15px;
+  /* border-radius: 50%; */
+  /* border: 1px solid black; */
+  text-align: center;
+  position: relative;
+  background-color: black;
+}
+.marker--major:last-child {
+  margin-right: 0;
+}
+.marker-value {
+  position: absolute;
+  top: 100%;
+  font-size: 11px;
+  left: 50%;
+  transform: translateX(-50%);
+}
 .tooltip {
   position: absolute;
   left: 50%;

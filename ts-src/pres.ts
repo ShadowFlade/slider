@@ -5,7 +5,7 @@ import View from './view'
 class Pres extends EventMixin {
   _item: HTMLElement
   _slider: HTMLElement
-
+  _sliderContainer: HTMLElement
   _sliderRange: HTMLElement
 
   _sliderHandle: HTMLElement
@@ -28,8 +28,11 @@ class Pres extends EventMixin {
   }
 
   makeSlider(behavior) {
+    const main = document.createElement('div')
+    main.classList.add('slider-main')
     const container = document.createElement('div')
     container.classList.add('slider-container')
+    this._sliderContainer = container
     // const sliderWrap=document.createElement('div')
     // sliderWrap.classList.add('slider-wrap')
     const slider = document.createElement('div')
@@ -42,15 +45,21 @@ class Pres extends EventMixin {
     tool.classList.add('tooltip')
     handle.append(tool)
     const min = document.createElement('span')
-    min.style.transform = 'translateX(-100%)'
-    min.classList.add('slider-min')
+    // min.classList.add('slider-min values')
+    min.className = 'slider-min values'
     const max = document.createElement('span')
-    max.classList.add('slider-max')
-    container.append(min)
+    // max.classList.add('slider-max values')
+    max.className = 'slider-max values'
+    // container.append(min)
+    main.append(min)
+
     container.append(slider)
-    container.append(max)
+    main.append(container)
+    // container.append(max)
+    main.append(max)
     slider.appendChild(range)
     slider.appendChild(handle)
+
     if (behavior.type !== 'single') {
       const clone: Node = handle.cloneNode(true)
       handle.after(clone)
@@ -58,8 +67,36 @@ class Pres extends EventMixin {
     }
     min.textContent = behavior.min
     max.textContent = behavior.max
+    if (behavior.marker) {
+      const marker = this.makeMarker(main, behavior, this._model.options.width)
+      container.append(marker)
+    }
 
-    return container
+    return main
+  }
+
+  makeMarker(sliderContainer, behavior, width) {
+    const markerDiv = document.createElement('div')
+    markerDiv.classList.add('slider-marker')
+    const majorMarkers = Math.trunc(behavior.max / behavior.stepSize)
+    for (let i = 0; i < majorMarkers; i++) {
+      const majorMarker = document.createElement('div')
+      majorMarker.classList.add('marker--major')
+      markerDiv.append(majorMarker)
+      const marginLeft = (width / majorMarkers) * 0.0027 * width
+      majorMarker.style.marginLeft = marginLeft + 'px'
+      const markerValue = document.createElement('div')
+      markerValue.classList.add('marker-value')
+
+      // markerValue.dataset
+      const value = behavior.stepSize * (i + 1)
+      // markerValue.setAttribute('data-value', value.toString())
+      markerValue.dataset.value = value.toString()
+      markerValue.textContent = value.toString()
+      majorMarker.append(markerValue)
+    }
+
+    return markerDiv
   }
   init() {
     const options = this.convertOptions(this._model.getOptions())
@@ -91,11 +128,12 @@ class Pres extends EventMixin {
 
     this._sliderHandle.addEventListener('mousedown', (event) => {
       event.preventDefault()
-      if (event.target == this._sliderHandle) {
+      const target = event.target as HTMLDivElement
+      if (target == this._sliderHandle) {
         this._model.on('handleMoved', this.transferData.bind(this))
         const handle = this._sliderHandle
         const slider = this._slider
-        const target = event.target as HTMLDivElement
+
         const shiftX =
           event.clientX - this._sliderHandle.getBoundingClientRect().left
         const leftMargin = this._slider.getBoundingClientRect().left
@@ -113,6 +151,20 @@ class Pres extends EventMixin {
         }
         document.addEventListener('mousemove', mouseMove)
         document.addEventListener('mouseup', onMouseUp)
+      }
+    })
+    this._sliderContainer.addEventListener('click', (event) => {
+      this._model.on('handleMoved', this.transferData.bind(this))
+      const target = event.target as HTMLElement
+      if (target.className == 'marker--major') {
+        const value = target.firstChild as HTMLElement
+        console.log(event.clientX, ' : clientX from pres')
+        this.transferData({
+          y: event.clientY,
+          x: event.clientX,
+          value: value.dataset.value,
+          clicked: true,
+        })
       }
     })
   }
