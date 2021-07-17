@@ -85,7 +85,7 @@ class Pres extends EventMixin {
       markerDiv.append(majorMarker)
       const marginLeft = (width / majorMarkers) * 0.0027 * width
       majorMarker.style.marginLeft = marginLeft + 'px'
-      const markerValue = document.createElement('div')
+      const markerValue = document.createElement('label')
       markerValue.classList.add('marker-value')
 
       // markerValue.dataset
@@ -156,9 +156,13 @@ class Pres extends EventMixin {
     this._sliderContainer.addEventListener('click', (event) => {
       this._model.on('handleMoved', this.transferData.bind(this))
       const target = event.target as HTMLElement
-      if (target.className == 'marker--major') {
-        const value = target.firstChild as HTMLElement
-        console.log(event.clientX, ' : clientX from pres')
+      if (
+        target.className == 'marker--major' ||
+        target.className == 'marker-value'
+      ) {
+        const value =
+          (target.getElementsByClassName('marker-value')[0] as HTMLElement) ||
+          target
         this.transferData({
           y: event.clientY,
           x: event.clientX,

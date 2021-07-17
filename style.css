@@ -80,6 +80,7 @@
   font-size: 11px;
   left: 50%;
   transform: translateX(-50%);
+  user-select: none;
 }
 .tooltip {
   position: absolute;

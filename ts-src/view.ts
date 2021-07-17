@@ -3,6 +3,7 @@ import * as slider from './jquery.slider'
 import Model from './model'
 import EventMixin from './eventemitter'
 import Pres from './pres'
+import { map } from 'jquery'
 
 class View extends EventMixin {
   _slider: HTMLElement
@@ -11,7 +12,8 @@ class View extends EventMixin {
 
   _sliderHandle: HTMLElement
   _sliderTooltip
-
+  valueDivs: Object[]
+  valueDivsArray: Number[]
   items
 
   _model: Model
@@ -52,6 +54,16 @@ class View extends EventMixin {
         'tooltip'
       ) as HTMLCollectionOf<HTMLElement>
     )[0]
+    const valueDivs: { div: HTMLElement; value: number }[] = Array.from(
+      this._item.getElementsByClassName('marker-value')
+    ).map((item: HTMLElement) => {
+      return Object.create({ div: item, value: item.textContent })
+    })
+
+    this.valueDivs = valueDivs
+    this.valueDivsArray = valueDivs.map((item) => {
+      return item.value
+    })
     this.initiateOptions(options)
     return {
       slider: this._slider,
@@ -73,7 +85,6 @@ class View extends EventMixin {
     const newLeft = data.x - shiftX - this._slider.getBoundingClientRect().left
     const newProgressRight = data.x
     const newProgressLeft = 0
-    console.log(data.x, ' : datax from refresh coords')
 
     if (data.value % data.stepSize == 0 || data.value == data.max) {
       this._sliderHandle.style.left = newLeft + 'px'
@@ -86,12 +97,41 @@ class View extends EventMixin {
       this._sliderTooltip.textContent = data.value
     }
     if (data.clicked) {
-      console.log(data.x, ' :data x')
-      const newLeft = data.x - this._slider.getBoundingClientRect().left
+      const newLeft =
+        data.x -
+        this._slider.getBoundingClientRect().left -
+        this._sliderHandle.offsetWidth / 2
       this._sliderHandle.style.left = newLeft + 'px'
       this._sliderRange.style.width = newLeft + 'px'
       this._sliderTooltip.textContent = data.value
+      if (this.valueDivsArray.includes(data.value)) {
+        // console.log(this.valueDivs)
+        // const neededObject: Object = this.valueDivs.filter(
+        //   (item: { div: HTMLElement; value: number }) => {
+        //     // console.log(
+        //     //   item.value,
+        //     //   '      ',
+        //     //   data.value,
+        //     //   item.value == data.value
+        //     // )
+        //     console.log(item)
+        //     item.value.toString() == data.value.toString()
+        //   }
+        // )[0]
+        for (let i of this.valueDivs) {
+          const item = i as { div: HTMLElement; value: number }
+          if (item.value == data.value) {
+            for (let i of this.valueDivs) {
+              //TODO is there a better way to do this?
+              const item = i as { div: HTMLElement; value: number }
+              item.div.style.color = ''
+            }
+            item.div.style.color = 'purple'
+          }
+        }
+      }
     }
   }
+  // showValue() {}
 }
 export default View

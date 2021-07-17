@@ -104,15 +104,15 @@ class Model extends EventMixin {
 
   renew(data) {
     this.coords.caller = 'model' // TODO this shouldnt be here,have to think of a better way
-    if (data.hasOwnProperty('value')) {
-      const newopt = Object.assign({}, this.coords)
+    if (data.clicked) {
+      // const newOpt = Object.assign({}, this.coords)
       for (const i in data) {
-        newopt[i] = data[i]
+        this.coords[i] = data[i]
       }
       // this.coords.value = data.value
       // this.coords.clicked = true
-      this.validate(newopt)
-      this.trigger('handleMoved', newopt)
+      this.validate(this.coords)
+      this.trigger('handleMoved', this.coords)
     } else {
       for (const i in data) {
         this.coords[i] = data[i]
