@@ -6,8 +6,8 @@ interface InnerOptions {
   position: string
   stepSize: number
   toolTip: boolean
-  max: number
-  min: number
+  maxValue: number
+  minValue: number
   maxMinDifference: number
   betweenMarkers: number
   marker: boolean
@@ -20,21 +20,17 @@ interface ICoords {
   y: number
   yMin: number
   yMax: number
-  progress: number
   stepSize: number
   value: number
   caller: string
   valuePerPx: number
-  max: number
-  min: number
+  maxValue: number
+  minValue: number
   leftMargin: number
   clicked: boolean
+  valueWidth: number
 }
-// interface IType {
-//   single: string
-//   double:string
-// }
-// type Type=keyof IType
+
 class Model extends EventMixin {
   private _slider: Element
 
@@ -65,13 +61,13 @@ class Model extends EventMixin {
     y: 0,
     yMin: 0,
     yMax: 0,
-    progress: 0,
     stepSize: 0,
     value: 0,
     caller: '',
-    max: 0,
-    min: 0,
+    maxValue: 0,
+    minValue: 0,
     valuePerPx: 1,
+    valueWidth: 0,
     leftMargin: 0,
     clicked: false,
   }
@@ -82,8 +78,8 @@ class Model extends EventMixin {
     type: 'single',
     stepSize: 90,
     toolTip: true,
-    max: 0,
-    min: 0,
+    maxValue: 0,
+    minValue: 0,
     maxMinDifference: 0,
     marker: true,
     betweenMarkers: 40,
@@ -95,10 +91,10 @@ class Model extends EventMixin {
     } else if (data.x < data.xMin) {
       data.x = data.xMin
     }
-    if (data.value > data.max) {
-      data.value = data.max
-    } else if (data.value < data.min) {
-      data.value = data.min
+    if (data.value > data.maxValue) {
+      data.value = data.maxValue
+    } else if (data.value < data.minValue) {
+      data.value = data.minValue
     }
   }
 
@@ -112,7 +108,7 @@ class Model extends EventMixin {
       // this.coords.value = data.value
       // this.coords.clicked = true
       this.validate(this.coords)
-      this.trigger('handleMoved', this.coords)
+      this.trigger('coords changed', this.coords)
     } else {
       for (const i in data) {
         this.coords[i] = data[i]
@@ -120,7 +116,7 @@ class Model extends EventMixin {
       this.coords.value =
         (this.coords.x - this.coords.leftMargin) * this.coords.valuePerPx
       this.validate(this.coords)
-      this.trigger('handleMoved', this.coords)
+      this.trigger('coords changed', this.coords)
     }
 
     return this.coords
@@ -143,12 +139,12 @@ class Model extends EventMixin {
     }
     this.coords.xMax = this.options.width
     this._innerOptions.maxMinDifference =
-      this._innerOptions.max - this._innerOptions.min
+      this._innerOptions.maxValue - this._innerOptions.minValue
     const diff = this._innerOptions.maxMinDifference
     this.coords.valuePerPx = diff / this.options.width
     this.coords.stepSize = this._innerOptions.stepSize
-    this.coords.max = this._innerOptions.max
-    this.coords.min = this._innerOptions.min
+    this.coords.maxValue = this._innerOptions.maxValue
+    this.coords.minValue = this._innerOptions.minValue
   }
 
   public getOption(option: string) {

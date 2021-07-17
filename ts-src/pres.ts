@@ -33,8 +33,6 @@ class Pres extends EventMixin {
     const container = document.createElement('div')
     container.classList.add('slider-container')
     this._sliderContainer = container
-    // const sliderWrap=document.createElement('div')
-    // sliderWrap.classList.add('slider-wrap')
     const slider = document.createElement('div')
     slider.classList.add('slider')
     const range = document.createElement('div')
@@ -65,8 +63,8 @@ class Pres extends EventMixin {
       handle.after(clone)
       slider.appendChild(range)
     }
-    min.textContent = behavior.min
-    max.textContent = behavior.max
+    min.textContent = behavior.minValue
+    max.textContent = behavior.maxValue
     if (behavior.marker) {
       const marker = this.makeMarker(main, behavior, this._model.options.width)
       container.append(marker)
@@ -78,7 +76,7 @@ class Pres extends EventMixin {
   makeMarker(sliderContainer, behavior, width) {
     const markerDiv = document.createElement('div')
     markerDiv.classList.add('slider-marker')
-    const majorMarkers = Math.trunc(behavior.max / behavior.stepSize)
+    const majorMarkers = Math.trunc(behavior.maxValue / behavior.stepSize)
     for (let i = 0; i < majorMarkers; i++) {
       const majorMarker = document.createElement('div')
       majorMarker.classList.add('marker--major')
@@ -87,10 +85,7 @@ class Pres extends EventMixin {
       majorMarker.style.marginLeft = marginLeft + 'px'
       const markerValue = document.createElement('label')
       markerValue.classList.add('marker-value')
-
-      // markerValue.dataset
       const value = behavior.stepSize * (i + 1)
-      // markerValue.setAttribute('data-value', value.toString())
       markerValue.dataset.value = value.toString()
       markerValue.textContent = value.toString()
       majorMarker.append(markerValue)
@@ -122,27 +117,29 @@ class Pres extends EventMixin {
   }
 
   onMouseDown(): void {
-    this._sliderHandle.ondragstart = function () {
+    const handle = this._sliderHandle
+    const container = this._sliderContainer
+    const slider = this._slider
+    const model = this._model
+    model.on('coords changed', this.transferData.bind(this))
+
+    handle.ondragstart = function () {
       return false
     }
 
-    this._sliderHandle.addEventListener('mousedown', (event) => {
+    handle.addEventListener('mousedown', (event) => {
       event.preventDefault()
       const target = event.target as HTMLDivElement
-      if (target == this._sliderHandle) {
-        this._model.on('handleMoved', this.transferData.bind(this))
-        const handle = this._sliderHandle
-        const slider = this._slider
-
-        const shiftX =
-          event.clientX - this._sliderHandle.getBoundingClientRect().left
-        const leftMargin = this._slider.getBoundingClientRect().left
+      if (target == handle) {
+        const shiftX = event.clientX - handle.getBoundingClientRect().left
+        const leftMargin = slider.getBoundingClientRect().left
         const mouseMove = (e) => {
           this.transferData({
             y: e.clientY,
             x: e.clientX,
             shiftX: shiftX,
             leftMargin: leftMargin,
+            clicked: false,
           })
         }
         const onMouseUp = (e) => {
@@ -153,8 +150,7 @@ class Pres extends EventMixin {
         document.addEventListener('mouseup', onMouseUp)
       }
     })
-    this._sliderContainer.addEventListener('click', (event) => {
-      this._model.on('handleMoved', this.transferData.bind(this))
+    container.addEventListener('click', (event) => {
       const target = event.target as HTMLElement
       if (
         target.className == 'marker--major' ||
@@ -165,7 +161,8 @@ class Pres extends EventMixin {
           target
         this.transferData({
           y: event.clientY,
-          x: event.clientX,
+          x: target.getBoundingClientRect().left,
+          valueWidth: target.offsetWidth,
           value: value.dataset.value,
           clicked: true,
         })

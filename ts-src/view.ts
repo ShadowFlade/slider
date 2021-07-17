@@ -82,29 +82,70 @@ class View extends EventMixin {
 
   refreshCoords(data) {
     const shiftX = data.shiftX
-    const newLeft = data.x - shiftX - this._slider.getBoundingClientRect().left
+    let newLeft = data.x - shiftX - this._slider.getBoundingClientRect().left
     const newProgressRight = data.x
     const newProgressLeft = 0
-
-    if (data.value % data.stepSize == 0 || data.value == data.max) {
-      this._sliderHandle.style.left = newLeft + 'px'
-      if (data.value == 0) {
-        //TODO is there a better way?
-        this._sliderRange.style.width = '0'
-      }
-      this._sliderRange.style.width = newLeft + 'px'
-
-      this._sliderTooltip.textContent = data.value
+    // if (data.value % data.stepSize == 0 || data.value == data.maxValue) {
+    //   this._sliderHandle.style.left = newLeft + 'px'
+    //   if (data.value == 0) {
+    //     //TODO is there a better way?
+    //     this._sliderRange.style.width = '0'
+    //   }
+    //   this._sliderRange.style.width = newLeft + 'px'
+    //   this._sliderTooltip.textContent = data.value
+    // }
+    // else {
+    if (data.value == 0) {
+      this._sliderRange.style.width = '0'
     }
+    const arr = this.valueDivsArray
+    let minDiff = Infinity
+    let value: number
+    for (let i of arr) {
+      let xCoord = data.value
+      if (Math.abs(xCoord - +i) < minDiff) {
+        minDiff = Math.abs(xCoord - Number(i))
+        value = Number(i)
+      }
+    }
+    let neededItem
+    for (let i of this.valueDivs) {
+      const item = i as { div: HTMLElement; value: number }
+      if (value == item.value) {
+        neededItem = item.div
+      }
+    }
+    let neededCoords = neededItem.getBoundingClientRect().left
+    newLeft = neededCoords - data.leftMargin
+    this._sliderHandle.style.left = newLeft + 'px'
+    this._sliderRange.style.width = newLeft + 'px'
+    this._sliderTooltip.textContent = neededItem.dataset.value
+    // }
+
+    //click on marker
     if (data.clicked) {
+      console.log(data.x, ':data x')
       const newLeft =
         data.x -
         this._slider.getBoundingClientRect().left -
-        this._sliderHandle.offsetWidth / 2
+        this._sliderHandle.offsetWidth / 2 +
+        data.valueWidth / 2
       this._sliderHandle.style.left = newLeft + 'px'
       this._sliderRange.style.width = newLeft + 'px'
       this._sliderTooltip.textContent = data.value
       if (this.valueDivsArray.includes(data.value)) {
+        for (let i of this.valueDivs) {
+          const item = i as { div: HTMLElement; value: number }
+          if (item.value == data.value) {
+            for (let i of this.valueDivs) {
+              //TODO is there a better way to do this?
+              const item = i as { div: HTMLElement; value: number }
+              item.div.style.color = ''
+            }
+            item.div.style.color = 'purple'
+          }
+        }
+
         // console.log(this.valueDivs)
         // const neededObject: Object = this.valueDivs.filter(
         //   (item: { div: HTMLElement; value: number }) => {
@@ -118,17 +159,6 @@ class View extends EventMixin {
         //     item.value.toString() == data.value.toString()
         //   }
         // )[0]
-        for (let i of this.valueDivs) {
-          const item = i as { div: HTMLElement; value: number }
-          if (item.value == data.value) {
-            for (let i of this.valueDivs) {
-              //TODO is there a better way to do this?
-              const item = i as { div: HTMLElement; value: number }
-              item.div.style.color = ''
-            }
-            item.div.style.color = 'purple'
-          }
-        }
       }
     }
   }
