@@ -1,3 +1,7 @@
+.jsSlider-clicked {
+  color: purple;
+}
+
 #slider {
   position: relative;
   margin-top: 50px;

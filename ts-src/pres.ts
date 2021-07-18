@@ -44,10 +44,10 @@ class Pres extends EventMixin {
     handle.append(tool)
     const min = document.createElement('span')
     // min.classList.add('slider-min values')
-    min.className = 'slider-min values'
+    min.className = 'slider-min values jsSlider-clickable'
     const max = document.createElement('span')
     // max.classList.add('slider-max values')
-    max.className = 'slider-max values'
+    max.className = 'slider-max values jsSlider-clickable'
     // container.append(min)
     main.append(min)
 
@@ -64,10 +64,15 @@ class Pres extends EventMixin {
       slider.appendChild(range)
     }
     min.textContent = behavior.minValue
+    min.dataset.value = min.textContent
     max.textContent = behavior.maxValue
+    max.dataset.value = max.textContent
+
     if (behavior.marker) {
       const marker = this.makeMarker(main, behavior, this._model.options.width)
       container.append(marker)
+    }
+    if (behavior.position !== 'horizontal') {
     }
 
     return main
@@ -79,13 +84,15 @@ class Pres extends EventMixin {
     const majorMarkers = Math.trunc(behavior.maxValue / behavior.stepSize)
     for (let i = 0; i < majorMarkers; i++) {
       const majorMarker = document.createElement('div')
-      majorMarker.classList.add('marker--major')
+      majorMarker.className = 'marker--major jsSlider-clickable'
       markerDiv.append(majorMarker)
       const marginLeft = (width / majorMarkers) * 0.0027 * width
       majorMarker.style.marginLeft = marginLeft + 'px'
       const markerValue = document.createElement('label')
-      markerValue.classList.add('marker-value')
+      markerValue.className = 'marker-value jsSlider-clickable'
       const value = behavior.stepSize * (i + 1)
+      majorMarker.dataset.value = value.toString()
+
       markerValue.dataset.value = value.toString()
       markerValue.textContent = value.toString()
       majorMarker.append(markerValue)
@@ -101,6 +108,8 @@ class Pres extends EventMixin {
     this._slider = slider
     this._sliderRange = range
     this._sliderHandle = handle
+    const xMax = this._slider.offsetWidth
+    this._model.setOptions({ xMax: xMax })
   }
 
   convertOptions(options: object) {
@@ -121,6 +130,7 @@ class Pres extends EventMixin {
     const container = this._sliderContainer
     const slider = this._slider
     const model = this._model
+    const leftMargin = slider.getBoundingClientRect().left
     model.on('coords changed', this.transferData.bind(this))
 
     handle.ondragstart = function () {
@@ -132,7 +142,7 @@ class Pres extends EventMixin {
       const target = event.target as HTMLDivElement
       if (target == handle) {
         const shiftX = event.clientX - handle.getBoundingClientRect().left
-        const leftMargin = slider.getBoundingClientRect().left
+
         const mouseMove = (e) => {
           this.transferData({
             y: e.clientY,
@@ -152,19 +162,18 @@ class Pres extends EventMixin {
     })
     container.addEventListener('click', (event) => {
       const target = event.target as HTMLElement
-      if (
-        target.className == 'marker--major' ||
-        target.className == 'marker-value'
-      ) {
+      if (target.className.includes('jsSlider-clickable')) {
         const value =
           (target.getElementsByClassName('marker-value')[0] as HTMLElement) ||
           target
         this.transferData({
           y: event.clientY,
           x: target.getBoundingClientRect().left,
-          valueWidth: target.offsetWidth,
+          valueWidth: value.offsetWidth,
           value: value.dataset.value,
           clicked: true,
+          target: target,
+          leftMargin: leftMargin,
         })
       }
     })

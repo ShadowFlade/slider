@@ -29,7 +29,7 @@ class View extends EventMixin {
     this._item = item
   }
 
-  show(node, options) {
+  public show(node, options) {
     // const items = this.trigger('built') //TODO this should be working,but its not,trigget should return an object,it does,but the we cant get it in View.show()
     // const { slider, range, handle } = items
     // this._item.innerHTML = node.toString()
@@ -55,7 +55,7 @@ class View extends EventMixin {
       ) as HTMLCollectionOf<HTMLElement>
     )[0]
     const valueDivs: { div: HTMLElement; value: number }[] = Array.from(
-      this._item.getElementsByClassName('marker-value')
+      this._item.getElementsByClassName('jsSlider-clickable')
     ).map((item: HTMLElement) => {
       return Object.create({ div: item, value: item.textContent })
     })
@@ -71,6 +71,111 @@ class View extends EventMixin {
       handle: this._sliderHandle,
     }
   }
+  public refreshCoords(data) {
+    const shiftX = data.shiftX
+    let newLeft = data.x - shiftX - this._slider.getBoundingClientRect().left
+    const pinPoints = this.valueDivsArray
+    const handle = this._sliderHandle
+    const range = this._sliderRange
+    const toolTip = this._sliderTooltip
+    const newCoords = Object.assign(data, {
+      shiftX: shiftX,
+      newLeft: newLeft,
+      pinPoints: pinPoints,
+    })
+    let pin
+
+    if (data.clicked) {
+      const dataObject = this.reactOnClick(newCoords)
+      newLeft = dataObject.newLeft
+      pin = dataObject.pin
+    } else {
+      const dataObject = this.reactOnDrag(newCoords)
+      newLeft = dataObject.newLeft
+      pin = dataObject.pin
+    }
+    handle.style.left = newLeft + 'px'
+    range.style.width = newLeft + 'px'
+    toolTip.textContent = pin.dataset.value
+  }
+
+  private reactOnDrag(data) {
+    let newLeft = data.newLeft
+    // const pinPoints = data.pinPoints
+    const handle = this._sliderHandle
+    const handleWidth = handle.offsetWidth
+    const range = this._sliderRange
+    const toolTip = this._sliderTooltip
+
+    if (data.value == 0) {
+      range.style.width = '0' //TODO dont like it
+    }
+    const pin = this.matchHandleAndPin(data.value)
+    let neededCoords = pin.getBoundingClientRect().left
+    newLeft = neededCoords - data.leftMargin - handleWidth / 2
+
+    if (pin.className.includes('values')) {
+      if (pin.className.includes('slider-min')) {
+        newLeft = 0
+      } else if (pin.className.includes('slider-max')) {
+        newLeft = data.xMax - handle.offsetWidth
+      }
+    }
+
+    return {
+      newLeft,
+      pin,
+    }
+  }
+
+  private reactOnClick(data) {
+    const handle = this._sliderHandle
+    const handleWidth = handle.offsetWidth
+    const pin = data.target
+    const pinPointsValues = this.valueDivsArray
+    let newLeft = pin.getBoundingClientRect().left - data.leftMargin
+    this._sliderHandle.style.left = newLeft + 'px'
+    this._sliderRange.style.width = newLeft + 'px'
+    this._sliderTooltip.textContent = data.value
+
+    if (pinPointsValues.includes(data.value)) {
+      for (let i of this.valueDivs) {
+        const item = i as { div: HTMLElement; value: number }
+        if (item.value == data.value) {
+          for (let i of this.valueDivs) {
+            //TODO is there a better way to do this?
+            const item = i as { div: HTMLElement; value: number }
+            item.div.classList.remove('jsSlider-clicked')
+          }
+          item.div.classList.add('jsSlider-clicked')
+        }
+      }
+    }
+    return { newLeft, pin }
+  }
+
+  private showValue(newLeft) {}
+  private matchHandleAndPin(value) {
+    const pinPoints = this.valueDivsArray
+    let minDiff = Infinity
+    let pinValue: number
+    for (let i of pinPoints) {
+      let xCoord = value
+      if (Math.abs(xCoord - +i) < minDiff) {
+        minDiff = Math.abs(xCoord - Number(i))
+        pinValue = Number(i)
+      }
+    }
+    let pin
+
+    for (let i of this.valueDivs) {
+      const item = i as { div: HTMLElement; value: number }
+      if (pinValue == item.value) {
+        pin = item.div
+        return pin
+      }
+    }
+  }
 
   initiateOptions(options) {
     for (const option of Object.keys(options)) {
@@ -79,89 +184,5 @@ class View extends EventMixin {
     this._model.coords.xMax += this._slider.getBoundingClientRect().left
     this._model.coords.xMin += this._slider.getBoundingClientRect().left
   }
-
-  refreshCoords(data) {
-    const shiftX = data.shiftX
-    let newLeft = data.x - shiftX - this._slider.getBoundingClientRect().left
-    const newProgressRight = data.x
-    const newProgressLeft = 0
-    // if (data.value % data.stepSize == 0 || data.value == data.maxValue) {
-    //   this._sliderHandle.style.left = newLeft + 'px'
-    //   if (data.value == 0) {
-    //     //TODO is there a better way?
-    //     this._sliderRange.style.width = '0'
-    //   }
-    //   this._sliderRange.style.width = newLeft + 'px'
-    //   this._sliderTooltip.textContent = data.value
-    // }
-    // else {
-    if (data.value == 0) {
-      this._sliderRange.style.width = '0'
-    }
-    const arr = this.valueDivsArray
-    let minDiff = Infinity
-    let value: number
-    for (let i of arr) {
-      let xCoord = data.value
-      if (Math.abs(xCoord - +i) < minDiff) {
-        minDiff = Math.abs(xCoord - Number(i))
-        value = Number(i)
-      }
-    }
-    let neededItem
-    for (let i of this.valueDivs) {
-      const item = i as { div: HTMLElement; value: number }
-      if (value == item.value) {
-        neededItem = item.div
-      }
-    }
-    let neededCoords = neededItem.getBoundingClientRect().left
-    newLeft = neededCoords - data.leftMargin
-    this._sliderHandle.style.left = newLeft + 'px'
-    this._sliderRange.style.width = newLeft + 'px'
-    this._sliderTooltip.textContent = neededItem.dataset.value
-    // }
-
-    //click on marker
-    if (data.clicked) {
-      console.log(data.x, ':data x')
-      const newLeft =
-        data.x -
-        this._slider.getBoundingClientRect().left -
-        this._sliderHandle.offsetWidth / 2 +
-        data.valueWidth / 2
-      this._sliderHandle.style.left = newLeft + 'px'
-      this._sliderRange.style.width = newLeft + 'px'
-      this._sliderTooltip.textContent = data.value
-      if (this.valueDivsArray.includes(data.value)) {
-        for (let i of this.valueDivs) {
-          const item = i as { div: HTMLElement; value: number }
-          if (item.value == data.value) {
-            for (let i of this.valueDivs) {
-              //TODO is there a better way to do this?
-              const item = i as { div: HTMLElement; value: number }
-              item.div.style.color = ''
-            }
-            item.div.style.color = 'purple'
-          }
-        }
-
-        // console.log(this.valueDivs)
-        // const neededObject: Object = this.valueDivs.filter(
-        //   (item: { div: HTMLElement; value: number }) => {
-        //     // console.log(
-        //     //   item.value,
-        //     //   '      ',
-        //     //   data.value,
-        //     //   item.value == data.value
-        //     // )
-        //     console.log(item)
-        //     item.value.toString() == data.value.toString()
-        //   }
-        // )[0]
-      }
-    }
-  }
-  // showValue() {}
 }
 export default View

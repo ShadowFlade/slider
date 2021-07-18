@@ -150,6 +150,10 @@ class Model extends EventMixin {
   public getOption(option: string) {
     return this.options[option]
   }
+  public setOptions(options: object) {
+    // Object.assign(this._innerOptions, options)
+    this.initOptions(options)
+  }
 
   public getOptions() {
     return this.options
@@ -158,11 +162,6 @@ class Model extends EventMixin {
   public getSettings() {
     return this._innerOptions
   }
-
-  // public setOptions(object) {
-  //   Object.assign(this._innerOptions, object)
-  //   return this._innerOptions
-  // }
 
   public getItem() {
     return this._item
