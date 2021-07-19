@@ -1,6 +1,6 @@
 import EventMixin from './eventemitter'
 
-interface InnerOptions {
+interface settings {
   className: string
   type: string
   position: string
@@ -11,22 +11,22 @@ interface InnerOptions {
   maxMinDifference: number
   betweenMarkers: number
   marker: boolean
+  mainMax: number
 }
 
 interface ICoords {
-  x: number
-  xMin: number
-  xMax: number
-  y: number
-  yMin: number
-  yMax: number
+  marginTop: number
+  mainAxis: string
+  main: number
+  mainMin: number
+  mainMax: number
   stepSize: number
   value: number
   caller: string
   valuePerPx: number
   maxValue: number
   minValue: number
-  leftMargin: number
+  margin: number
   clicked: boolean
   valueWidth: number
 }
@@ -47,20 +47,18 @@ class Model extends EventMixin {
     'background-color',
   ]
 
-  unmodifiable_options: Array<string> = [] // TODO можно ли это изменить на условие, что если не соответствует интерфейсу, то в зависимости от соответствия перекидывать в нужный объект, то есть если
-
-  options = {
-    width: 200,
-    height: 5,
+  cssOptions = {
+    width: 5,
+    height: 200,
   }
 
   coords: ICoords = {
-    x: 0,
-    xMin: 0,
-    xMax: 0,
-    y: 0,
-    yMin: 0,
-    yMax: 0,
+    mainAxis: 'x',
+    main: 0,
+
+    mainMin: 0,
+    mainMax: 0,
+
     stepSize: 0,
     value: 0,
     caller: '',
@@ -68,13 +66,14 @@ class Model extends EventMixin {
     minValue: 0,
     valuePerPx: 1,
     valueWidth: 0,
-    leftMargin: 0,
+    margin: 0,
+    marginTop: 0,
     clicked: false,
   }
 
-  public _innerOptions: InnerOptions = {
+  public _settings: settings = {
     className: 'slider',
-    position: 'horizontal',
+    position: 'vertical',
     type: 'single',
     stepSize: 90,
     toolTip: true,
@@ -83,13 +82,39 @@ class Model extends EventMixin {
     maxMinDifference: 0,
     marker: true,
     betweenMarkers: 40,
+    mainMax: 0,
+  }
+
+  initOptions(options) {
+    for (const option in options) {
+      if (this.modifiable_options.includes(option)) {
+        this.cssOptions[option] = options[option]
+      } else {
+        this._settings[option] = options[option]
+      }
+    }
+    this._settings.maxMinDifference =
+      this._settings.maxValue - this._settings.minValue
+    const diff = this._settings.maxMinDifference
+    this.coords.stepSize = this._settings.stepSize
+    this.coords.maxValue = this._settings.maxValue
+    this.coords.minValue = this._settings.minValue
+    if (this._settings.position == 'horizontal') {
+      this.coords.mainAxis = 'x'
+      this.coords.valuePerPx = diff / this.cssOptions.width
+    } else {
+      this.coords.mainAxis = 'y'
+      this.coords.valuePerPx = diff / this.cssOptions.height
+      this.coords.mainMax = this.cssOptions.height
+    }
+    this.coords.mainMax = this._settings.mainMax
   }
 
   validate(data) {
-    if (data.x > data.xMax) {
-      data.x = data.xMax
-    } else if (data.x < data.xMin) {
-      data.x = data.xMin
+    if (data.main > data.mainMax) {
+      data.main = data.mainMax
+    } else if (data.main < data.mainMin) {
+      data.main = data.mainMin
     }
     if (data.value > data.maxValue) {
       data.value = data.maxValue
@@ -99,26 +124,42 @@ class Model extends EventMixin {
   }
 
   renew(data) {
-    this.coords.caller = 'model' // TODO this shouldnt be here,have to think of a better way
-    if (data.clicked) {
-      // const newOpt = Object.assign({}, this.coords)
+    if (this._settings.position == 'vertical') {
+      this.coords.caller = 'model' // TODO this shouldnt be here,have to think of a better way
       for (const i in data) {
         this.coords[i] = data[i]
       }
-      // this.coords.value = data.value
-      // this.coords.clicked = true
-      this.validate(this.coords)
-      this.trigger('coords changed', this.coords)
-    } else {
-      for (const i in data) {
-        this.coords[i] = data[i]
-      }
-      this.coords.value =
-        (this.coords.x - this.coords.leftMargin) * this.coords.valuePerPx
-      this.validate(this.coords)
-      this.trigger('coords changed', this.coords)
-    }
+      this.coords.main = data.y
+      // this.coords.mainMax = this.coords.yMax
 
+      if (data.clicked) {
+        this.validate(this.coords)
+        this.trigger('coords changed', this.coords)
+      } else {
+        this.coords.value =
+          (this.coords.main - this.coords.marginTop) * this.coords.valuePerPx
+        // this.validate(this.coords)
+        this.trigger('coords changed', this.coords)
+      }
+    } else {
+      this.coords.caller = 'model' // TODO this shouldnt be here,have to think of a better way
+      if (data.clicked) {
+        for (const i in data) {
+          this.coords[i] = data[i]
+        }
+
+        this.validate(this.coords)
+        this.trigger('coords changed', this.coords)
+      } else {
+        for (const i in data) {
+          this.coords[i] = data[i]
+        }
+        this.coords.value =
+          (this.coords.main - this.coords.margin) * this.coords.valuePerPx
+        this.validate(this.coords)
+        this.trigger('coords changed', this.coords)
+      }
+    }
     return this.coords
   }
 
@@ -129,38 +170,19 @@ class Model extends EventMixin {
     this.initOptions(options)
   }
 
-  initOptions(options) {
-    for (const option in options) {
-      if (this.modifiable_options.includes(option)) {
-        this.options[option] = options[option]
-      } else {
-        this._innerOptions[option] = options[option]
-      }
-    }
-    this.coords.xMax = this.options.width
-    this._innerOptions.maxMinDifference =
-      this._innerOptions.maxValue - this._innerOptions.minValue
-    const diff = this._innerOptions.maxMinDifference
-    this.coords.valuePerPx = diff / this.options.width
-    this.coords.stepSize = this._innerOptions.stepSize
-    this.coords.maxValue = this._innerOptions.maxValue
-    this.coords.minValue = this._innerOptions.minValue
-  }
-
   public getOption(option: string) {
-    return this.options[option]
+    return this.cssOptions[option]
   }
   public setOptions(options: object) {
-    // Object.assign(this._innerOptions, options)
     this.initOptions(options)
   }
 
   public getOptions() {
-    return this.options
+    return this.cssOptions
   }
 
   public getSettings() {
-    return this._innerOptions
+    return this._settings
   }
 
   public getItem() {
