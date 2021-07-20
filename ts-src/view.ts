@@ -31,7 +31,6 @@ class View extends EventMixin {
 
   public show(node, options, pos) {
     const position = pos
-    console.log(`${this._model._settings.className}-handle--${position}`)
     this._item.appendChild(node)
     this._sliderMain = Array.from(
       this._item.getElementsByClassName(
@@ -53,7 +52,6 @@ class View extends EventMixin {
         `${this._model._settings.className}-handle--${position}`
       ) as HTMLCollectionOf<HTMLElement>
     )[0]
-    console.log(this._sliderHandle, ':handle from show')
 
     this._sliderTooltip = Array.from(
       this._item.getElementsByClassName(
@@ -124,15 +122,18 @@ class View extends EventMixin {
   private reactOnDrag(data) {
     let direction = '0'
     let widthOrHeight = ''
-
+    let newLeft = data.newLeft
+    let margin
     if (data.mainAxis == 'x') {
       direction = 'left'
       widthOrHeight = data.width
+      margin = data.marginLeft
     } else {
       direction = 'top'
       widthOrHeight = data.height
+      margin = data.marginTop
     }
-    let newLeft = data.newLeft
+
     const handle = this._sliderHandle
     const handleWidth = handle.offsetWidth
     const handleHeight = handle.offsetHeight
@@ -144,7 +145,8 @@ class View extends EventMixin {
     }
     const pin = this.matchHandleAndPin(data.value)
     let neededCoords = pin.getBoundingClientRect()[direction]
-    newLeft = neededCoords - data.marginTop - handleHeight / 2
+
+    newLeft = neededCoords - margin - handleHeight / 2
 
     if (pin.className.includes('values')) {
       if (pin.className.includes('slider-min')) {

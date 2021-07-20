@@ -84,6 +84,9 @@
 .slider-main--vertical {
   display: inline-block;
 }
+.slider-main--horizontal {
+  display: flex;
+}
 .slider-marker--vertical {
   display: flex;
   justify-content: space-evenly;

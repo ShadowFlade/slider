@@ -26,7 +26,7 @@ interface ICoords {
   valuePerPx: number
   maxValue: number
   minValue: number
-  margin: number
+  marginLeft: number
   clicked: boolean
   valueWidth: number
 }
@@ -66,14 +66,14 @@ class Model extends EventMixin {
     minValue: 0,
     valuePerPx: 1,
     valueWidth: 0,
-    margin: 0,
+    marginLeft: 0,
     marginTop: 0,
     clicked: false,
   }
 
   public _settings: settings = {
     className: 'slider',
-    position: 'vertical',
+    position: 'horizontal',
     type: 'single',
     stepSize: 90,
     toolTip: true,
@@ -100,14 +100,20 @@ class Model extends EventMixin {
     this.coords.maxValue = this._settings.maxValue
     this.coords.minValue = this._settings.minValue
     if (this._settings.position == 'horizontal') {
+      this.coords.mainMax = this._settings.mainMax
       this.coords.mainAxis = 'x'
       this.coords.valuePerPx = diff / this.cssOptions.width
+      if (this.cssOptions.width < this.cssOptions.height) {
+        ;[this.cssOptions.width, this.cssOptions.height] = [
+          this.cssOptions.height,
+          this.cssOptions.width,
+        ]
+      }
     } else {
       this.coords.mainAxis = 'y'
       this.coords.valuePerPx = diff / this.cssOptions.height
       this.coords.mainMax = this.cssOptions.height
     }
-    this.coords.mainMax = this._settings.mainMax
   }
 
   validate(data) {
@@ -154,8 +160,9 @@ class Model extends EventMixin {
         for (const i in data) {
           this.coords[i] = data[i]
         }
+        this.coords.main = data.x
         this.coords.value =
-          (this.coords.main - this.coords.margin) * this.coords.valuePerPx
+          (this.coords.main - this.coords.marginLeft) * this.coords.valuePerPx
         this.validate(this.coords)
         this.trigger('coords changed', this.coords)
       }

@@ -39,7 +39,6 @@ class Pres extends EventMixin {
     this._slider = slider
     this._sliderRange = range
     this._sliderHandle = handle
-    console.log(handle, ':from init')
     this._sliderMain = wrapper
     let mainMax
     if (this._model.getSettings().position == 'horizontal') {
@@ -49,6 +48,8 @@ class Pres extends EventMixin {
     }
 
     this._model.setOptions({ mainMax: mainMax })
+    // this._model.coords.mainMax += this._slider.getBoundingClientRect().left
+    // this._model.coords.mainMin += this._slider.getBoundingClientRect().left
   }
 
   makeSlider(behavior) {
@@ -56,7 +57,6 @@ class Pres extends EventMixin {
     const main = document.createElement('div')
     main.classList.add('slider-main')
     const container = document.createElement('div')
-    container.classList.add('slider-container')
     this._sliderContainer = container
     const slider = document.createElement('div')
     slider.classList.add('slider')
@@ -175,7 +175,7 @@ class Pres extends EventMixin {
     const container = this._sliderContainer
     const slider = this._slider
     const model = this._model
-    const margin = slider.getBoundingClientRect().left
+    const marginLeft = slider.getBoundingClientRect().left
     const marginTop = slider.getBoundingClientRect().top
     model.on('coords changed', this.transferData.bind(this))
 
@@ -194,7 +194,7 @@ class Pres extends EventMixin {
             y: e.clientY,
             x: e.clientX,
             shiftX: shiftX,
-            margin: margin,
+            marginLeft: marginLeft,
             clicked: false,
             marginTop: marginTop,
           })
@@ -220,7 +220,8 @@ class Pres extends EventMixin {
           value: value.dataset.value,
           clicked: true,
           target: target,
-          margin: margin,
+          marginLeft: marginLeft,
+          marginTop: marginTop,
         })
       }
     })
