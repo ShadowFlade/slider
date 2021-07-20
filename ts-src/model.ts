@@ -12,13 +12,15 @@ interface settings {
   type: string
   position: string
   stepSize: number
-  toolTip: boolean
+
   maxValue: number
   minValue: number
   maxMinDifference: number
   betweenMarkers: number
-  marker: boolean
   mainMax: number
+  toolTip: boolean
+  altDrag: boolean
+  marker: boolean
   styles: IStyles
 }
 
@@ -35,8 +37,10 @@ interface ICoords {
   maxValue: number
   minValue: number
   marginLeft: number
-  clicked: boolean
   valueWidth: number
+  clicked: boolean
+
+  altDrag: boolean
 }
 
 class Model extends EventMixin {
@@ -61,7 +65,7 @@ class Model extends EventMixin {
 
     mainMin: 0,
     mainMax: 0,
-
+    altDrag: false,
     stepSize: 0,
     value: 0,
     caller: '',
@@ -80,12 +84,13 @@ class Model extends EventMixin {
     type: 'single',
     stepSize: 90,
     toolTip: true,
-    maxValue: 350,
+    maxValue: 1300,
     minValue: 0,
     maxMinDifference: 0,
     marker: true,
     betweenMarkers: 40,
     mainMax: 0,
+    altDrag: false,
     styles: {
       progressBarColor: 'green',
       sliderColor: 'red',
@@ -103,6 +108,7 @@ class Model extends EventMixin {
         this._settings[option] = options[option]
       }
     }
+    this.coords.altDrag = this._settings.altDrag
     this._settings.maxMinDifference =
       this._settings.maxValue - this._settings.minValue
     const diff = this._settings.maxMinDifference
@@ -128,7 +134,6 @@ class Model extends EventMixin {
       ;[this._settings.styles.sliderWidth, this._settings.styles.sliderHeight] =
         [this._settings.styles.sliderHeight, this._settings.styles.sliderWidth]
     }
-    // if ()
   }
 
   private validate(data) {
@@ -151,7 +156,6 @@ class Model extends EventMixin {
         this.coords[i] = data[i]
       }
       this.coords.main = data.y
-      // this.coords.mainMax = this.coords.yMax
 
       if (data.clicked) {
         this.validate(this.coords)
@@ -159,10 +163,10 @@ class Model extends EventMixin {
       } else {
         this.coords.value =
           (this.coords.main - this.coords.marginTop) * this.coords.valuePerPx
-        // this.validate(this.coords)
+        this.validate(this.coords)
         this.trigger('coords changed', this.coords)
       }
-    } else {
+    } else if (this._settings.position == 'horizontal') {
       this.coords.caller = 'model' // TODO this shouldnt be here,have to think of a better way
       if (data.clicked) {
         for (const i in data) {
@@ -175,9 +179,8 @@ class Model extends EventMixin {
         for (const i in data) {
           this.coords[i] = data[i]
         }
-        this.coords.main = data.x
-        this.coords.value =
-          (this.coords.main - this.coords.marginLeft) * this.coords.valuePerPx
+        this.coords.main = data.x - this.coords.marginLeft
+        this.coords.value = this.coords.main * this.coords.valuePerPx
         this.validate(this.coords)
         this.trigger('coords changed', this.coords)
       }
@@ -187,7 +190,6 @@ class Model extends EventMixin {
 
   constructor(options, item) {
     super()
-    // this._options = options
     this._item = item
     this.initOptions(options)
   }

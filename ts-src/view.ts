@@ -101,7 +101,7 @@ class View extends EventMixin {
 
   public refreshCoords(data) {
     const shiftX = data.shiftX
-    let newLeft = data.x - shiftX - this._slider.getBoundingClientRect().left
+    let newLeft
     const pinPoints = this.valueDivsArray
     const handle = this._sliderHandle
     const range = this._sliderRange
@@ -115,10 +115,13 @@ class View extends EventMixin {
 
     if (data.clicked) {
       const dataObject = this.reactOnClick(newCoords)
+
       newLeft = dataObject.newLeft
       pin = dataObject.pin
     } else {
       const dataObject = this.reactOnDrag(newCoords)
+      console.log(newCoords, ':coords form view refresh')
+
       newLeft = dataObject.newLeft
       pin = dataObject.pin
     }
@@ -126,6 +129,8 @@ class View extends EventMixin {
     if (data.mainAxis == 'x') {
       handle.style.left = newLeft + 'px'
       range.style.width = newLeft + 'px'
+      toolTip.textContent = data.value
+      return
     } else {
       handle.style.top = newLeft + 'px'
       range.style.height = newLeft + 'px'
@@ -139,6 +144,7 @@ class View extends EventMixin {
     let widthOrHeight = ''
     let newLeft = data.newLeft
     let margin
+    let value
     if (data.mainAxis == 'x') {
       direction = 'left'
       widthOrHeight = data.width
@@ -163,19 +169,26 @@ class View extends EventMixin {
 
     newLeft = neededCoords - margin - handleHeight / 2
     if (data.mainAxis == 'x') {
-      newLeft += handle.offsetWidth / 2
-    }
-    if (pin.className.includes('values')) {
-      if (pin.className.includes('slider-min')) {
-        newLeft = 0
-      } else if (pin.className.includes('slider-max')) {
-        newLeft = data.mainMax - handleWidth / 2
+      if (data.altDrag) {
+        newLeft = data.main - data.shiftX
+        value = data.value
+        console.log(data)
+      } else {
+        newLeft += handle.offsetWidth / 2
+        if (pin.className.includes('values')) {
+          if (pin.className.includes('slider-min')) {
+            newLeft = 0
+          } else if (pin.className.includes('slider-max')) {
+            newLeft = data.mainMax - handleWidth / 2
+          }
+        }
       }
     }
 
     return {
       newLeft,
       pin,
+      value,
     }
   }
 

@@ -126,8 +126,15 @@ class Pres extends EventMixin {
 
   private makeMarker(sliderContainer, behavior, widthOrHeight) {
     const markerDiv = document.createElement('div')
-
-    const majorMarkers = Math.trunc(behavior.maxValue / behavior.stepSize)
+    let altDrag
+    let majorMarkers = Math.trunc(
+      behavior.maxValue - behavior.minValue / behavior.stepSize
+    )
+    if (majorMarkers / widthOrHeight < 40) {
+      altDrag = true
+      this._model.setOptions({ altDrag: true })
+      majorMarkers = 5
+    }
     const position = this._model.getSettings().position
     for (let i = 0; i < majorMarkers; i++) {
       const majorMarker = document.createElement('div')
@@ -155,11 +162,20 @@ class Pres extends EventMixin {
           majorMarker.style.marginLeft = margin + 'px'
         }
       }
-      const value = behavior.stepSize * (i + 1)
-      majorMarker.dataset.value = value.toString()
 
-      markerValue.dataset.value = value.toString()
-      markerValue.textContent = value.toString()
+      if (!altDrag) {
+        const value = behavior.stepSize * (i + 1)
+        majorMarker.dataset.value = value.toString()
+        markerValue.dataset.value = value.toString()
+        markerValue.textContent = value.toString()
+      } else {
+        const value =
+          ((behavior.maxValue - behavior.minValue) * (i + 1)) / majorMarkers
+        majorMarker.dataset.value = value.toString()
+        markerValue.dataset.value = value.toString()
+        markerValue.textContent = value.toString()
+      }
+
       majorMarker.append(markerValue)
     }
     return markerDiv
