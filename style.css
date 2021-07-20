@@ -111,7 +111,9 @@
   position: relative;
   background-color: black;
 }
-
+.marker--major--horizontal:first-child {
+  margin-left: 0;
+}
 .marker--major--vertical {
   width: 15px;
   height: 2px;
@@ -120,9 +122,12 @@
   position: relative;
   background-color: black;
 }
-.marker--major:last-child {
-  margin-right: 0;
+.marker--major--vertical:first-child {
+  margin-top: 0;
 }
+/* .marker--major:last-child {
+  margin-right: 0;
+} */
 .marker-value {
   position: absolute;
   top: 100%;

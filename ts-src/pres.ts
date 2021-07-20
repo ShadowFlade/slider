@@ -27,7 +27,7 @@ class Pres extends EventMixin {
     view.on('optionsRequired', this.getOptions.bind(this))
   }
 
-  init() {
+  public init() {
     const options = this.convertOptions(this._model.getOptions())
     const behavior = this._model.getSettings()
     const sliderObject = this._view.show(
@@ -48,11 +48,9 @@ class Pres extends EventMixin {
     }
 
     this._model.setOptions({ mainMax: mainMax })
-    // this._model.coords.mainMax += this._slider.getBoundingClientRect().left
-    // this._model.coords.mainMin += this._slider.getBoundingClientRect().left
   }
 
-  makeSlider(behavior) {
+  public makeSlider(behavior) {
     let marker
     const main = document.createElement('div')
     main.classList.add('slider-main')
@@ -91,7 +89,7 @@ class Pres extends EventMixin {
         marker = this.makeMarker(
           main,
           behavior,
-          this._model.getOptions().height
+          this._model.getOptions().sliderHeight
         )
 
         container.append(marker)
@@ -106,7 +104,11 @@ class Pres extends EventMixin {
       tool.classList.add('tooltip--vertical')
     } else if (behavior.position == 'horizontal') {
       if (behavior.marker) {
-        marker = this.makeMarker(main, behavior, this._model.getOptions().width)
+        marker = this.makeMarker(
+          main,
+          behavior,
+          this._model.getOptions().sliderWidth
+        )
         container.append(marker)
       }
       handle.classList.add('slider-handle--horizontal')
@@ -122,30 +124,36 @@ class Pres extends EventMixin {
     return main
   }
 
-  makeMarker(sliderContainer, behavior, widthOrHeight) {
+  private makeMarker(sliderContainer, behavior, widthOrHeight) {
     const markerDiv = document.createElement('div')
 
     const majorMarkers = Math.trunc(behavior.maxValue / behavior.stepSize)
     const position = this._model.getSettings().position
     for (let i = 0; i < majorMarkers; i++) {
       const majorMarker = document.createElement('div')
-      majorMarker.className = ' jsSlider-clickable'
       markerDiv.append(majorMarker)
       const margin = (widthOrHeight / majorMarkers) * 0.0027 * widthOrHeight
-
       const markerValue = document.createElement('label')
       markerValue.className = 'jsSlider-clickable'
 
       if (position == 'vertical') {
+        markerDiv.classList.add('slider-marker--vertical')
         majorMarker.classList.add('marker--major--vertical')
         markerValue.classList.add('marker-value')
-        majorMarker.style.marginTop = margin + 'px'
-        markerDiv.classList.add('slider-marker--vertical')
-      } else {
+        if (i == 0) {
+          majorMarker.style.marginTop = '0'
+        } else {
+          majorMarker.style.marginTop = margin + 'px'
+        }
+      } else if (position == 'horizontal') {
+        markerDiv.classList.add('slider-marker--horizontal')
         majorMarker.classList.add('marker--major--horizontal')
         markerValue.classList.add('marker-value')
-        majorMarker.style.marginLeft = margin + 'px'
-        markerDiv.classList.add('slider-marker--horizontal')
+        if (i == 0) {
+          majorMarker.style.marginLeft = '0'
+        } else {
+          majorMarker.style.marginLeft = margin + 'px'
+        }
       }
       const value = behavior.stepSize * (i + 1)
       majorMarker.dataset.value = value.toString()
@@ -158,15 +166,56 @@ class Pres extends EventMixin {
   }
 
   convertOptions(options: object) {
-    const newOptions = {}
-    Object.assign(newOptions, options)
-    for (const i in newOptions) {
-      if (this.pxOptions.includes(i)) {
-        newOptions[i] = `${newOptions[i]}px`
-      } else {
-        newOptions[i] = newOptions[i]
+    const newOptions = {
+      slider: {
+        width: 0,
+        height: 0,
+      },
+      progressBar: {
+        'background-color': '',
+      },
+      handle: {
+        'background-color': '',
+      },
+    }
+    // Object.assign(newOptions, options)
+    for (let i in options) {
+      if (i.toString().includes('slider')) {
+        let option = i.slice(6).toLowerCase()
+        if (option == 'color') {
+          option = 'background-color'
+        }
+        newOptions.slider[option] = options[i]
+        if (this.pxOptions.includes(option)) {
+          newOptions.slider[option] = `${options[i]}px`
+        } else {
+          newOptions.slider[option] = options[i]
+        }
+      } else if (i.toString().includes('progressBar')) {
+        let option = i.slice(11).toLowerCase()
+        if (option == 'color') {
+          option = 'background-color'
+        }
+        newOptions.progressBar[option] = options[i]
+        if (this.pxOptions.includes(option)) {
+          newOptions.progressBar[option] = `${options[i]}px`
+        } else {
+          newOptions.progressBar[option] = options[i]
+        }
+      } else if (i.toString().includes('handle')) {
+        let option = i.slice(6).toLowerCase()
+        if (option == 'color') {
+          option = 'background-color'
+        }
+        newOptions.handle[option] = options[i]
+        if (this.pxOptions.includes(option)) {
+          newOptions.handle[option] = `${options[i]}px`
+        } else {
+          newOptions.handle[option] = options[i]
+        }
       }
     }
+    console.log(newOptions, ':options from pres')
     return newOptions
   }
 

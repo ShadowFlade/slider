@@ -69,6 +69,7 @@ class View extends EventMixin {
     this.valueDivsArray = valueDivs.map((item) => {
       return item.value
     })
+
     this.initiateOptions(options)
     return {
       slider: this._slider,
@@ -79,8 +80,28 @@ class View extends EventMixin {
   }
 
   initiateOptions(options) {
-    for (const option of Object.keys(options)) {
-      this._slider.style[option] = options[option]
+    console.log(options, ':from view')
+    for (let option of Object.keys(options)) {
+      console.log(option)
+
+      if (typeof options[option] === 'object') {
+        console.log('true')
+
+        for (let i in options[option]) {
+          console.log(i, ':i')
+
+          if (option.toString().includes('slider')) {
+            console.log('attached to slider?')
+            this._slider.style[i] = option[i]
+          } else if (option.toString().includes('progressBar')) {
+            this._sliderRange.style[i] = option[i]
+          } else if (option.toString().includes('markUp')) {
+            this._slider.style[i] = option[i]
+          } else if (option.toString().includes('handle')) {
+            this._sliderHandle.style[i] = option[i]
+          }
+        }
+      }
     }
   }
 
@@ -147,7 +168,9 @@ class View extends EventMixin {
     let neededCoords = pin.getBoundingClientRect()[direction]
 
     newLeft = neededCoords - margin - handleHeight / 2
-
+    if (data.mainAxis == 'x') {
+      newLeft += handle.offsetWidth / 2
+    }
     if (pin.className.includes('values')) {
       if (pin.className.includes('slider-min')) {
         newLeft = 0
@@ -167,10 +190,19 @@ class View extends EventMixin {
     const handleWidth = handle.offsetWidth
     const pin = data.target
     const pinPointsValues = this.valueDivsArray
-    let newLeft = pin.getBoundingClientRect().top - data.marginTop
-    this._sliderHandle.style.left = newLeft + 'px'
-    this._sliderRange.style.width = newLeft + 'px'
-    this._sliderTooltip.textContent = data.value
+    let newLeft
+    if (data.mainAxis == 'x') {
+      let newLeft = pin.getBoundingClientRect().left - data.marginLeft
+      this._sliderHandle.style.left = newLeft + 'px'
+      this._sliderRange.style.width = newLeft + 'px'
+      this._sliderTooltip.textContent = data.value
+    } else if (data.mainAxis == 'y') {
+      let newLeft =
+        pin.getBoundingClientRect().top - data.marginTop - handleWidth / 2
+      this._sliderHandle.style.top = newLeft + 'px'
+      this._sliderRange.style.height = newLeft + 'px'
+      this._sliderTooltip.textContent = data.value
+    }
 
     if (pinPointsValues.includes(data.value)) {
       for (let i of this.valueDivs) {

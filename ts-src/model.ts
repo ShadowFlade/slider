@@ -1,5 +1,12 @@
 import EventMixin from './eventemitter'
+interface IStyles {
+  progressBarColor: string
+  sliderColor: string
 
+  handleColor: string
+  sliderWidth: number
+  sliderHeight: number
+}
 interface settings {
   className: string
   type: string
@@ -12,6 +19,7 @@ interface settings {
   betweenMarkers: number
   marker: boolean
   mainMax: number
+  styles: IStyles
 }
 
 interface ICoords {
@@ -40,19 +48,14 @@ class Model extends EventMixin {
 
   private _item: Element
 
-  modifiable_options: Array<string> = [
+  private modifiable_options: Array<string> = [
     'width',
     'height',
     'color',
     'background-color',
   ]
 
-  cssOptions = {
-    width: 5,
-    height: 200,
-  }
-
-  coords: ICoords = {
+  public coords: ICoords = {
     mainAxis: 'x',
     main: 0,
 
@@ -77,18 +80,26 @@ class Model extends EventMixin {
     type: 'single',
     stepSize: 90,
     toolTip: true,
-    maxValue: 0,
+    maxValue: 500,
     minValue: 0,
     maxMinDifference: 0,
     marker: true,
     betweenMarkers: 40,
     mainMax: 0,
+    styles: {
+      progressBarColor: 'green',
+      sliderColor: 'red',
+
+      handleColor: 'black',
+      sliderWidth: 5,
+      sliderHeight: 200,
+    },
   }
 
-  initOptions(options) {
+  public initOptions(options) {
     for (const option in options) {
       if (this.modifiable_options.includes(option)) {
-        this.cssOptions[option] = options[option]
+        this._settings.styles[option] = options[option]
       } else {
         this._settings[option] = options[option]
       }
@@ -102,21 +113,26 @@ class Model extends EventMixin {
     if (this._settings.position == 'horizontal') {
       this.coords.mainMax = this._settings.mainMax
       this.coords.mainAxis = 'x'
-      this.coords.valuePerPx = diff / this.cssOptions.width
-      if (this.cssOptions.width < this.cssOptions.height) {
-        ;[this.cssOptions.width, this.cssOptions.height] = [
-          this.cssOptions.height,
-          this.cssOptions.width,
-        ]
-      }
+      this.coords.valuePerPx = diff / this._settings.styles.sliderWidth
     } else {
       this.coords.mainAxis = 'y'
-      this.coords.valuePerPx = diff / this.cssOptions.height
-      this.coords.mainMax = this.cssOptions.height
+      this.coords.valuePerPx = diff / this._settings.styles.sliderHeight
+      this.coords.mainMax = this._settings.styles.sliderHeight
     }
+    this.validateOptions()
   }
 
-  validate(data) {
+  private validateOptions() {
+    if (
+      this._settings.styles.sliderWidth < this._settings.styles.sliderHeight
+    ) {
+      ;[this._settings.styles.sliderWidth, this._settings.styles.sliderHeight] =
+        [this._settings.styles.sliderHeight, this._settings.styles.sliderWidth]
+    }
+    // if ()
+  }
+
+  private validate(data) {
     if (data.main > data.mainMax) {
       data.main = data.mainMax
     } else if (data.main < data.mainMin) {
@@ -178,14 +194,14 @@ class Model extends EventMixin {
   }
 
   public getOption(option: string) {
-    return this.cssOptions[option]
+    return this._settings.styles[option]
   }
   public setOptions(options: object) {
     this.initOptions(options)
   }
 
   public getOptions() {
-    return this.cssOptions
+    return this._settings.styles
   }
 
   public getSettings() {

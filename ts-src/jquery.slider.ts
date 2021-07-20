@@ -26,18 +26,8 @@ interface JQuery {
 
 ;(function ($) {
   $.fn.slider = function (options: object): JQuery {
-    const settings = $.extend(
-      {
-        'background-color': 'green',
-        color: 'red',
-        maxValue: 500,
-        minValue: 0,
-      },
-      options
-    )
-
     return this.each(function () {
-      const app = new App(this, settings)
+      const app = new App(this, options)
     })
   }
 })(jQuery)
@@ -47,31 +37,3 @@ $(function () {
     color: 'green',
   })
 })
-
-// $.fn.slider =Object.assign<MyPlugin, MyPluginSettings>(
-//   function (this: JQuery, options: MyPluginSettings): JQuery {
-
-//     // Merge the global options with the options given as argument.
-//     // options = $.extend({}, $.fn.examplePlugin.options, options);
-
-//     // this.click(function (event: JQuery.Event<HTMLElement>) {
-//     //   let messageText = exampleService.getExampleMessage(event.currentTarget.textContent);
-//     //   let messageElement = $('<p>' + messageText + '</p>');
-//     //   if (options.outputColor) {
-//     //     messageElement.css('color', options.outputColor);
-//     //   }
-//     //   $(options.outputSelector).append(messageElement);
-//     // });
-
-//     // Return the jQuery object for chaining.
-//     return this;
-
-//   },
-//   // Define the global default options.
-//   {
-//     options: {
-//       outputSelector: null
-//     }
-//   }
-// );
-// $('#slider').slider()
