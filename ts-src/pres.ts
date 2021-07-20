@@ -24,7 +24,7 @@ class Pres extends EventMixin {
 
   getView(view): void {
     this._view = view
-    view.on('optionsRequired', this.getOptions.bind(this))
+    view.on('settingsRequired', this.getSettings.bind(this))
   }
 
   public init() {
@@ -215,7 +215,6 @@ class Pres extends EventMixin {
         }
       }
     }
-    console.log(newOptions, ':options from pres')
     return newOptions
   }
 
@@ -284,8 +283,8 @@ class Pres extends EventMixin {
     this._model.renew(data)
   }
 
-  getOptions() {
-    return this._model.getOptions()
+  getSettings() {
+    return this._model.getSettings()
   }
 }
 

@@ -4,6 +4,7 @@ import Model from './model'
 import EventMixin from './eventemitter'
 import Pres from './pres'
 import { map } from 'jquery'
+import { settings } from './model'
 
 class View extends EventMixin {
   _slider: HTMLElement
@@ -32,6 +33,7 @@ class View extends EventMixin {
   public show(node, options, pos) {
     const position = pos
     this._item.appendChild(node)
+    const className = this.trigger('settingRequired', 'classsName') //TODO why this doesnt work
     this._sliderMain = Array.from(
       this._item.getElementsByClassName(
         `${this._model._settings.className}-main`
@@ -80,25 +82,17 @@ class View extends EventMixin {
   }
 
   initiateOptions(options) {
-    console.log(options, ':from view')
     for (let option of Object.keys(options)) {
-      console.log(option)
-
       if (typeof options[option] === 'object') {
-        console.log('true')
-
-        for (let i in options[option]) {
-          console.log(i, ':i')
-
+        for (let [i, j] of Object.entries(options[option])) {
           if (option.toString().includes('slider')) {
-            console.log('attached to slider?')
-            this._slider.style[i] = option[i]
+            this._slider.style[i] = j
           } else if (option.toString().includes('progressBar')) {
-            this._sliderRange.style[i] = option[i]
+            this._sliderRange.style[i] = j
           } else if (option.toString().includes('markUp')) {
-            this._slider.style[i] = option[i]
+            this._slider.style[i] = j
           } else if (option.toString().includes('handle')) {
-            this._sliderHandle.style[i] = option[i]
+            this._sliderHandle.style[i] = j
           }
         }
       }

@@ -80,7 +80,7 @@ class Model extends EventMixin {
     type: 'single',
     stepSize: 90,
     toolTip: true,
-    maxValue: 500,
+    maxValue: 350,
     minValue: 0,
     maxMinDifference: 0,
     marker: true,
@@ -89,7 +89,6 @@ class Model extends EventMixin {
     styles: {
       progressBarColor: 'green',
       sliderColor: 'red',
-
       handleColor: 'black',
       sliderWidth: 5,
       sliderHeight: 200,
@@ -212,5 +211,5 @@ class Model extends EventMixin {
     return this._item
   }
 }
-export { ICoords }
+export { ICoords, settings }
 export default Model
