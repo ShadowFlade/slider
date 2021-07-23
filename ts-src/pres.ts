@@ -51,6 +51,15 @@ class Pres extends EventMixin {
   }
 
   public makeSlider(behavior) {
+    let position
+    let widthOrHeight
+    if (behavior.position == 'horizontal') {
+      widthOrHeight = this._model.getOptions().sliderWidth
+      position = 'horizontal'
+    } else {
+      position = 'vertical'
+      widthOrHeight = this._model.getOptions().sliderHeight
+    }
     let marker
     const main = document.createElement('div')
     main.classList.add('slider-main')
@@ -83,54 +92,35 @@ class Pres extends EventMixin {
     min.dataset.value = min.textContent
     max.textContent = behavior.maxValue
     max.dataset.value = max.textContent
+    if (behavior.marker) {
+      marker = this.makeMarker(main, behavior, widthOrHeight)
 
-    if (behavior.position === 'vertical') {
-      if (behavior.marker) {
-        marker = this.makeMarker(
-          main,
-          behavior,
-          this._model.getOptions().sliderHeight
-        )
-
-        container.append(marker)
-      }
-      min.classList.add('slider-min--vertical')
-      max.classList.add('slider-max--vertical')
-      main.classList.add('slider-main--vertical')
-      container.classList.add('slider-container--vertical')
-      marker.classList.add('slider-marker--vertical')
-      handle.classList.add('slider-handle--vertical')
+      container.append(marker)
 
       tool.classList.add('tooltip--vertical')
-    } else if (behavior.position == 'horizontal') {
-      if (behavior.marker) {
-        marker = this.makeMarker(
-          main,
-          behavior,
-          this._model.getOptions().sliderWidth
-        )
-        container.append(marker)
-      }
-      handle.classList.add('slider-handle--horizontal')
+      min.classList.add(`slider-min--${position}`)
+      max.classList.add(`slider-max--${position}`)
+      main.classList.add(`slider-main--${position}`)
+      container.classList.add(`slider-container--${position}`)
+      marker.classList.add(`slider-marker--position`)
+      handle.classList.add(`slider-handle--${position}`)
+      tool.classList.add(`tooltip--${position}`)
 
-      max.classList.add('slider-max--horizontal')
-      main.classList.add('slider-main--horizontal')
-      min.classList.add('slider-min--horizontal')
-      tool.classList.add('tooltip--horizontal')
-      container.classList.add('slider-container--horizontal')
-      marker.classList.add('slider-marker--horizontal')
+      return main
     }
-
-    return main
   }
 
   private makeMarker(sliderContainer, behavior, widthOrHeight) {
     const markerDiv = document.createElement('div')
     let altDrag
     let majorMarkers = Math.trunc(
-      behavior.maxValue - behavior.minValue / behavior.stepSize
+      (behavior.maxValue - behavior.minValue) / behavior.stepSize
     )
-    if (majorMarkers / widthOrHeight < 40) {
+    // const pxsBetweenPins = Math.trunc(
+    //   (behavior.maxValue - behavior.minValue) / widthOrHeight
+    // )
+
+    if (widthOrHeight / majorMarkers < 40) {
       altDrag = true
       this._model.setOptions({ altDrag: true })
       majorMarkers = 5

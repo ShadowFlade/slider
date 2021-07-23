@@ -102,6 +102,7 @@ class View extends EventMixin {
   public refreshCoords(data) {
     const shiftX = data.shiftX
     let newLeft
+    let dataObject
     const pinPoints = this.valueDivsArray
     const handle = this._sliderHandle
     const range = this._sliderRange
@@ -114,13 +115,12 @@ class View extends EventMixin {
     let pin
 
     if (data.clicked) {
-      const dataObject = this.reactOnClick(newCoords)
+      dataObject = this.reactOnClick(newCoords)
 
       newLeft = dataObject.newLeft
       pin = dataObject.pin
     } else {
-      const dataObject = this.reactOnDrag(newCoords)
-      console.log(newCoords, ':coords form view refresh')
+      dataObject = this.reactOnDrag(newCoords)
 
       newLeft = dataObject.newLeft
       pin = dataObject.pin
@@ -129,7 +129,16 @@ class View extends EventMixin {
     if (data.mainAxis == 'x') {
       handle.style.left = newLeft + 'px'
       range.style.width = newLeft + 'px'
-      toolTip.textContent = data.value
+      if (data.altDrag) {
+        if (data.value % 90 == 0) {
+          console.log('yes')
+
+          toolTip.textContent = data.value
+          console.log(data.value, ':value from view')
+        }
+      } else {
+        toolTip.textContent = data.value
+      }
       return
     } else {
       handle.style.top = newLeft + 'px'
@@ -171,8 +180,6 @@ class View extends EventMixin {
     if (data.mainAxis == 'x') {
       if (data.altDrag) {
         newLeft = data.main - data.shiftX
-        value = data.value
-        console.log(data)
       } else {
         newLeft += handle.offsetWidth / 2
         if (pin.className.includes('values')) {

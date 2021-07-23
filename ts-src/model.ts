@@ -12,6 +12,7 @@ interface settings {
   type: string
   position: string
   stepSize: number
+  pxPerValue: number
 
   maxValue: number
   minValue: number
@@ -34,6 +35,7 @@ interface ICoords {
   value: number
   caller: string
   valuePerPx: number
+  pxPerValue: number
   maxValue: number
   minValue: number
   marginLeft: number
@@ -76,6 +78,7 @@ class Model extends EventMixin {
     marginLeft: 0,
     marginTop: 0,
     clicked: false,
+    pxPerValue: 0,
   }
 
   public _settings: settings = {
@@ -91,6 +94,7 @@ class Model extends EventMixin {
     betweenMarkers: 40,
     mainMax: 0,
     altDrag: false,
+    pxPerValue: 0,
     styles: {
       progressBarColor: 'green',
       sliderColor: 'red',
@@ -118,7 +122,10 @@ class Model extends EventMixin {
     if (this._settings.position == 'horizontal') {
       this.coords.mainMax = this._settings.mainMax
       this.coords.mainAxis = 'x'
-      this.coords.valuePerPx = diff / this._settings.styles.sliderWidth
+      if (this._settings.altDrag) {
+        this.coords.valuePerPx = diff / this._settings.styles.sliderWidth
+        this.coords.pxPerValue = this._settings.styles.sliderWidth / diff
+      }
     } else {
       this.coords.mainAxis = 'y'
       this.coords.valuePerPx = diff / this._settings.styles.sliderHeight
@@ -179,6 +186,27 @@ class Model extends EventMixin {
         for (const i in data) {
           this.coords[i] = data[i]
         }
+        // this.coords.main = data.x
+
+        if (this._settings.altDrag) {
+          this.coords.main = data.x - this.coords.marginLeft
+          if (this.coords.main % this.coords.valuePerPx == 0) {
+            this.coords.value += this.coords.stepSize
+            console.log(this.coords.value, ':value from model')
+          }
+          // this.coords.value = this.coords.main * this.coords.valuePerPx
+
+          // if (this.coords.main % this.coords.stepSize == 0) {
+          //   this.coords.value += this.coords.stepSize
+          // }
+
+          // console.log(this.coords.pxPerValue, this.coords.valuePerPx)
+
+          this.validate(this.coords)
+          this.trigger('coords changed', this.coords)
+          return this.coords
+        }
+
         this.coords.main = data.x - this.coords.marginLeft
         this.coords.value = this.coords.main * this.coords.valuePerPx
         this.validate(this.coords)
