@@ -42,7 +42,7 @@ class Pres extends EventMixin {
     this._sliderMain = wrapper
     let mainMax
     if (this._model.getSettings().position == 'horizontal') {
-      mainMax = this._slider.offsetWidth
+      mainMax = this._slider.offsetWidth - this._sliderHandle.offsetWidth / 2
     } else {
       mainMax = this._slider.offsetHeight
     }

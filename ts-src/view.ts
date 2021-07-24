@@ -129,13 +129,14 @@ class View extends EventMixin {
     if (data.mainAxis == 'x') {
       handle.style.left = newLeft + 'px'
       range.style.width = newLeft + 'px'
-      if (data.altDrag) {
-        if (data.value % 90 == 0) {
-          console.log('yes')
 
-          toolTip.textContent = data.value
-          console.log(data.value, ':value from view')
-        }
+      if (data.altDrag) {
+        // if (Math.trunc(data.value) % 90 == 0) {
+        //   console.log('yes')
+
+        toolTip.textContent = data.value
+        //   console.log(data.value, ':value from view')
+        // }
       } else {
         toolTip.textContent = data.value
       }
@@ -163,6 +164,7 @@ class View extends EventMixin {
       widthOrHeight = data.height
       margin = data.marginTop
     }
+    console.log(data.value, ':value from view')
 
     const handle = this._sliderHandle
     const handleWidth = handle.offsetWidth
@@ -180,6 +182,8 @@ class View extends EventMixin {
     if (data.mainAxis == 'x') {
       if (data.altDrag) {
         newLeft = data.main - data.shiftX
+        console.log(data.main)
+        console.log(newLeft)
       } else {
         newLeft += handle.offsetWidth / 2
         if (pin.className.includes('values')) {

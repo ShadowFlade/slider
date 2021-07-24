@@ -1,4 +1,14 @@
 import EventMixin from './eventemitter'
+function divisionFloor(x, y) {
+  let result = Math.trunc(x / y)
+
+  if (result < 0) {
+    result = 0
+  }
+  return result
+}
+// console.log(divisionFloor(29, 2), ':division floor result')
+
 interface IStyles {
   progressBarColor: string
   sliderColor: string
@@ -29,10 +39,12 @@ interface ICoords {
   marginTop: number
   mainAxis: string
   main: number
+  prevMain: number
   mainMin: number
   mainMax: number
   stepSize: number
   value: number
+  prevValue: number
   caller: string
   valuePerPx: number
   pxPerValue: number
@@ -64,12 +76,13 @@ class Model extends EventMixin {
   public coords: ICoords = {
     mainAxis: 'x',
     main: 0,
-
+    prevMain: 0,
     mainMin: 0,
     mainMax: 0,
     altDrag: false,
     stepSize: 0,
-    value: 0,
+    value: 1,
+    prevValue: 0,
     caller: '',
     maxValue: 0,
     minValue: 0,
@@ -124,13 +137,26 @@ class Model extends EventMixin {
       this.coords.mainAxis = 'x'
       if (this._settings.altDrag) {
         this.coords.valuePerPx = diff / this._settings.styles.sliderWidth
-        this.coords.pxPerValue = this._settings.styles.sliderWidth / diff
+        this.coords.pxPerValue =
+          this._settings.styles.sliderWidth / (diff / this.coords.stepSize)
+        // console.log(
+        //   this._settings.styles.sliderWidth,
+        //   'slider width',
+        //   diff,
+        //   'diff',
+        //   this.coords.stepSize,
+        //   'stepsize',
+        //   this.coords.pxPerValue,
+        //   'pxpervalue'
+        // )
       }
     } else {
       this.coords.mainAxis = 'y'
       this.coords.valuePerPx = diff / this._settings.styles.sliderHeight
       this.coords.mainMax = this._settings.styles.sliderHeight
     }
+    console.log(this._settings.mainMax)
+
     this.validateOptions()
   }
 
@@ -157,6 +183,13 @@ class Model extends EventMixin {
   }
 
   renew(data) {
+    const marginLeft = this.coords.marginLeft
+    const x = data.x
+    const valuePerPxlet = this.coords.valuePerPx
+    const pxPerValue = this.coords.pxPerValue
+    const stepSize = this.coords.stepSize
+    let main = this.coords.main
+    let value = this.coords.value
     if (this._settings.position == 'vertical') {
       this.coords.caller = 'model' // TODO this shouldnt be here,have to think of a better way
       for (const i in data) {
@@ -189,18 +222,50 @@ class Model extends EventMixin {
         // this.coords.main = data.x
 
         if (this._settings.altDrag) {
-          this.coords.main = data.x - this.coords.marginLeft
-          if (this.coords.main % this.coords.valuePerPx == 0) {
-            this.coords.value += this.coords.stepSize
-            console.log(this.coords.value, ':value from model')
-          }
-          // this.coords.value = this.coords.main * this.coords.valuePerPx
+          // value =
+          //   (data.x - this.coords.marginLeft) *
+          //   this.coords.pxPerValue *
+          //   this.coords.valuePerPx
+          // console.log(value, this.coords.prevValue)
 
-          // if (this.coords.main % this.coords.stepSize == 0) {
-          //   this.coords.value += this.coords.stepSize
+          // if (value != this.coords.prevValue) {
+          //   main += pxPerValue
+          //   console.log(main, ':main from model')
           // }
+          // this.coords.prevValue = value
+          this.coords.main = data.x - data.marginLeft
 
-          // console.log(this.coords.pxPerValue, this.coords.valuePerPx)
+          // if (
+          //   this.coords.main % Math.trunc(this.coords.pxPerValue) == 0 &&
+          //   this.coords.main - this.coords.prevMain > 0
+          // ) {
+          //   this.coords.value += this.coords.stepSize
+          // } else if (
+          //   this.coords.main % Math.trunc(this.coords.pxPerValue) == 0 &&
+          //   this.coords.main - this.coords.prevMain < 0
+          // ) {
+          //   this.coords.value -= this.coords.stepSize
+          // }
+          // this.coords.prevMain = main
+          if (this.coords.main - this.coords.prevMain > 0) {
+            this.coords.value =
+              divisionFloor(this.coords.main, this.coords.pxPerValue) *
+              this.coords.stepSize
+            // console.log(
+            //   divisionFloor(this.coords.main, this.coords.pxPerValue),
+            //   this.coords.main,
+            //   this.coords.pxPerValue,
+            //   'division floor'
+            // )
+
+            // value += main / stepSize
+          }
+
+          // if (this.coords.main % this.coords.valuePerPx == 0) {
+          //   this.coords.value =
+          //     this.coords.main * (this.coords.valuePerPx + this.coords.stepSize)
+          //   console.log(this.coords.value, ':value from model')
+          // }
 
           this.validate(this.coords)
           this.trigger('coords changed', this.coords)
