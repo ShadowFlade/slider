@@ -164,7 +164,6 @@ class View extends EventMixin {
       widthOrHeight = data.height
       margin = data.marginTop
     }
-    console.log(data.value, ':value from view')
 
     const handle = this._sliderHandle
     const handleWidth = handle.offsetWidth
@@ -173,7 +172,7 @@ class View extends EventMixin {
     const toolTip = this._sliderTooltip
 
     if (data.value == 0) {
-      range.style[widthOrHeight] = '0' //TODO dont like it
+      range.style[widthOrHeight] = '0'
     }
     const pin = this.matchHandleAndPin(data.value)
     let neededCoords = pin.getBoundingClientRect()[direction]
@@ -183,7 +182,6 @@ class View extends EventMixin {
       if (data.altDrag) {
         newLeft = data.main - data.shiftX
         console.log(data.main)
-        console.log(newLeft)
       } else {
         newLeft += handle.offsetWidth / 2
         if (pin.className.includes('values')) {

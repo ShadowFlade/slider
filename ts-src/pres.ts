@@ -42,12 +42,19 @@ class Pres extends EventMixin {
     this._sliderMain = wrapper
     let mainMax
     if (this._model.getSettings().position == 'horizontal') {
-      mainMax = this._slider.offsetWidth - this._sliderHandle.offsetWidth / 2
+      mainMax = this._slider.offsetWidth
     } else {
       mainMax = this._slider.offsetHeight
     }
+    const marginLeft = this._slider.getBoundingClientRect().left
+    const marginTop = this._slider.getBoundingClientRect().top
+    console.log(marginLeft, ':marginLeft from pres')
 
-    this._model.setOptions({ mainMax: mainMax })
+    this._model.setOptions({
+      mainMax: mainMax,
+      marginLeft: marginLeft,
+      marginTop: marginTop,
+    })
   }
 
   public makeSlider(behavior) {
@@ -116,9 +123,6 @@ class Pres extends EventMixin {
     let majorMarkers = Math.trunc(
       (behavior.maxValue - behavior.minValue) / behavior.stepSize
     )
-    // const pxsBetweenPins = Math.trunc(
-    //   (behavior.maxValue - behavior.minValue) / widthOrHeight
-    // )
 
     if (widthOrHeight / majorMarkers < 40) {
       altDrag = true
@@ -184,7 +188,6 @@ class Pres extends EventMixin {
         'background-color': '',
       },
     }
-    // Object.assign(newOptions, options)
     for (let i in options) {
       if (i.toString().includes('slider')) {
         let option = i.slice(6).toLowerCase()

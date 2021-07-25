@@ -2,12 +2,8 @@ import EventMixin from './eventemitter'
 function divisionFloor(x, y) {
   let result = Math.trunc(x / y)
 
-  if (result < 0) {
-    result = 0
-  }
   return result
 }
-// console.log(divisionFloor(29, 2), ':division floor result')
 
 interface IStyles {
   progressBarColor: string
@@ -23,7 +19,8 @@ interface settings {
   position: string
   stepSize: number
   pxPerValue: number
-
+  marginLeft: number
+  marginTop: number
   maxValue: number
   minValue: number
   maxMinDifference: number
@@ -108,6 +105,8 @@ class Model extends EventMixin {
     mainMax: 0,
     altDrag: false,
     pxPerValue: 0,
+    marginLeft: 0,
+    marginTop: 0,
     styles: {
       progressBarColor: 'green',
       sliderColor: 'red',
@@ -132,6 +131,9 @@ class Model extends EventMixin {
     this.coords.stepSize = this._settings.stepSize
     this.coords.maxValue = this._settings.maxValue
     this.coords.minValue = this._settings.minValue
+    this.coords.marginLeft = this._settings.marginLeft
+    this.coords.marginTop = this._settings.marginTop
+
     if (this._settings.position == 'horizontal') {
       this.coords.mainMax = this._settings.mainMax
       this.coords.mainAxis = 'x'
@@ -139,16 +141,6 @@ class Model extends EventMixin {
         this.coords.valuePerPx = diff / this._settings.styles.sliderWidth
         this.coords.pxPerValue =
           this._settings.styles.sliderWidth / (diff / this.coords.stepSize)
-        // console.log(
-        //   this._settings.styles.sliderWidth,
-        //   'slider width',
-        //   diff,
-        //   'diff',
-        //   this.coords.stepSize,
-        //   'stepsize',
-        //   this.coords.pxPerValue,
-        //   'pxpervalue'
-        // )
       }
     } else {
       this.coords.mainAxis = 'y'
@@ -183,102 +175,45 @@ class Model extends EventMixin {
   }
 
   renew(data) {
-    const marginLeft = this.coords.marginLeft
-    const x = data.x
-    const valuePerPxlet = this.coords.valuePerPx
+    let margin = 0
+    const valuePerPx = this.coords.valuePerPx
     const pxPerValue = this.coords.pxPerValue
     const stepSize = this.coords.stepSize
-    let main = this.coords.main
-    let value = this.coords.value
+    let axis = 0
+
     if (this._settings.position == 'vertical') {
-      this.coords.caller = 'model' // TODO this shouldnt be here,have to think of a better way
-      for (const i in data) {
-        this.coords[i] = data[i]
-      }
-      this.coords.main = data.y
-
-      if (data.clicked) {
-        this.validate(this.coords)
-        this.trigger('coords changed', this.coords)
-      } else {
-        this.coords.value =
-          (this.coords.main - this.coords.marginTop) * this.coords.valuePerPx
-        this.validate(this.coords)
-        this.trigger('coords changed', this.coords)
-      }
+      axis = data.y
+      margin = this.coords.marginTop
     } else if (this._settings.position == 'horizontal') {
-      this.coords.caller = 'model' // TODO this shouldnt be here,have to think of a better way
-      if (data.clicked) {
-        for (const i in data) {
-          this.coords[i] = data[i]
-        }
-
-        this.validate(this.coords)
-        this.trigger('coords changed', this.coords)
-      } else {
-        for (const i in data) {
-          this.coords[i] = data[i]
-        }
-        // this.coords.main = data.x
-
-        if (this._settings.altDrag) {
-          // value =
-          //   (data.x - this.coords.marginLeft) *
-          //   this.coords.pxPerValue *
-          //   this.coords.valuePerPx
-          // console.log(value, this.coords.prevValue)
-
-          // if (value != this.coords.prevValue) {
-          //   main += pxPerValue
-          //   console.log(main, ':main from model')
-          // }
-          // this.coords.prevValue = value
-          this.coords.main = data.x - data.marginLeft
-
-          // if (
-          //   this.coords.main % Math.trunc(this.coords.pxPerValue) == 0 &&
-          //   this.coords.main - this.coords.prevMain > 0
-          // ) {
-          //   this.coords.value += this.coords.stepSize
-          // } else if (
-          //   this.coords.main % Math.trunc(this.coords.pxPerValue) == 0 &&
-          //   this.coords.main - this.coords.prevMain < 0
-          // ) {
-          //   this.coords.value -= this.coords.stepSize
-          // }
-          // this.coords.prevMain = main
-          if (this.coords.main - this.coords.prevMain > 0) {
-            this.coords.value =
-              divisionFloor(this.coords.main, this.coords.pxPerValue) *
-              this.coords.stepSize
-            // console.log(
-            //   divisionFloor(this.coords.main, this.coords.pxPerValue),
-            //   this.coords.main,
-            //   this.coords.pxPerValue,
-            //   'division floor'
-            // )
-
-            // value += main / stepSize
-          }
-
-          // if (this.coords.main % this.coords.valuePerPx == 0) {
-          //   this.coords.value =
-          //     this.coords.main * (this.coords.valuePerPx + this.coords.stepSize)
-          //   console.log(this.coords.value, ':value from model')
-          // }
-
-          this.validate(this.coords)
-          this.trigger('coords changed', this.coords)
-          return this.coords
-        }
-
-        this.coords.main = data.x - this.coords.marginLeft
-        this.coords.value = this.coords.main * this.coords.valuePerPx
-        this.validate(this.coords)
-        this.trigger('coords changed', this.coords)
-      }
+      axis = data.x
+      margin = this.coords.marginLeft
+      console.log(margin, 'margin from if horizontal')
+      console.log(this.coords.marginLeft, 'marginleft from horizontal')
     }
-    return this.coords
+    this.coords.caller = 'model' // TODO this shouldnt be here,have to think of a better way
+    for (const i in data) {
+      this.coords[i] = data[i]
+    }
+
+    if (data.clicked) {
+      this.validate(this.coords)
+      this.trigger('coords changed', this.coords)
+      return this.coords
+    } else {
+      if (this._settings.altDrag) {
+        this.coords.main = axis - margin
+        this.coords.main = axis - margin
+        this.coords.value =
+          divisionFloor(this.coords.main, pxPerValue) * this.coords.stepSize
+        this.validate(this.coords)
+        this.trigger('coords changed', this.coords)
+        return this.coords
+      }
+      this.coords.value = this.coords.main * valuePerPx
+      this.validate(this.coords)
+      this.trigger('coords changed', this.coords)
+      return this.coords
+    }
   }
 
   constructor(options, item) {
