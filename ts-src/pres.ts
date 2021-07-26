@@ -8,7 +8,7 @@ class Pres extends EventMixin {
   _sliderContainer: HTMLElement
   _sliderRange: HTMLElement
   _sliderMain: HTMLElement
-  _sliderHandle: HTMLElement
+  _sliderHandles: HTMLElement[]
 
   _model: Model
 
@@ -40,14 +40,15 @@ class Pres extends EventMixin {
       options,
       this._model._settings.position
     )
-    const { slider, range, handle, wrapper } = sliderObject
+    const { slider, range, handles, wrapper } = sliderObject
     this._slider = slider
     this._sliderRange = range
-    this._sliderHandle = handle
+    this._sliderHandles = handles
     this._sliderMain = wrapper
     let mainMax
     if (this._model.getSettings().position == 'horizontal') {
-      mainMax = this._slider.offsetWidth - this._sliderHandle.offsetWidth / 2
+      mainMax =
+        this._slider.offsetWidth - this._sliderHandles[0].offsetWidth / 2
     } else {
       mainMax = this._slider.offsetHeight
     }
@@ -58,22 +59,23 @@ class Pres extends EventMixin {
       marginLeft,
       marginTop,
     })
-    // this._model._settings.mainMax = mainMax
-    // this._model._settings.marginLeft = marginLeft
-    // this._model._settings.marginTop = marginTop
+
     this.built = true
     this._model._settings.built = true
   }
 
   public makeSlider(behavior) {
+    let direction
     let position
     let widthOrHeight
     if (behavior.position == 'horizontal') {
       widthOrHeight = this._model.getOptions().sliderWidth
       position = 'horizontal'
+      direction = 'left'
     } else {
       position = 'vertical'
       widthOrHeight = this._model.getOptions().sliderHeight
+      direction = 'top'
     }
     let marker
     const main = document.createElement('div')
@@ -84,7 +86,15 @@ class Pres extends EventMixin {
     slider.classList.add('slider')
     const range = document.createElement('div')
     range.classList.add('slider-range')
+
     const handle = document.createElement('div')
+    if (this.position == 'horizontal') {
+      range.style.width = '0px'
+      handle.style[direction] = '0px'
+    } else if (this.position == 'vertical') {
+      range.style.height = '0px'
+      handle.style[direction] = '0px'
+    }
     const tool = document.createElement('div')
     handle.append(tool)
     const min = document.createElement('span')
@@ -99,20 +109,29 @@ class Pres extends EventMixin {
     slider.appendChild(handle)
 
     if (behavior.type !== 'single') {
-      const clone: Node = handle.cloneNode(true)
-      handle.after(clone)
-      slider.appendChild(range)
+      const handleCLone: HTMLElement = handle.cloneNode(true) as HTMLElement
+      const toolClone: HTMLElement = tool.cloneNode() as HTMLElement
+
+      handleCLone.classList.add(`slider-handle--${position}`)
+      handleCLone.style[direction] = '20%'
+      toolClone.classList.add(`tooltip--${position}`)
+      handleCLone.insertAdjacentElement('beforeend', toolClone)
+
+      handle.after(range)
+      range.after(handleCLone)
+
+      // slider.appendChild(range)
     }
     min.textContent = behavior.minValue
     min.dataset.value = min.textContent
     max.textContent = behavior.maxValue
     max.dataset.value = max.textContent
+
     if (behavior.marker) {
       marker = this.makeMarker(main, behavior, widthOrHeight)
 
       container.append(marker)
 
-      tool.classList.add('tooltip--vertical')
       min.classList.add(`slider-min--${position}`)
       max.classList.add(`slider-max--${position}`)
       main.classList.add(`slider-main--${position}`)
@@ -255,42 +274,44 @@ class Pres extends EventMixin {
   }
 
   onMouseDown(): void {
-    const handle = this._sliderHandle
+    const handles = this._sliderHandles
     const container = this._sliderContainer
     const slider = this._slider
     const model = this._model
     const marginLeft = slider.getBoundingClientRect().left
     const marginTop = slider.getBoundingClientRect().top
     model.on('coords changed', this.transferData.bind(this))
+    for (let handle of handles) {
+      handle.ondragstart = function () {
+        return false
+      }
+      handle.addEventListener('mousedown', (event) => {
+        event.preventDefault()
+        const target = event.target as HTMLDivElement
+        if (target == handle) {
+          const shiftX = event.clientX - handle.getBoundingClientRect().left
 
-    handle.ondragstart = function () {
-      return false
+          const mouseMove = (e) => {
+            this.transferData({
+              y: e.clientY,
+              x: e.clientX,
+              shiftX: shiftX,
+              marginLeft: marginLeft,
+              clicked: false,
+              marginTop: marginTop,
+              target: event.target,
+            })
+          }
+          const onMouseUp = (e) => {
+            document.removeEventListener('mousemove', mouseMove)
+            document.removeEventListener('mouseUp', onMouseUp)
+          }
+          document.addEventListener('mousemove', mouseMove)
+          document.addEventListener('mouseup', onMouseUp)
+        }
+      })
     }
 
-    handle.addEventListener('mousedown', (event) => {
-      event.preventDefault()
-      const target = event.target as HTMLDivElement
-      if (target == handle) {
-        const shiftX = event.clientX - handle.getBoundingClientRect().left
-
-        const mouseMove = (e) => {
-          this.transferData({
-            y: e.clientY,
-            x: e.clientX,
-            shiftX: shiftX,
-            marginLeft: marginLeft,
-            clicked: false,
-            marginTop: marginTop,
-          })
-        }
-        const onMouseUp = (e) => {
-          document.removeEventListener('mousemove', mouseMove)
-          document.removeEventListener('mouseUp', onMouseUp)
-        }
-        document.addEventListener('mousemove', mouseMove)
-        document.addEventListener('mouseup', onMouseUp)
-      }
-    })
     container.addEventListener('click', (event) => {
       const target = event.target as HTMLElement
       if (target.className.includes('jsSlider-clickable')) {

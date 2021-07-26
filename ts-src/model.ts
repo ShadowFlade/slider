@@ -54,6 +54,7 @@ interface ICoords {
   clicked: boolean
 
   altDrag: boolean
+  target: object
 }
 
 class Model extends EventMixin {
@@ -91,12 +92,13 @@ class Model extends EventMixin {
     marginTop: 0,
     clicked: false,
     pxPerValue: 0,
+    target: null,
   }
 
   public _settings: settings = {
     className: 'slider',
     position: 'vertical',
-    type: 'single',
+    type: 'double',
     stepSize: 90,
     toolTip: true,
     maxValue: 1360,
@@ -167,13 +169,6 @@ class Model extends EventMixin {
 
   private validate(data) {
     if (data.main >= data.mainMax) {
-      // console.log(
-      //   data.main,
-      //   ':main from model',
-      //   data.mainMax,
-      //   ':main max from model'
-      // )
-
       data.main = data.mainMax
       data.value = data.maxValue //TODO figure out why we need this workaround,main mean does not work
     } else if (data.main <= data.mainMin) {
@@ -187,7 +182,7 @@ class Model extends EventMixin {
     }
   }
 
-  renew(data) {
+  public renew(data) {
     const valuePerPx = this.coords.valuePerPx
     const pxPerValue = this.coords.pxPerValue
     const stepSize = this.coords.stepSize
@@ -217,7 +212,6 @@ class Model extends EventMixin {
           divisionFloor(this.coords.main, pxPerValue) * this.coords.stepSize
 
         const validatedCoords = this.validate(this.coords)
-        // console.log(validatedCoords.value, ':from model')
         this.coords.prevMain = this.coords.main
         if (validatedCoords) {
           this.trigger('coords changed', validatedCoords)

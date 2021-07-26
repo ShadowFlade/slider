@@ -11,7 +11,7 @@ class View extends EventMixin {
   _sliderMain: HTMLElement
   _sliderRange: HTMLElement
 
-  _sliderHandle: HTMLElement
+  _sliderHandles: HTMLElement[]
   _sliderTooltip
   valueDivs: Object[]
   valueDivsArray: Number[]
@@ -22,7 +22,7 @@ class View extends EventMixin {
   _pres: Pres
 
   _item
-
+  position: string
   constructor(pres, options, item, model: Model) {
     super()
     this._model = model
@@ -31,9 +31,20 @@ class View extends EventMixin {
   }
 
   public show(slider, options, pos) {
-    const position = pos
     this._item.appendChild(slider)
-    const className = this.trigger('settingRequired', 'classsName') //TODO why this doesnt work
+    // const className = this.trigger('settingRequired', 'classsName') //TODO why this doesnt work
+    this.fetchDivs(pos)
+    this.initiateOptions(options)
+    this.position = pos
+    return {
+      slider: this._slider,
+      range: this._sliderRange,
+      handles: this._sliderHandles,
+      wrapper: this._sliderMain,
+    }
+  }
+
+  private fetchDivs(position) {
     this._sliderMain = Array.from(
       this._item.getElementsByClassName(
         `${this._model._settings.className}-main`
@@ -49,11 +60,11 @@ class View extends EventMixin {
         `${this._model._settings.className}-range`
       ) as HTMLCollectionOf<HTMLElement>
     )[0]
-    this._sliderHandle = Array.from(
+    this._sliderHandles = Array.from(
       this._item.getElementsByClassName(
         `${this._model._settings.className}-handle--${position}`
       ) as HTMLCollectionOf<HTMLElement>
-    )[0]
+    )
 
     this._sliderTooltip = Array.from(
       this._item.getElementsByClassName(
@@ -71,16 +82,7 @@ class View extends EventMixin {
     this.valueDivsArray = valueDivs.map((item) => {
       return item.value
     })
-
-    this.initiateOptions(options)
-    return {
-      slider: this._slider,
-      range: this._sliderRange,
-      handle: this._sliderHandle,
-      wrapper: this._sliderMain,
-    }
   }
-
   initiateOptions(options) {
     for (let option of Object.keys(options)) {
       if (typeof options[option] === 'object') {
@@ -92,7 +94,9 @@ class View extends EventMixin {
           } else if (option.toString().includes('markUp')) {
             this._slider.style[i] = j
           } else if (option.toString().includes('handle')) {
-            this._sliderHandle.style[i] = j
+            for (let handle of this._sliderHandles) {
+              handle.style[i] = j
+            }
           }
         }
       }
@@ -104,9 +108,11 @@ class View extends EventMixin {
     let newLeft
     let dataObject
     const pinPoints = this.valueDivsArray
-    const handle = this._sliderHandle
+    const handle = data.target
     const range = this._sliderRange
-    const toolTip = this._sliderTooltip
+    const toolTip = handle.getElementsByClassName(
+      `tooltip--${this.position}`
+    )[0]
     const newCoords = Object.assign(data, {
       shiftX: shiftX,
       newLeft: newLeft,
@@ -128,13 +134,23 @@ class View extends EventMixin {
 
     if (data.mainAxis == 'x') {
       handle.style.left = newLeft + 'px'
-      range.style.width = newLeft + 'px'
+
+      if (this._model._settings.type == 'double') {
+        this.rangeInterval()
+      } else {
+        range.style.width = newLeft + 'px'
+      }
       toolTip.textContent = data.value
 
       return
     } else if (data.mainAxis == 'y') {
       handle.style.top = newLeft + 'px'
-      range.style.height = newLeft + 'px'
+      if (this._model._settings.type == 'double') {
+        this.rangeInterval()
+      } else {
+        range.style.height = newLeft + 'px'
+      }
+      // range.style.height = newLeft + 'px'
 
       toolTip.textContent = data.value
     }
@@ -156,7 +172,7 @@ class View extends EventMixin {
       margin = data.marginTop
     }
 
-    const handle = this._sliderHandle
+    const handle = data.target
     const handleWidth = handle.offsetWidth
     const handleHeight = handle.offsetHeight
     const range = this._sliderRange
@@ -192,7 +208,7 @@ class View extends EventMixin {
   }
 
   private reactOnClick(data) {
-    const handle = this._sliderHandle
+    const handle = this._sliderHandles[0]
     const handleWidth = handle.offsetWidth
     const pin = data.target.parentNode
     const pinPointsValues = this.valueDivsArray
@@ -200,12 +216,12 @@ class View extends EventMixin {
     if (data.mainAxis == 'x') {
       let newLeft =
         pin.getBoundingClientRect().left - data.marginLeft - handleWidth / 2
-      this._sliderHandle.style.left = newLeft + 'px'
+      handle.style.left = newLeft + 'px'
       this._sliderRange.style.width = newLeft + 'px'
       this._sliderTooltip.textContent = data.value
     } else if (data.mainAxis == 'y') {
       let newLeft = pin.getBoundingClientRect().top - data.marginTop
-      this._sliderHandle.style.top = newLeft + 'px'
+      handle.style.top = newLeft + 'px'
       this._sliderRange.style.height = newLeft + 'px'
       this._sliderTooltip.textContent = data.value
     }
@@ -225,7 +241,15 @@ class View extends EventMixin {
     }
     return { newLeft, pin }
   }
+  private rangeInterval() {
+    let minOffset = this._sliderHandles[0].offsetTop
+    let maxOffset = this._sliderHandles[1].offsetTop
+    const width = Math.abs(minOffset - maxOffset)
+    const top = Math.min(minOffset, maxOffset)
 
+    this._sliderRange.style.top = top + 'px'
+    this._sliderRange.style.height = width + 'px'
+  }
   private showValue(newLeft) {}
   private matchHandleAndPin(value) {
     const pinPoints = this.valueDivsArray
