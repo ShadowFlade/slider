@@ -25,6 +25,7 @@ interface settings {
   minValue: number
   maxMinDifference: number
   betweenMarkers: number
+  _maxPins: number
   mainMax: number
   toolTip: boolean
   altDrag: boolean
@@ -97,9 +98,10 @@ class Model extends EventMixin {
     type: 'single',
     stepSize: 90,
     toolTip: true,
-    maxValue: 1300,
+    maxValue: 1360,
     minValue: 0,
     maxMinDifference: 0,
+    _maxPins: 5, //optimal minimal number of pins
     marker: true,
     betweenMarkers: 40,
     mainMax: 0,
@@ -138,16 +140,15 @@ class Model extends EventMixin {
       this.coords.mainMax = this._settings.mainMax
       this.coords.mainAxis = 'x'
       if (this._settings.altDrag) {
-        this.coords.valuePerPx = diff / this._settings.styles.sliderWidth
+        this.coords.valuePerPx = diff / this._settings.mainMax
         this.coords.pxPerValue =
-          this._settings.styles.sliderWidth / (diff / this.coords.stepSize)
+          this._settings.mainMax / (diff / this.coords.stepSize)
       }
-    } else {
+    } else if (this._settings.position == 'vertical') {
       this.coords.mainAxis = 'y'
       this.coords.valuePerPx = diff / this._settings.styles.sliderHeight
       this.coords.mainMax = this._settings.styles.sliderHeight
     }
-    console.log(this._settings.mainMax)
 
     this.validateOptions()
   }
@@ -162,24 +163,26 @@ class Model extends EventMixin {
   }
 
   private validate(data) {
-    if (data.main > data.mainMax) {
+    if (data.main >= data.mainMax) {
       data.main = data.mainMax
-    } else if (data.main < data.mainMin) {
+      data.value = data.maxValue //TODO figure out why we need this workaround,main mean does not work
+    } else if (data.main <= data.mainMin) {
       data.main = data.mainMin
-    }
-    if (data.value > data.maxValue) {
-      data.value = data.maxValue
-    } else if (data.value < data.minValue) {
       data.value = data.minValue
+    }
+    if (data.main != data.prevMain) {
+      return data
+    } else {
+      return false
     }
   }
 
   renew(data) {
-    let margin = 0
     const valuePerPx = this.coords.valuePerPx
     const pxPerValue = this.coords.pxPerValue
     const stepSize = this.coords.stepSize
     let axis = 0
+    let margin = 0
 
     if (this._settings.position == 'vertical') {
       axis = data.y
@@ -187,8 +190,6 @@ class Model extends EventMixin {
     } else if (this._settings.position == 'horizontal') {
       axis = data.x
       margin = this.coords.marginLeft
-      console.log(margin, 'margin from if horizontal')
-      console.log(this.coords.marginLeft, 'marginleft from horizontal')
     }
     this.coords.caller = 'model' // TODO this shouldnt be here,have to think of a better way
     for (const i in data) {
@@ -202,17 +203,15 @@ class Model extends EventMixin {
     } else {
       if (this._settings.altDrag) {
         this.coords.main = axis - margin
-        this.coords.main = axis - margin
         this.coords.value =
           divisionFloor(this.coords.main, pxPerValue) * this.coords.stepSize
-        this.validate(this.coords)
-        this.trigger('coords changed', this.coords)
-        return this.coords
+        const validatedCoords = this.validate(this.coords)
+        this.coords.prevMain = this.coords.main
+        if (validatedCoords) {
+          this.trigger('coords changed', validatedCoords)
+          return validatedCoords
+        }
       }
-      this.coords.value = this.coords.main * valuePerPx
-      this.validate(this.coords)
-      this.trigger('coords changed', this.coords)
-      return this.coords
     }
   }
 

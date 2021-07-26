@@ -15,15 +15,18 @@ class Pres extends EventMixin {
   _view: View
 
   pxOptions: Array<string> = ['height', 'width']
+  position: string
 
   constructor(model, item) {
     super()
     this._model = model
     this._item = item
+    this.position = this._model._settings.position
   }
 
   getView(view): void {
     this._view = view
+
     view.on('settingsRequired', this.getSettings.bind(this))
   }
 
@@ -42,14 +45,12 @@ class Pres extends EventMixin {
     this._sliderMain = wrapper
     let mainMax
     if (this._model.getSettings().position == 'horizontal') {
-      mainMax = this._slider.offsetWidth
+      mainMax = this._slider.offsetWidth - this._sliderHandle.offsetWidth / 2
     } else {
       mainMax = this._slider.offsetHeight
     }
     const marginLeft = this._slider.getBoundingClientRect().left
     const marginTop = this._slider.getBoundingClientRect().top
-    console.log(marginLeft, ':marginLeft from pres')
-
     this._model.setOptions({
       mainMax: mainMax,
       marginLeft: marginLeft,
@@ -118,43 +119,39 @@ class Pres extends EventMixin {
   }
 
   private makeMarker(sliderContainer, behavior, widthOrHeight) {
+    const position = this.position
+    let marginCss
+    if (position == 'horizontal') {
+      marginCss = 'marginLeft'
+    } else if (position == 'vertical') {
+      marginCss = 'marginTop'
+    }
     const markerDiv = document.createElement('div')
     let altDrag
     let majorMarkers = Math.trunc(
       (behavior.maxValue - behavior.minValue) / behavior.stepSize
     )
-
+    // 40px between pins is the optimal number,if it is smaller,we make it 40
     if (widthOrHeight / majorMarkers < 40) {
       altDrag = true
       this._model.setOptions({ altDrag: true })
-      majorMarkers = 5
+      majorMarkers = this._model._settings._maxPins
     }
-    const position = this._model.getSettings().position
+    const listOfValues = this.calcPins()
+    let j = 0
     for (let i = 0; i < majorMarkers; i++) {
       const majorMarker = document.createElement('div')
       markerDiv.append(majorMarker)
-      const margin = (widthOrHeight / majorMarkers) * 0.0027 * widthOrHeight
+      const margin = (widthOrHeight / majorMarkers) * 0.0027 * widthOrHeight //maybe will need to make new margin for altdrag m=math.trunc((v*ppv)/ss)
       const markerValue = document.createElement('label')
-      markerValue.className = 'jsSlider-clickable'
+      markerValue.className = 'jsSlider-clickable marker-value'
+      markerDiv.classList.add(`slider-marker--${position}`)
+      majorMarker.classList.add(`marker--major--${position}`)
 
-      if (position == 'vertical') {
-        markerDiv.classList.add('slider-marker--vertical')
-        majorMarker.classList.add('marker--major--vertical')
-        markerValue.classList.add('marker-value')
-        if (i == 0) {
-          majorMarker.style.marginTop = '0'
-        } else {
-          majorMarker.style.marginTop = margin + 'px'
-        }
-      } else if (position == 'horizontal') {
-        markerDiv.classList.add('slider-marker--horizontal')
-        majorMarker.classList.add('marker--major--horizontal')
-        markerValue.classList.add('marker-value')
-        if (i == 0) {
-          majorMarker.style.marginLeft = '0'
-        } else {
-          majorMarker.style.marginLeft = margin + 'px'
-        }
+      if (i == 0) {
+        majorMarker.style[marginCss] = '0'
+      } else {
+        majorMarker.style[marginCss] = margin + 'px'
       }
 
       if (!altDrag) {
@@ -162,17 +159,40 @@ class Pres extends EventMixin {
         majorMarker.dataset.value = value.toString()
         markerValue.dataset.value = value.toString()
         markerValue.textContent = value.toString()
+        majorMarker.append(markerValue)
       } else {
-        const value =
-          ((behavior.maxValue - behavior.minValue) * (i + 1)) / majorMarkers
+        const ppv = this._model._settings.pxPerValue
+        const ss = this._model._settings.stepSize
+
+        let value = listOfValues[j]
+        console.log(value, ':value')
+
+        const margin = Math.trunc((value * ppv) / ss)
         majorMarker.dataset.value = value.toString()
         markerValue.dataset.value = value.toString()
         markerValue.textContent = value.toString()
+        majorMarker.append(markerValue)
+        j += 1
       }
-
-      majorMarker.append(markerValue)
     }
     return markerDiv
+  }
+
+  private calcPins() {
+    const diff = this._model._settings.maxMinDifference
+    const ss = this._model._settings.stepSize
+    const maxPins = this._model._settings._maxPins
+    const n = Math.trunc(diff / (ss * maxPins))
+
+    const valueArr = []
+    for (let i = 1; i < diff / ss; i += n) {
+      let value = ss * i
+
+      valueArr.push(value)
+    }
+    console.log(valueArr)
+
+    return valueArr
   }
 
   convertOptions(options: object) {

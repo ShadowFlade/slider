@@ -129,19 +129,9 @@ class View extends EventMixin {
     if (data.mainAxis == 'x') {
       handle.style.left = newLeft + 'px'
       range.style.width = newLeft + 'px'
-
-      if (data.altDrag) {
-        // if (Math.trunc(data.value) % 90 == 0) {
-        //   console.log('yes')
-
-        toolTip.textContent = data.value
-        //   console.log(data.value, ':value from view')
-        // }
-      } else {
-        toolTip.textContent = data.value
-      }
+      toolTip.textContent = data.value
       return
-    } else {
+    } else if (data.mainAxis == 'y') {
       handle.style.top = newLeft + 'px'
       range.style.height = newLeft + 'px'
     }
@@ -181,7 +171,6 @@ class View extends EventMixin {
     if (data.mainAxis == 'x') {
       if (data.altDrag) {
         newLeft = data.main - data.shiftX
-        console.log(data.main)
       } else {
         newLeft += handle.offsetWidth / 2
         if (pin.className.includes('values')) {
