@@ -16,12 +16,14 @@ class Pres extends EventMixin {
 
   pxOptions: Array<string> = ['height', 'width']
   position: string
+  built: boolean
 
   constructor(model, item) {
     super()
     this._model = model
     this._item = item
     this.position = this._model._settings.position
+    this._model.on('settings changed', this.init)
   }
 
   getView(view): void {
@@ -52,10 +54,15 @@ class Pres extends EventMixin {
     const marginLeft = this._slider.getBoundingClientRect().left
     const marginTop = this._slider.getBoundingClientRect().top
     this._model.setOptions({
-      mainMax: mainMax,
-      marginLeft: marginLeft,
-      marginTop: marginTop,
+      mainMax,
+      marginLeft,
+      marginTop,
     })
+    // this._model._settings.mainMax = mainMax
+    // this._model._settings.marginLeft = marginLeft
+    // this._model._settings.marginTop = marginTop
+    this.built = true
+    this._model._settings.built = true
   }
 
   public makeSlider(behavior) {
@@ -134,7 +141,10 @@ class Pres extends EventMixin {
     // 40px between pins is the optimal number,if it is smaller,we make it 40
     if (widthOrHeight / majorMarkers < 40) {
       altDrag = true
-      this._model.setOptions({ altDrag: true })
+      this._model.setOptions({
+        altDrag,
+      })
+      // this._model._settings.altDrag = altDrag
       majorMarkers = this._model._settings._maxPins
     }
     const listOfValues = this.calcPins()
@@ -165,8 +175,6 @@ class Pres extends EventMixin {
         const ss = this._model._settings.stepSize
 
         let value = listOfValues[j]
-        console.log(value, ':value')
-
         const margin = Math.trunc((value * ppv) / ss)
         majorMarker.dataset.value = value.toString()
         markerValue.dataset.value = value.toString()
@@ -190,7 +198,6 @@ class Pres extends EventMixin {
 
       valueArr.push(value)
     }
-    console.log(valueArr)
 
     return valueArr
   }

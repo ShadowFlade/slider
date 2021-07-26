@@ -30,6 +30,7 @@ interface settings {
   toolTip: boolean
   altDrag: boolean
   marker: boolean
+  built: boolean
   styles: IStyles
 }
 
@@ -94,7 +95,7 @@ class Model extends EventMixin {
 
   public _settings: settings = {
     className: 'slider',
-    position: 'horizontal',
+    position: 'vertical',
     type: 'single',
     stepSize: 90,
     toolTip: true,
@@ -109,6 +110,7 @@ class Model extends EventMixin {
     pxPerValue: 0,
     marginLeft: 0,
     marginTop: 0,
+    built: false,
     styles: {
       progressBarColor: 'green',
       sliderColor: 'red',
@@ -141,21 +143,22 @@ class Model extends EventMixin {
       this.coords.mainAxis = 'x'
       if (this._settings.altDrag) {
         this.coords.valuePerPx = diff / this._settings.mainMax
-        this.coords.pxPerValue =
-          this._settings.mainMax / (diff / this.coords.stepSize)
       }
     } else if (this._settings.position == 'vertical') {
       this.coords.mainAxis = 'y'
       this.coords.valuePerPx = diff / this._settings.styles.sliderHeight
       this.coords.mainMax = this._settings.styles.sliderHeight
     }
-
+    this.coords.pxPerValue =
+      this._settings.mainMax / (diff / this.coords.stepSize)
     this.validateOptions()
   }
 
   private validateOptions() {
+    //fixing user's mistake in input/contradictions in input
     if (
-      this._settings.styles.sliderWidth < this._settings.styles.sliderHeight
+      this._settings.position == 'vertical' &&
+      this._settings.styles.sliderWidth > this._settings.styles.sliderHeight
     ) {
       ;[this._settings.styles.sliderWidth, this._settings.styles.sliderHeight] =
         [this._settings.styles.sliderHeight, this._settings.styles.sliderWidth]
@@ -164,6 +167,13 @@ class Model extends EventMixin {
 
   private validate(data) {
     if (data.main >= data.mainMax) {
+      // console.log(
+      //   data.main,
+      //   ':main from model',
+      //   data.mainMax,
+      //   ':main max from model'
+      // )
+
       data.main = data.mainMax
       data.value = data.maxValue //TODO figure out why we need this workaround,main mean does not work
     } else if (data.main <= data.mainMin) {
@@ -205,7 +215,9 @@ class Model extends EventMixin {
         this.coords.main = axis - margin
         this.coords.value =
           divisionFloor(this.coords.main, pxPerValue) * this.coords.stepSize
+
         const validatedCoords = this.validate(this.coords)
+        // console.log(validatedCoords.value, ':from model')
         this.coords.prevMain = this.coords.main
         if (validatedCoords) {
           this.trigger('coords changed', validatedCoords)
@@ -226,6 +238,9 @@ class Model extends EventMixin {
   }
   public setOptions(options: object) {
     this.initOptions(options)
+    if (this._settings.built) {
+      this.trigger('settings changed')
+    }
   }
 
   public getOptions() {

@@ -30,9 +30,9 @@ class View extends EventMixin {
     this._item = item
   }
 
-  public show(node, options, pos) {
+  public show(slider, options, pos) {
     const position = pos
-    this._item.appendChild(node)
+    this._item.appendChild(slider)
     const className = this.trigger('settingRequired', 'classsName') //TODO why this doesnt work
     this._sliderMain = Array.from(
       this._item.getElementsByClassName(
@@ -130,13 +130,14 @@ class View extends EventMixin {
       handle.style.left = newLeft + 'px'
       range.style.width = newLeft + 'px'
       toolTip.textContent = data.value
+
       return
     } else if (data.mainAxis == 'y') {
       handle.style.top = newLeft + 'px'
       range.style.height = newLeft + 'px'
-    }
 
-    toolTip.textContent = pin.dataset.value
+      toolTip.textContent = data.value
+    }
   }
 
   private reactOnDrag(data) {
@@ -164,28 +165,28 @@ class View extends EventMixin {
     if (data.value == 0) {
       range.style[widthOrHeight] = '0'
     }
-    const pin = this.matchHandleAndPin(data.value)
-    let neededCoords = pin.getBoundingClientRect()[direction]
+    // const pin = this.matchHandleAndPin(data.value)
+    // let neededCoords = pin.getBoundingClientRect()[direction]
 
-    newLeft = neededCoords - margin - handleHeight / 2
-    if (data.mainAxis == 'x') {
-      if (data.altDrag) {
-        newLeft = data.main - data.shiftX
-      } else {
-        newLeft += handle.offsetWidth / 2
-        if (pin.className.includes('values')) {
-          if (pin.className.includes('slider-min')) {
-            newLeft = 0
-          } else if (pin.className.includes('slider-max')) {
-            newLeft = data.mainMax - handleWidth / 2
-          }
-        }
-      }
+    // newLeft = neededCoords - margin - handleHeight / 2
+    // if (data.mainAxis == 'x') {
+    if (data.altDrag) {
+      newLeft = data.main - data.shiftX
+    } else {
+      newLeft += handle.offsetWidth / 2
+      // if (pin.className.includes('values')) {
+      //   if (pin.className.includes('slider-min')) {
+      //     newLeft = 0
+      //   } else if (pin.className.includes('slider-max')) {
+      //     newLeft = data.mainMax - handleWidth / 2
+      //   }
+      // }
     }
+    // }
 
     return {
       newLeft,
-      pin,
+      // pin,
       value,
     }
   }
@@ -193,17 +194,17 @@ class View extends EventMixin {
   private reactOnClick(data) {
     const handle = this._sliderHandle
     const handleWidth = handle.offsetWidth
-    const pin = data.target
+    const pin = data.target.parentNode
     const pinPointsValues = this.valueDivsArray
     let newLeft
     if (data.mainAxis == 'x') {
-      let newLeft = pin.getBoundingClientRect().left - data.marginLeft
+      let newLeft =
+        pin.getBoundingClientRect().left - data.marginLeft - handleWidth / 2
       this._sliderHandle.style.left = newLeft + 'px'
       this._sliderRange.style.width = newLeft + 'px'
       this._sliderTooltip.textContent = data.value
     } else if (data.mainAxis == 'y') {
-      let newLeft =
-        pin.getBoundingClientRect().top - data.marginTop - handleWidth / 2
+      let newLeft = pin.getBoundingClientRect().top - data.marginTop
       this._sliderHandle.style.top = newLeft + 'px'
       this._sliderRange.style.height = newLeft + 'px'
       this._sliderTooltip.textContent = data.value
