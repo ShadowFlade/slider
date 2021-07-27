@@ -163,7 +163,6 @@ class Pres extends EventMixin {
       this._model.setOptions({
         altDrag,
       })
-      // this._model._settings.altDrag = altDrag
       majorMarkers = this._model._settings._maxPins
     }
     const listOfValues = this.calcPins()

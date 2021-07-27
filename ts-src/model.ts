@@ -97,7 +97,7 @@ class Model extends EventMixin {
 
   public _settings: settings = {
     className: 'slider',
-    position: 'vertical',
+    position: 'horizontal',
     type: 'double',
     stepSize: 90,
     toolTip: true,
@@ -161,6 +161,12 @@ class Model extends EventMixin {
     if (
       this._settings.position == 'vertical' &&
       this._settings.styles.sliderWidth > this._settings.styles.sliderHeight
+    ) {
+      ;[this._settings.styles.sliderWidth, this._settings.styles.sliderHeight] =
+        [this._settings.styles.sliderHeight, this._settings.styles.sliderWidth]
+    } else if (
+      this._settings.position == 'horizontal' &&
+      this._settings.styles.sliderWidth < this._settings.styles.sliderHeight
     ) {
       ;[this._settings.styles.sliderWidth, this._settings.styles.sliderHeight] =
         [this._settings.styles.sliderHeight, this._settings.styles.sliderWidth]

@@ -136,7 +136,7 @@ class View extends EventMixin {
       handle.style.left = newLeft + 'px'
 
       if (this._model._settings.type == 'double') {
-        this.rangeInterval()
+        this.rangeInterval(data.mainAxis)
       } else {
         range.style.width = newLeft + 'px'
       }
@@ -146,7 +146,7 @@ class View extends EventMixin {
     } else if (data.mainAxis == 'y') {
       handle.style.top = newLeft + 'px'
       if (this._model._settings.type == 'double') {
-        this.rangeInterval()
+        this.rangeInterval(data.mainAxis)
       } else {
         range.style.height = newLeft + 'px'
       }
@@ -241,14 +241,34 @@ class View extends EventMixin {
     }
     return { newLeft, pin }
   }
-  private rangeInterval() {
-    let minOffset = this._sliderHandles[0].offsetTop
-    let maxOffset = this._sliderHandles[1].offsetTop
-    const width = Math.abs(minOffset - maxOffset)
-    const top = Math.min(minOffset, maxOffset)
+  private rangeInterval(mainAxis) {
+    let offset
+    let widthOrHeight
+    let direction
+    if (mainAxis == 'x') {
+      offset = 'offsetLeft'
+      widthOrHeight = 'width'
+      direction = 'left'
+    } else if (mainAxis == 'y') {
+      offset = 'offsetTop'
+      widthOrHeight = 'height'
+      direction = 'top'
+    }
+    console.log(offset)
 
-    this._sliderRange.style.top = top + 'px'
-    this._sliderRange.style.height = width + 'px'
+    let minOffset = this._sliderHandles[0][offset]
+
+    let maxOffset = this._sliderHandles[1][offset]
+
+    const length = Math.abs(minOffset - maxOffset)
+    console.log(
+      '🚀 ~ file: view.ts ~ line 260 ~ View ~ rangeInterval ~ length',
+      length
+    )
+    const handleOffset = Math.min(minOffset, maxOffset)
+
+    this._sliderRange.style[direction] = handleOffset + 'px'
+    this._sliderRange.style[widthOrHeight] = length + 'px'
   }
   private showValue(newLeft) {}
   private matchHandleAndPin(value) {
