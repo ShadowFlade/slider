@@ -107,9 +107,16 @@ class View extends EventMixin {
     const shiftX = data.shiftX
     let newLeft
     let dataObject
+    let handle
     const pinPoints = this.valueDivsArray
-    const handle = data.target
+    if (this._model._settings.type == 'single') {
+      handle = this._sliderHandles[0]
+    } else if (this._model._settings.type == 'double') {
+      handle = data.target
+    }
+
     const range = this._sliderRange
+
     const toolTip = handle.getElementsByClassName(
       `tooltip--${this.position}`
     )[0]
@@ -208,23 +215,24 @@ class View extends EventMixin {
   }
 
   private reactOnClick(data) {
+    if (this._model._settings.type == 'double') {
+      return false
+    }
     const handle = this._sliderHandles[0]
     const handleWidth = handle.offsetWidth
     const pin = data.target.parentNode
     const pinPointsValues = this.valueDivsArray
     let newLeft
-    if (data.mainAxis == 'x') {
-      let newLeft =
-        pin.getBoundingClientRect().left - data.marginLeft - handleWidth / 2
-      handle.style.left = newLeft + 'px'
-      this._sliderRange.style.width = newLeft + 'px'
-      this._sliderTooltip.textContent = data.value
-    } else if (data.mainAxis == 'y') {
-      let newLeft = pin.getBoundingClientRect().top - data.marginTop
-      handle.style.top = newLeft + 'px'
-      this._sliderRange.style.height = newLeft + 'px'
-      this._sliderTooltip.textContent = data.value
-    }
+    const { offset, widthOrHeight, direction, margin } = this.convertValues({
+      mainAxis: 'x',
+    })
+    newLeft =
+      pin.getBoundingClientRect()[direction] - data[margin] - handleWidth / 2
+    console.log(newLeft)
+
+    handle.style[direction] = newLeft + 'px'
+    this._sliderRange.style[widthOrHeight] = newLeft + 'px'
+    this._sliderTooltip.textContent = data.value
 
     if (pinPointsValues.includes(data.value)) {
       for (let i of this.valueDivs) {
@@ -254,7 +262,6 @@ class View extends EventMixin {
       widthOrHeight = 'height'
       direction = 'top'
     }
-    console.log(offset)
 
     let minOffset = this._sliderHandles[0][offset]
 
@@ -291,6 +298,35 @@ class View extends EventMixin {
         return pin
       }
     }
+  }
+  private convertValues(valueObject: Object) {
+    for (let [key, value] of Object.entries(valueObject))
+      if (key == 'position' || key == 'mainAxis') {
+        let offset
+        let widthOrHeight
+        let direction
+        let margin
+        if (value == 'horizontal' || value == 'x') {
+          offset = 'offsetLeft'
+          widthOrHeight = 'width'
+          direction = 'left'
+          margin = 'marginLeft'
+        } else if (value == 'vertical' || value == 'y') {
+          offset = 'offsetTop'
+          widthOrHeight = 'height'
+          direction = 'top'
+          margin = 'marginTop'
+        }
+        console.log(
+          offset,
+          widthOrHeight,
+          direction,
+          margin,
+          ':from view convert values'
+        )
+
+        return { offset, widthOrHeight, direction, margin }
+      }
   }
 }
 export default View

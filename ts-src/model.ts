@@ -98,7 +98,7 @@ class Model extends EventMixin {
   public _settings: settings = {
     className: 'slider',
     position: 'horizontal',
-    type: 'double',
+    type: 'single',
     stepSize: 90,
     toolTip: true,
     maxValue: 1360,

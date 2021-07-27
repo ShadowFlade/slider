@@ -26,7 +26,7 @@ class Pres extends EventMixin {
     this._model.on('settings changed', this.init)
   }
 
-  getView(view): void {
+  public getView(view): void {
     this._view = view
 
     view.on('settingsRequired', this.getSettings.bind(this))
@@ -272,7 +272,7 @@ class Pres extends EventMixin {
     return newOptions
   }
 
-  onMouseDown(): void {
+  public onMouseDown(): void {
     const handles = this._sliderHandles
     const container = this._sliderContainer
     const slider = this._slider
@@ -331,7 +331,7 @@ class Pres extends EventMixin {
     })
   }
 
-  transferData(data) {
+  private transferData(data) {
     if (data.caller == 'model') {
       this._view.refreshCoords(data)
       return
