@@ -157,7 +157,6 @@ class View extends EventMixin {
       } else {
         range.style.height = newLeft + 'px'
       }
-      // range.style.height = newLeft + 'px'
 
       toolTip.textContent = data.value
     }

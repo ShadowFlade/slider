@@ -96,7 +96,14 @@ class Pres extends EventMixin {
       handle.style[direction] = '0px'
     }
     const tool = document.createElement('div')
-    handle.append(tool)
+    const tooltipContainer = document.createElement('div')
+    tooltipContainer.className = `tooltipContainer tooltipContainer--${position}`
+    const tooltipStick = document.createElement('div')
+    tooltipStick.className = `tooltipStick tooltipStick--${position}`
+    tooltipContainer.append(tooltipStick)
+    tooltipContainer.append(tool)
+
+    handle.append(tooltipContainer)
     const min = document.createElement('span')
     min.className = 'values jsSlider-clickable'
     const max = document.createElement('span')
@@ -114,7 +121,8 @@ class Pres extends EventMixin {
 
       handleCLone.classList.add(`slider-handle--${position}`)
       handleCLone.style[direction] = '20%'
-      toolClone.classList.add(`tooltip--${position}`)
+      toolClone.className = `tooltip tooltip--${position}`
+
       handleCLone.insertAdjacentElement('beforeend', toolClone)
 
       handle.after(range)
@@ -136,9 +144,9 @@ class Pres extends EventMixin {
       max.classList.add(`slider-max--${position}`)
       main.classList.add(`slider-main--${position}`)
       container.classList.add(`slider-container--${position}`)
-      marker.classList.add(`slider-marker--position`)
+      marker.classList.add(`slider-marker--${position}`)
       handle.classList.add(`slider-handle--${position}`)
-      tool.classList.add(`tooltip--${position}`)
+      tool.className = `tooltip tooltip--${position}`
 
       return main
     }
@@ -284,7 +292,7 @@ class Pres extends EventMixin {
       handle.ondragstart = function () {
         return false
       }
-      handle.addEventListener('mousedown', (event) => {
+      handle.addEventListener('pointerdown', (event) => {
         event.preventDefault()
         const target = event.target as HTMLDivElement
         if (target == handle) {
@@ -302,11 +310,11 @@ class Pres extends EventMixin {
             })
           }
           const onMouseUp = (e) => {
-            document.removeEventListener('mousemove', mouseMove)
-            document.removeEventListener('mouseUp', onMouseUp)
+            document.removeEventListener('pointermove', mouseMove)
+            document.removeEventListener('pointerup', onMouseUp)
           }
-          document.addEventListener('mousemove', mouseMove)
-          document.addEventListener('mouseup', onMouseUp)
+          document.addEventListener('pointermove', mouseMove)
+          document.addEventListener('pointerup', onMouseUp)
         }
       })
     }
