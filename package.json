@@ -4,7 +4,6 @@
   "description": "",
   "main": "ts-src",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack",
     "start": "webpack serve --open",
     "lint": "eslint --debug ts-src/",
@@ -20,7 +19,9 @@
     "@webpack-cli/serve": "^1.5.1",
     "cross-env": "^7.0.3",
     "eslint": "^7.30.0",
+    "eslint-plugin-prettier": "^3.4.0",
     "eslint-webpack-plugin": "^2.5.4",
+    "prettier": "2.3.2",
     "ts-loader": "^9.2.3",
     "typescript": "^4.3.4",
     "webpack": "^5.41.1",
@@ -29,6 +30,7 @@
   },
   "dependencies": {
     "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^8.3.0",
     "jquery": "^3.6.0"
   }
 }
