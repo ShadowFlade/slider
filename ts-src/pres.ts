@@ -121,21 +121,16 @@ class Pres extends EventMixin {
     main.append(max);
     slider.appendChild(range);
     slider.appendChild(handle);
+    console.log(tooltipContainer, ':real one');
+    handle.classList.add(`slider-handle--${position}`);
+    container.classList.add(`slider-container--${position}`);
+    tool.className = `tooltip tooltip--${position}`;
 
     if (behavior.type !== 'single') {
       const handleCLone: HTMLElement = handle.cloneNode(true) as HTMLElement;
-      const toolClone: HTMLElement = tool.cloneNode() as HTMLElement;
-
-      handleCLone.classList.add(`slider-handle--${position}`);
       handleCLone.style[direction] = '20%';
-      toolClone.className = `tooltip tooltip--${position}`;
-
-      handleCLone.insertAdjacentElement('beforeend', toolClone);
-
       handle.after(range);
       range.after(handleCLone);
-
-      // slider.appendChild(range)
     }
     min.textContent = String(behavior.minValue);
     min.dataset.value = min.textContent;
@@ -150,10 +145,7 @@ class Pres extends EventMixin {
       min.classList.add(`slider-min--${position}`);
       max.classList.add(`slider-max--${position}`);
       main.classList.add(`slider-main--${position}`);
-      container.classList.add(`slider-container--${position}`);
       marker.classList.add(`slider-marker--${position}`);
-      handle.classList.add(`slider-handle--${position}`);
-      tool.className = `tooltip tooltip--${position}`;
     }
     return main;
   }

@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
     "sourceMap": true,
-    "rootDir": "ts-src"
+    "rootDir": "ts-src",
+    "target": "ES6",
+    "lib": ["DOM", "ES7"]
   },
   "files": ["ts-src/jquery.slider.ts"]
 }

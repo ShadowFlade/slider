@@ -33,6 +33,9 @@ class View extends EventMixin {
 
   constructor(pres, options, item, model: Model) {
     super();
+    // public model:Model
+    // public pres
+    // public item
     this._model = model;
     this._pres = pres;
     this._item = item;
@@ -117,6 +120,7 @@ class View extends EventMixin {
     let newLeft;
     let dataObject;
     let handle;
+    // const handle=data.target
     const pinPoints = this.valueDivsArray;
     if (this._model._settings.type == 'single') {
       handle = this._sliderHandles[0];
@@ -156,7 +160,6 @@ class View extends EventMixin {
       } else {
         range.style.width = newLeft + 'px';
       }
-      toolTip.textContent = data.value;
     } else if (data.mainAxis == 'y') {
       handle.style.top = newLeft + 'px';
       if (this._model._settings.type == 'double') {
@@ -164,9 +167,14 @@ class View extends EventMixin {
       } else {
         range.style.height = newLeft + 'px';
       }
-
-      toolTip.textContent = data.value;
     }
+
+    const value = numberOfDigits(data.value);
+    handle.dataset.value = value;
+    toolTip.textContent = value;
+    return;
+
+    // toolTip.textContent = data.value;
   }
 
   private reactOnDrag(data) {
@@ -234,7 +242,6 @@ class View extends EventMixin {
     });
     newLeft =
       pin.getBoundingClientRect()[direction] - data[margin] - handleWidth / 2;
-    console.log(newLeft);
 
     handle.style[direction] = newLeft + 'px';
     this._sliderRange.style[widthOrHeight] = newLeft + 'px';
@@ -275,10 +282,6 @@ class View extends EventMixin {
     const maxOffset = this._sliderHandles[1][offset];
 
     const length = Math.abs(minOffset - maxOffset);
-    console.log(
-      '🚀 ~ file: view.ts ~ line 260 ~ View ~ rangeInterval ~ length',
-      length
-    );
     const handleOffset = Math.min(minOffset, maxOffset);
 
     this._sliderRange.style[direction] = handleOffset + 'px';
@@ -327,16 +330,20 @@ class View extends EventMixin {
           direction = 'top';
           margin = 'marginTop';
         }
-        console.log(
-          offset,
-          widthOrHeight,
-          direction,
-          margin,
-          ':from view convert values'
-        );
 
         return { offset, widthOrHeight, direction, margin };
       }
   }
+}
+
+function numberOfDigits(x) {
+  let value;
+  if (x.toString().length > 3) {
+    value = (x / 1000).toFixed(1) + 'k';
+  } else {
+    value = x;
+  }
+
+  return value;
 }
 export default View;

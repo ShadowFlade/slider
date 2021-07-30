@@ -1,3 +1,4 @@
+import { map } from 'jquery';
 import EventMixin from './eventemitter';
 function divisionFloor(x, y) {
   const result = Math.trunc(x / y);
@@ -5,6 +6,38 @@ function divisionFloor(x, y) {
   return result;
 }
 
+const map1 = new Map();
+map1.set(1, 'true');
+
+// interface Map<T> {
+//   add(value: T): Set<T>;
+//   clear(): void;
+//   delete(value: T): boolean;
+//   entries(): IterableIterator<[T, T]>;
+//   forEach(
+//     callbackfn: (value: T, index: T, set: Set<T>) => void,
+//     thisArg?: any
+//   ): void;
+//   has(value: T): boolean;
+//   keys(): IterableIterator<T>;
+//   size: number;
+//   values(): IterableIterator<T>;
+//   [Symbol.iterator](): IterableIterator<T>;
+//   [Symbol.toStringTag]: string;
+// }
+
+// interface SetConstructor {
+//   new <T>(): Set<T>;
+//   new <T>(iterable: Iterable<T>): Set<T>;
+//   prototype: Set<any>;
+// }
+// interface Interval extends Set<> {
+//   target1: HTMLDivElement;
+//   target2: HTMLDivElement;
+//   value1: number;
+//   value2: number;
+// }
+// declare var Set: SetConstructor;
 interface IStyles {
   progressBarColor: string;
   sliderColor: string;
@@ -72,7 +105,7 @@ class Model extends EventMixin {
     'color',
     'background-color',
   ];
-
+  public interval: Map<HTMLDivElement, number> = new Map();
   public coords: ICoords = {
     mainAxis: 'x',
     main: 0,
@@ -98,7 +131,7 @@ class Model extends EventMixin {
   public _settings: Settings = {
     className: 'slider',
     position: 'horizontal',
-    type: 'single',
+    type: 'double',
     stepSize: 90,
     toolTip: true,
     maxValue: 1360,
@@ -123,13 +156,6 @@ class Model extends EventMixin {
   };
 
   public initOptions(options: { [key: string]: string | number }) {
-    // for (const option of Object.keys(options)) {
-    //   if (this.modifiable_options.includes(option)) {
-    //     this._settings.styles[option] = options[option]
-    //   } else {
-    //     this._settings[option] = options[option]
-    //   }
-    // }
     Object.keys(options).forEach((key: string): void => {
       if (this.modifiable_options.includes(key)) {
         this._settings.styles[key] = options[key];
@@ -225,6 +251,9 @@ class Model extends EventMixin {
 
       const validatedCoords = this.validate(this.coords);
       this.coords.prevMain = this.coords.main;
+      if (this._settings.type == 'double') {
+        setTimeout(this.calcInterval.bind(this), 0, validatedCoords);
+      }
       if (validatedCoords) {
         this.trigger('coords changed', validatedCoords);
         return validatedCoords;
@@ -260,6 +289,15 @@ class Model extends EventMixin {
   public getItem() {
     return this._item;
   }
+  public calcInterval(data): object {
+    const target = data.target;
+    const value = data.value;
+    const interval = this.interval;
+
+    interval.set(data.target, data.value);
+    return this.interval;
+  }
 }
+
 export { ICoords, Settings };
 export default Model;
