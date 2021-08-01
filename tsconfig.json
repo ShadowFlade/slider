@@ -5,5 +5,5 @@
     "target": "ES6",
     "lib": ["DOM", "ES7"]
   },
-  "files": ["ts-src/jquery.slider.ts"]
+  "files": ["ts-src/jquery.slider.ts", "ts-src/demoPage/panel.ts"]
 }
