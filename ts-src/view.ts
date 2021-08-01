@@ -1,10 +1,6 @@
-import App from './app';
-import * as slider from './jquery.slider';
 import Model from './model';
 import EventMixin from './eventemitter';
 import Pres from './pres';
-import { map } from 'jquery';
-import { Settings } from './model';
 
 class View extends EventMixin {
   _slider: HTMLElement;
@@ -21,21 +17,16 @@ class View extends EventMixin {
 
   valueDivsArray: number[];
 
-  items;
-
   _model: Model;
 
   _pres: Pres;
 
-  _item;
+  _item: HTMLElement;
 
   position: string;
 
   constructor(pres, options, item, model: Model) {
     super();
-    // public model:Model
-    // public pres
-    // public item
     this._model = model;
     this._pres = pres;
     this._item = item;
@@ -117,9 +108,9 @@ class View extends EventMixin {
 
   public refreshCoords(data) {
     const shiftX = data.shiftX;
-    let newLeft;
+    let newLeft: string;
     let dataObject;
-    let handle;
+    let handle: HTMLElement;
     // const handle=data.target
     const pinPoints = this.valueDivsArray;
     if (this._model._settings.type == 'single') {
@@ -181,8 +172,8 @@ class View extends EventMixin {
     let direction = '0';
     let widthOrHeight = '';
     let newLeft = data.newLeft;
-    let margin;
-    let value;
+    let margin: number;
+    let value: number;
     if (data.mainAxis == 'x') {
       direction = 'left';
       widthOrHeight = data.width;
@@ -236,7 +227,7 @@ class View extends EventMixin {
     const handleWidth = handle.offsetWidth;
     const pin = data.target.parentNode;
     const pinPointsValues = this.valueDivsArray;
-    let newLeft;
+    let newLeft: number;
     const { offset, widthOrHeight, direction, margin } = this.convertValues({
       mainAxis: 'x',
     });
@@ -264,9 +255,9 @@ class View extends EventMixin {
   }
 
   private rangeInterval(mainAxis) {
-    let offset;
-    let widthOrHeight;
-    let direction;
+    let offset: string;
+    let widthOrHeight: string;
+    let direction: string;
     if (mainAxis == 'x') {
       offset = 'offsetLeft';
       widthOrHeight = 'width';
@@ -315,10 +306,10 @@ class View extends EventMixin {
   private convertValues(valueObject: Object) {
     for (const [key, value] of Object.entries(valueObject))
       if (key == 'position' || key == 'mainAxis') {
-        let offset;
-        let widthOrHeight;
-        let direction;
-        let margin;
+        let offset: string;
+        let widthOrHeight: string;
+        let direction: string;
+        let margin: string;
         if (value == 'horizontal' || value == 'x') {
           offset = 'offsetLeft';
           widthOrHeight = 'width';
@@ -337,7 +328,7 @@ class View extends EventMixin {
 }
 
 function numberOfDigits(x) {
-  let value;
+  let value: string;
   if (x.toString().length > 3) {
     value = (x / 1000).toFixed(1) + 'k';
   } else {

@@ -10,10 +10,12 @@ module.exports = {
   },
   devtool: 'source-map',
 
-  entry: ['./ts-src/jquery.slider.ts'],
+  entry: {
+    app:'./ts-src/jquery.slider.ts',
+    main:'./ts-src/demoPage/panel.ts'},
   output: {
     path: path.resolve(__dirname, './build'),
-    filename: 'app.js',
+    filename: `[name].js`,
   },
   plugins: [
     new webpack.ProvidePlugin({
@@ -32,6 +34,6 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['.webpack.js', '.web.js', '.ts', '.js'],
+    extensions: ['.js','.ts','.webpack.js', '.web.js',  ],
   },
 }

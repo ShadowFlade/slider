@@ -1,7 +1,6 @@
 import EventMixin from './eventemitter';
 import Model, { Settings } from './model';
 import View from './view';
-// import {ICoords} from './model'
 class Pres extends EventMixin {
   _item: Element;
 
@@ -52,7 +51,7 @@ class Pres extends EventMixin {
     this._sliderRange = range;
     this._sliderHandles = handles;
     this._sliderMain = wrapper;
-    let mainMax;
+    let mainMax: number;
     if (this._model.getSettings().position === 'horizontal') {
       mainMax =
         this._slider.offsetWidth - this._sliderHandles[0].offsetWidth / 2;
@@ -72,9 +71,9 @@ class Pres extends EventMixin {
   }
 
   public makeSlider(behavior: Settings): HTMLElement {
-    let direction;
-    let position;
-    let widthOrHeight;
+    let direction: string;
+    let position: string;
+    let widthOrHeight: number;
     if (behavior.position === 'horizontal') {
       widthOrHeight = this._model.getOptions().sliderWidth;
       position = 'horizontal';
@@ -84,7 +83,7 @@ class Pres extends EventMixin {
       widthOrHeight = this._model.getOptions().sliderHeight;
       direction = 'top';
     }
-    let marker;
+    let marker: HTMLDivElement;
     const main = document.createElement('div');
     main.classList.add('slider-main');
     const container = document.createElement('div');
@@ -121,7 +120,6 @@ class Pres extends EventMixin {
     main.append(max);
     slider.appendChild(range);
     slider.appendChild(handle);
-    console.log(tooltipContainer, ':real one');
     handle.classList.add(`slider-handle--${position}`);
     container.classList.add(`slider-container--${position}`);
     tool.className = `tooltip tooltip--${position}`;
@@ -138,7 +136,7 @@ class Pres extends EventMixin {
     max.dataset.value = max.textContent;
 
     if (behavior.marker) {
-      marker = this.makeMarker(main, behavior, widthOrHeight);
+      marker = this.makeMarker(behavior, widthOrHeight);
 
       container.append(marker);
 
@@ -147,12 +145,13 @@ class Pres extends EventMixin {
       main.classList.add(`slider-main--${position}`);
       marker.classList.add(`slider-marker--${position}`);
     }
+
     return main;
   }
 
-  private makeMarker(sliderContainer, behavior, widthOrHeight) {
+  private makeMarker(behavior, widthOrHeight) {
     const position = this.position;
-    let marginCss;
+    let marginCss: string;
     if (position === 'horizontal') {
       marginCss = 'marginLeft';
     } else if (position === 'vertical') {

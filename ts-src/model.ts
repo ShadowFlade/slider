@@ -1,52 +1,24 @@
-import { map } from 'jquery';
 import EventMixin from './eventemitter';
-function divisionFloor(x, y) {
+
+function divisionFloor(x: number, y: number): number {
   const result = Math.trunc(x / y);
 
   return result;
 }
-
-const map1 = new Map();
-map1.set(1, 'true');
-
-// interface Map<T> {
-//   add(value: T): Set<T>;
-//   clear(): void;
-//   delete(value: T): boolean;
-//   entries(): IterableIterator<[T, T]>;
-//   forEach(
-//     callbackfn: (value: T, index: T, set: Set<T>) => void,
-//     thisArg?: any
-//   ): void;
-//   has(value: T): boolean;
-//   keys(): IterableIterator<T>;
-//   size: number;
-//   values(): IterableIterator<T>;
-//   [Symbol.iterator](): IterableIterator<T>;
-//   [Symbol.toStringTag]: string;
-// }
-
-// interface SetConstructor {
-//   new <T>(): Set<T>;
-//   new <T>(iterable: Iterable<T>): Set<T>;
-//   prototype: Set<any>;
-// }
-// interface Interval extends Set<> {
-//   target1: HTMLDivElement;
-//   target2: HTMLDivElement;
-//   value1: number;
-//   value2: number;
-// }
-// declare var Set: SetConstructor;
-interface IStyles {
+type Renew = {
+  (data: ICoords): void;
+  valuePerPx: number;
+  pxPerValue: number;
+};
+type IStyles = {
   progressBarColor: string;
   sliderColor: string;
 
   handleColor: string;
   sliderWidth: number;
   sliderHeight: number;
-}
-interface Settings {
+};
+type Settings = {
   className: string;
   type: string;
   position: string;
@@ -65,9 +37,9 @@ interface Settings {
   marker: boolean;
   built: boolean;
   styles: IStyles;
-}
+};
 
-interface ICoords {
+type ICoords = {
   marginTop: number;
   mainAxis: string;
   main: number;
@@ -88,7 +60,7 @@ interface ICoords {
 
   altDrag: boolean;
   target: object;
-}
+};
 
 class Model extends EventMixin {
   private _slider: Element;
@@ -130,7 +102,7 @@ class Model extends EventMixin {
 
   public _settings: Settings = {
     className: 'slider',
-    position: 'horizontal',
+    position: 'vertical',
     type: 'double',
     stepSize: 90,
     toolTip: true,
@@ -220,7 +192,7 @@ class Model extends EventMixin {
     return false;
   }
 
-  public renew(data) {
+  public renew(data: { [key: string]: number }): Renew {
     const valuePerPx = this.coords.valuePerPx;
     const pxPerValue = this.coords.pxPerValue;
     const stepSize = this.coords.stepSize;
@@ -242,7 +214,6 @@ class Model extends EventMixin {
     if (data.clicked) {
       this.validate(this.coords);
       this.trigger('coords changed', this.coords);
-      return this.coords;
     }
     if (this._settings.altDrag) {
       this.coords.main = axis - margin;
@@ -265,6 +236,8 @@ class Model extends EventMixin {
     super();
     this._item = item;
     this.initOptions(options);
+    console.log('heyheyhey');
+    console.log('only hey 1');
   }
 
   public getOption(option: string) {
@@ -290,12 +263,16 @@ class Model extends EventMixin {
     return this._item;
   }
   public calcInterval(data): object {
-    const target = data.target;
-    const value = data.value;
     const interval = this.interval;
+    const values = interval.values();
+    const floor = Math.min(...values);
+    const ceil = Math.max(...values);
 
     interval.set(data.target, data.value);
-    return this.interval;
+    return {
+      floor,
+      ceil,
+    };
   }
 }
 
