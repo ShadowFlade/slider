@@ -1,35 +1,19 @@
 import App from './app';
-declare let jQuery: any;
-declare let $: any;
+// declare let jQuery: any;
+// declare let $: any;
+// const $ = require('jquery');
 
-interface MyPlugin {
-  settings: MyPluginSettings;
+console.log('im inside');
 
-  (behavior: 'enable'): JQuery;
-  (settings?: MyPluginSettings): JQuery;
-}
+$.fn.slider = function (this: JQuery, options: object): JQuery {
+  console.log('also insede');
+  console.log('hello');
 
-interface MyPluginSettings {
-  title?: string;
-}
-interface jquery {
-  slider: MyPlugin;
-}
-
-interface JQuery {
-  slider: HTMLElement;
-}
-
-(function ($) {
-  $.fn.slider = function (options: object): JQuery {
-    return this.each(function () {
-      const app = new App(this, options);
-    });
-  };
-})(jQuery);
-
-$(function () {
-  $('#slider').slider({
-    color: 'green',
+  return this.each(function () {
+    const app = new App(this, options);
   });
+};
+$('#slider').slider({
+  color: 'green',
 });
+$('#slider').slider();

@@ -156,6 +156,7 @@ class Model extends EventMixin {
       this.coords.valuePerPx = diff / this._settings.styles.sliderHeight;
       this.coords.mainMax = this._settings.styles.sliderHeight;
     }
+    console.log('heyhey2');
     this.coords.pxPerValue =
       this._settings.mainMax / (diff / this.coords.stepSize);
     this.validateOptions();
@@ -264,9 +265,11 @@ class Model extends EventMixin {
   }
   public calcInterval(data): object {
     const interval = this.interval;
-    const values = interval.values();
-    const floor = Math.min(...values);
-    const ceil = Math.max(...values);
+    const value = interval.values()[0];
+    const value2 = interval.values()[1];
+    // const values = interval.values();
+    const floor = Math.min(value, value2);
+    const ceil = Math.max(value, value2);
 
     interval.set(data.target, data.value);
     return {

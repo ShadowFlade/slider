@@ -12,16 +12,18 @@ module.exports = {
 
   entry: {
     app:'./ts-src/jquery.slider.ts',
-    main:'./ts-src/demoPage/panel.ts'},
+    main:'./ts-src/demoPage/panel.ts',
+    // main: { import:  './build/main.js', dependOn: 'app' },
+  },
   output: {
     path: path.resolve(__dirname, './build'),
     filename: `[name].js`,
   },
   plugins: [
-    new webpack.ProvidePlugin({
-      $: 'jquery',
-      jQuery: 'jquery',
-    }),
+    // new webpack.ProvidePlugin({
+    //   $: 'jquery',
+    //   jQuery: 'jquery',
+    // }),
     new ESLintPlugin(),
   ],
   module: {
@@ -34,6 +36,6 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['.js','.ts','.webpack.js', '.web.js',  ],
+    extensions: ['.ts','.js','.webpack.js', '.web.js',  ],
   },
 }

@@ -3,7 +3,9 @@
     "sourceMap": true,
     "rootDir": "ts-src",
     "target": "ES6",
-    "lib": ["DOM", "ES7"]
+    "lib": ["DOM", "ES7"],
+    "downlevelIteration": true,
+    "allowSyntheticDefaultImports": true
   },
   "files": ["ts-src/jquery.slider.ts", "ts-src/demoPage/panel.ts"]
 }
