@@ -10,7 +10,8 @@ class View extends EventMixin {
   _sliderRange: HTMLElement;
 
   _sliderHandles: HTMLElement[];
-
+  _sliderContainer: HTMLElement;
+  _tooltipContainer: HTMLElement[];
   _sliderTooltip;
 
   valueDivs: Object[];
@@ -38,6 +39,23 @@ class View extends EventMixin {
     this.fetchDivs(pos);
     this.initiateOptions(options);
     this.position = pos;
+    if (this._sliderTooltip.getBoundingClientRect().left < 0) {
+      this._sliderContainer.style.justifyContent = 'space-between';
+      this._sliderContainer.style.flexDirection = 'row-reverse';
+      this._tooltipContainer.forEach((item) => {
+        item.style.flexDirection = 'row';
+        item.style.right = 'auto';
+
+        item.style.left = '100%';
+        Array.from(
+          this._item.getElementsByClassName(
+            'values'
+          ) as HTMLCollectionOf<HTMLElement>
+        ).forEach((item) => {
+          item.style.justifyContent = 'flex-end';
+        }); //TODO should be a nicer way
+      });
+    }
     return {
       slider: this._slider,
       range: this._sliderRange,
@@ -74,6 +92,17 @@ class View extends EventMixin {
       ) as HTMLCollectionOf<HTMLElement>
     )[0];
 
+    this._sliderContainer = Array.from(
+      this._item.getElementsByClassName(
+        `${this._model._settings.className}-container`
+      ) as HTMLCollectionOf<HTMLElement>
+    )[0];
+
+    this._tooltipContainer = Array.from(
+      this._item.getElementsByClassName(
+        `tooltipContainer`
+      ) as HTMLCollectionOf<HTMLElement>
+    );
     const valueDivs: { div: HTMLElement; value: number }[] = Array.from(
       this._item.getElementsByClassName('jsSlider-clickable')
     ).map((item: HTMLElement) => {

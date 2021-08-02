@@ -5,7 +5,6 @@ import Pres from './pres';
 
 class App {
   constructor(item: HTMLElement, options: object) {
-    console.log('im app');
     this._model = new Model(options, item);
     this._pres = new Pres(this._model, this._model.getItem());
     this._view = new View(this._pres, options, item, this._model);

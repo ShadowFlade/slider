@@ -156,7 +156,6 @@ class Model extends EventMixin {
       this.coords.valuePerPx = diff / this._settings.styles.sliderHeight;
       this.coords.mainMax = this._settings.styles.sliderHeight;
     }
-    console.log('heyhey2');
     this.coords.pxPerValue =
       this._settings.mainMax / (diff / this.coords.stepSize);
     this.validateOptions();
@@ -237,8 +236,6 @@ class Model extends EventMixin {
     super();
     this._item = item;
     this.initOptions(options);
-    console.log('heyheyhey');
-    console.log('only hey 1');
   }
 
   public getOption(option: string) {

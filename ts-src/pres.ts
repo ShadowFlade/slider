@@ -121,7 +121,8 @@ class Pres extends EventMixin {
     slider.appendChild(range);
     slider.appendChild(handle);
     handle.classList.add(`slider-handle--${position}`);
-    container.classList.add(`slider-container--${position}`);
+
+    container.className = `slider-container slider-container--${position}`;
     tool.className = `tooltip tooltip--${position}`;
 
     if (behavior.type !== 'single') {
