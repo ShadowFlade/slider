@@ -127,6 +127,8 @@ class View extends EventMixin {
           if (option.toString().includes('slider')) {
             this._slider.style[i] = j;
           } else if (option.toString().includes('progressBar')) {
+            console.log(j, 'suspect 1');
+
             this._sliderRange.style[i] = j;
           } else if (option.toString().includes('markUp')) {
             this._slider.style[i] = j;

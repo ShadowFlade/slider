@@ -43,7 +43,6 @@ class Pres extends EventMixin {
     this._model.validateOptions();
     const options = this.convertOptions(this._model.getOptions());
     const behavior = this._model.getSettings();
-    console.log('🚀 ~ Pres ~ init ~ behavior', behavior);
     const sliderObject = this._view.show(
       this.makeSlider(behavior),
       options,
@@ -129,10 +128,7 @@ class Pres extends EventMixin {
     tool.className = `tooltip tooltip--${orientation}`;
 
     if (behavior.type !== 'single') {
-      const handleCLone: HTMLElement = handle.cloneNode(true) as HTMLElement;
-      handleCLone.style[direction] = '20%';
-      handle.after(range);
-      range.after(handleCLone);
+      this.addHandle(handle, range, direction);
     }
     min.textContent = String(behavior.minValue);
     min.dataset.value = min.textContent;
@@ -151,6 +147,48 @@ class Pres extends EventMixin {
     }
 
     return main;
+  }
+
+  public addHandle(handl?, rang?, directio?) {
+    let handle;
+    let range;
+    let direction;
+    if (!handl) {
+      handle = this._sliderHandles[0];
+      range = this._sliderRange;
+    } else {
+      handle = handl;
+      range = rang;
+      direction = directio;
+    }
+
+    const behavior = this._model.getSettings();
+    if (behavior.orientation === 'horizontal') {
+      direction = 'left';
+    } else {
+      direction = 'top';
+    }
+    const handleCLone: HTMLElement = handle.cloneNode(true) as HTMLElement;
+    handleCLone.style[direction] = '20%';
+    handle.after(range);
+    range.after(handleCLone);
+    if (this._sliderHandles) {
+      this._sliderHandles[1] = handleCLone;
+    }
+  }
+  public removeHandle() {
+    this._model._settings.type = 'single';
+    const orient = this._model._settings.orientation;
+    if (orient === 'horizontal') {
+      this._sliderRange.style.left = '0px';
+    } else if (orient === 'vertical') {
+      this._sliderRange.style.top = '0px';
+    }
+
+    this._slider.insertAdjacentElement('afterbegin', this._sliderRange);
+    this._sliderHandles[1].remove();
+
+    // console.log(this._sliderHandles);
   }
 
   private makeMarker(behavior, widthOrHeight) {
@@ -279,6 +317,8 @@ class Pres extends EventMixin {
 
   public onMouseDown(): void {
     const handles = this._sliderHandles;
+    console.log(handles, 'handles from pres');
+
     const container = this._sliderContainer;
     const slider = this._slider;
     const model = this._model;

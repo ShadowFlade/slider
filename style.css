@@ -62,7 +62,7 @@
 
 .slider-min--horizontal {
   margin-right: 5px;
-  transform: translate(-100%, -50%);
+  transform: translate(-200%, -50%);
 }
 .values {
   display: flex;

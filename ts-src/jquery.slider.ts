@@ -13,6 +13,18 @@ $.fn.slider = function (this: JQuery, options: object): JQuery {
       app.scale(option);
       return this;
     };
+    $.fn.slider.bar = (option: boolean) => {
+      app.bar(option);
+      return this;
+    };
+    $.fn.slider.tip = (option: boolean) => {
+      app.tip(option);
+      return this;
+    };
+    $.fn.slider.range = (option: boolean) => {
+      app.range(option);
+      return this;
+    };
   });
 };
 $('#slider').slider({});

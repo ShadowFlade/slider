@@ -27,11 +27,37 @@ class App {
   }
   public scale(option: boolean) {
     if (!option) {
-      console.log(this._view._sliderScale, 'scale');
-
       this._view._sliderScale.style.display = ' none';
     } else {
       this._view._sliderScale.style.display = '';
+    }
+  }
+  public bar(option: boolean) {
+    if (!option) {
+      this._view._sliderRange.style.display = ' none';
+    } else {
+      this._view._sliderRange.style.display = '';
+    }
+  }
+  public tip(option: boolean) {
+    if (!option) {
+      this._view._sliderTooltip.style.display = ' none';
+    } else {
+      this._view._sliderTooltip.style.display = '';
+    }
+  }
+  public range(option: boolean) {
+    if (option) {
+      if (this._model._settings.type != 'double') {
+        this._model._settings.type = 'double';
+        this._pres.addHandle();
+        console.log('initiating on mouse down');
+
+        this._pres.onMouseDown();
+      }
+    } else {
+      this._model._settings.type = 'single';
+      this._pres.removeHandle();
     }
   }
   private changeStyles(item) {
