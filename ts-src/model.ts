@@ -21,7 +21,7 @@ type IStyles = {
 type Settings = {
   className: string;
   type: string;
-  position: string;
+  orientation: string;
   stepSize: number;
   pxPerValue: number;
   marginLeft: number;
@@ -102,7 +102,7 @@ class Model extends EventMixin {
 
   public _settings: Settings = {
     className: 'slider',
-    position: 'vertical',
+    orientation: 'vertical',
     type: 'double',
     stepSize: 90,
     toolTip: true,
@@ -126,6 +126,11 @@ class Model extends EventMixin {
       sliderHeight: 200,
     },
   };
+  constructor(options, item) {
+    super();
+    this._item = item;
+    this.initOptions(options);
+  }
 
   public initOptions(options: { [key: string]: string | number }) {
     Object.keys(options).forEach((key: string): void => {
@@ -145,13 +150,13 @@ class Model extends EventMixin {
     this.coords.marginLeft = this._settings.marginLeft;
     this.coords.marginTop = this._settings.marginTop;
 
-    if (this._settings.position == 'horizontal') {
+    if (this._settings.orientation == 'horizontal') {
       this.coords.mainMax = this._settings.mainMax;
       this.coords.mainAxis = 'x';
       if (this._settings.altDrag) {
         this.coords.valuePerPx = diff / this._settings.mainMax;
       }
-    } else if (this._settings.position == 'vertical') {
+    } else if (this._settings.orientation == 'vertical') {
       this.coords.mainAxis = 'y';
       this.coords.valuePerPx = diff / this._settings.styles.sliderHeight;
       this.coords.mainMax = this._settings.styles.sliderHeight;
@@ -161,16 +166,16 @@ class Model extends EventMixin {
     this.validateOptions();
   }
 
-  private validateOptions() {
+  public validateOptions() {
     // fixing user's mistake in input/contradictions in input
     if (
-      this._settings.position === 'vertical' &&
+      this._settings.orientation === 'vertical' &&
       this._settings.styles.sliderWidth > this._settings.styles.sliderHeight
     ) {
       [this._settings.styles.sliderWidth, this._settings.styles.sliderHeight] =
         [this._settings.styles.sliderHeight, this._settings.styles.sliderWidth];
     } else if (
-      this._settings.position == 'horizontal' &&
+      this._settings.orientation == 'horizontal' &&
       this._settings.styles.sliderWidth < this._settings.styles.sliderHeight
     ) {
       [this._settings.styles.sliderWidth, this._settings.styles.sliderHeight] =
@@ -199,10 +204,10 @@ class Model extends EventMixin {
     let axis = 0;
     let margin = 0;
 
-    if (this._settings.position == 'vertical') {
+    if (this._settings.orientation == 'vertical') {
       axis = data.y;
       margin = this.coords.marginTop;
-    } else if (this._settings.position == 'horizontal') {
+    } else if (this._settings.orientation == 'horizontal') {
       axis = data.x;
       margin = this.coords.marginLeft;
     }
@@ -232,21 +237,15 @@ class Model extends EventMixin {
     }
   }
 
-  constructor(options, item) {
-    super();
-    this._item = item;
-    this.initOptions(options);
-  }
-
   public getOption(option: string) {
     return this._settings.styles[option];
   }
 
   public setOptions(options: { [key: string]: string | number }) {
     this.initOptions(options);
-    if (this._settings.built) {
-      this.trigger('settings changed');
-    }
+    // if (this._settings.built) {
+    //   this.trigger('settings changed');
+    // }
   }
 
   public getOptions() {

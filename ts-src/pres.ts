@@ -20,7 +20,7 @@ class Pres extends EventMixin {
 
   pxOptions: Array<string> = ['height', 'width'];
 
-  position: string;
+  orientation: string;
 
   built: boolean;
 
@@ -28,8 +28,7 @@ class Pres extends EventMixin {
     super();
     this._model = model;
     this._item = item;
-    this.position = this._model._settings.position;
-    this._model.on('settings changed', this.init);
+    this._model.on('settings changed', this.init.bind(this));
   }
 
   public getView(view: View): void {
@@ -39,12 +38,16 @@ class Pres extends EventMixin {
   }
 
   public init(): void {
+    this.orientation = this._model._settings.orientation;
+
+    this._model.validateOptions();
     const options = this.convertOptions(this._model.getOptions());
     const behavior = this._model.getSettings();
+    console.log('🚀 ~ Pres ~ init ~ behavior', behavior);
     const sliderObject = this._view.show(
       this.makeSlider(behavior),
       options,
-      this._model._settings.position
+      this._model._settings.orientation
     );
     const { slider, range, handles, wrapper } = sliderObject;
     this._slider = slider;
@@ -52,7 +55,7 @@ class Pres extends EventMixin {
     this._sliderHandles = handles;
     this._sliderMain = wrapper;
     let mainMax: number;
-    if (this._model.getSettings().position === 'horizontal') {
+    if (behavior.orientation === 'horizontal') {
       mainMax =
         this._slider.offsetWidth - this._sliderHandles[0].offsetWidth / 2;
     } else {
@@ -72,14 +75,14 @@ class Pres extends EventMixin {
 
   public makeSlider(behavior: Settings): HTMLElement {
     let direction: string;
-    let position: string;
+    let orientation: string;
     let widthOrHeight: number;
-    if (behavior.position === 'horizontal') {
+    if (behavior.orientation === 'horizontal') {
       widthOrHeight = this._model.getOptions().sliderWidth;
-      position = 'horizontal';
+      orientation = 'horizontal';
       direction = 'left';
     } else {
-      position = 'vertical';
+      orientation = 'vertical';
       widthOrHeight = this._model.getOptions().sliderHeight;
       direction = 'top';
     }
@@ -94,18 +97,18 @@ class Pres extends EventMixin {
     range.classList.add('slider-range');
 
     const handle = document.createElement('div');
-    if (this.position === 'horizontal') {
+    if (this.orientation === 'horizontal') {
       range.style.width = '0px';
       handle.style[direction] = '0px';
-    } else if (this.position === 'vertical') {
+    } else if (this.orientation === 'vertical') {
       range.style.height = '0px';
       handle.style[direction] = '0px';
     }
     const tool = document.createElement('div');
     const tooltipContainer = document.createElement('div');
-    tooltipContainer.className = `tooltipContainer tooltipContainer--${position}`;
+    tooltipContainer.className = `tooltipContainer tooltipContainer--${orientation}`;
     const tooltipStick = document.createElement('div');
-    tooltipStick.className = `tooltipStick tooltipStick--${position}`;
+    tooltipStick.className = `tooltipStick tooltipStick--${orientation}`;
     tooltipContainer.append(tooltipStick);
     tooltipContainer.append(tool);
 
@@ -120,10 +123,10 @@ class Pres extends EventMixin {
     main.append(max);
     slider.appendChild(range);
     slider.appendChild(handle);
-    handle.classList.add(`slider-handle--${position}`);
+    handle.classList.add(`slider-handle--${orientation}`);
 
-    container.className = `slider-container slider-container--${position}`;
-    tool.className = `tooltip tooltip--${position}`;
+    container.className = `slider-container slider-container--${orientation}`;
+    tool.className = `tooltip tooltip--${orientation}`;
 
     if (behavior.type !== 'single') {
       const handleCLone: HTMLElement = handle.cloneNode(true) as HTMLElement;
@@ -141,21 +144,21 @@ class Pres extends EventMixin {
 
       container.append(marker);
 
-      min.classList.add(`slider-min--${position}`);
-      max.classList.add(`slider-max--${position}`);
-      main.classList.add(`slider-main--${position}`);
-      marker.classList.add(`slider-marker--${position}`);
+      min.classList.add(`slider-min--${orientation}`);
+      max.classList.add(`slider-max--${orientation}`);
+      main.classList.add(`slider-main--${orientation}`);
+      marker.classList.add(`slider-marker slider-marker--${orientation}`);
     }
 
     return main;
   }
 
   private makeMarker(behavior, widthOrHeight) {
-    const position = this.position;
+    const orientation = this.orientation;
     let marginCss: string;
-    if (position === 'horizontal') {
+    if (orientation === 'horizontal') {
       marginCss = 'marginLeft';
-    } else if (position === 'vertical') {
+    } else if (orientation === 'vertical') {
       marginCss = 'marginTop';
     }
     const markerDiv = document.createElement('div');
@@ -179,8 +182,8 @@ class Pres extends EventMixin {
       const margin = (widthOrHeight / majorMarkers) * 0.0027 * widthOrHeight; // maybe will need to make new margin for altdrag m=math.trunc((v*ppv)/ss)
       const markerValue = document.createElement('label');
       markerValue.className = 'jsSlider-clickable marker-value';
-      markerDiv.classList.add(`slider-marker--${position}`);
-      majorMarker.classList.add(`marker--major--${position}`);
+      markerDiv.classList.add(`slider-marker--${orientation}`);
+      majorMarker.classList.add(`marker--major--${orientation}`);
 
       if (i === 0) {
         majorMarker.style[marginCss] = '0';

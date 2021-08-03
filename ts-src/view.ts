@@ -6,7 +6,7 @@ class View extends EventMixin {
   _slider: HTMLElement;
 
   _sliderMain: HTMLElement;
-
+  _sliderScale: HTMLElement;
   _sliderRange: HTMLElement;
 
   _sliderHandles: HTMLElement[];
@@ -24,7 +24,7 @@ class View extends EventMixin {
 
   _item: HTMLElement;
 
-  position: string;
+  orientation: string;
 
   constructor(pres, options, item, model: Model) {
     super();
@@ -38,7 +38,7 @@ class View extends EventMixin {
     // const className = this.trigger('settingRequired', 'classsName') //TODO why this doesnt work
     this.fetchDivs(pos);
     this.initiateOptions(options);
-    this.position = pos;
+    this.orientation = pos;
     if (this._sliderTooltip.getBoundingClientRect().left < 0) {
       this._sliderContainer.style.justifyContent = 'space-between';
       this._sliderContainer.style.flexDirection = 'row-reverse';
@@ -64,7 +64,7 @@ class View extends EventMixin {
     };
   }
 
-  private fetchDivs(position) {
+  private fetchDivs(orientation) {
     this._sliderMain = Array.from(
       this._item.getElementsByClassName(
         `${this._model._settings.className}-main`
@@ -82,13 +82,13 @@ class View extends EventMixin {
     )[0];
     this._sliderHandles = Array.from(
       this._item.getElementsByClassName(
-        `${this._model._settings.className}-handle--${position}`
+        `${this._model._settings.className}-handle--${orientation}`
       ) as HTMLCollectionOf<HTMLElement>
     );
 
     this._sliderTooltip = Array.from(
       this._item.getElementsByClassName(
-        `tooltip--${position}`
+        `tooltip--${orientation}`
       ) as HTMLCollectionOf<HTMLElement>
     )[0];
 
@@ -103,6 +103,11 @@ class View extends EventMixin {
         `tooltipContainer`
       ) as HTMLCollectionOf<HTMLElement>
     );
+    this._sliderScale = Array.from(
+      this._item.getElementsByClassName(
+        `slider-marker`
+      ) as HTMLCollectionOf<HTMLElement>
+    )[0];
     const valueDivs: { div: HTMLElement; value: number }[] = Array.from(
       this._item.getElementsByClassName('jsSlider-clickable')
     ).map((item: HTMLElement) => {
@@ -151,7 +156,7 @@ class View extends EventMixin {
     const range = this._sliderRange;
 
     const toolTip = handle.getElementsByClassName(
-      `tooltip--${this.position}`
+      `tooltip--${this.orientation}`
     )[0];
     const newCoords = Object.assign(data, {
       shiftX: shiftX,
@@ -334,7 +339,7 @@ class View extends EventMixin {
 
   private convertValues(valueObject: Object) {
     for (const [key, value] of Object.entries(valueObject))
-      if (key == 'position' || key == 'mainAxis') {
+      if (key == 'orientation' || key == 'mainAxis') {
         let offset: string;
         let widthOrHeight: string;
         let direction: string;
