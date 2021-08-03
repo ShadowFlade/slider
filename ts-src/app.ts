@@ -27,6 +27,11 @@ class App {
   }
   public scale(option: boolean) {
     if (!option) {
+      console.log(this._view._sliderScale, 'scale');
+
+      this._view._sliderScale.style.display = ' none';
+    } else {
+      this._view._sliderScale.style.display = '';
     }
   }
   private changeStyles(item) {

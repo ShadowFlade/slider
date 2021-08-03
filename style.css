@@ -50,15 +50,14 @@
 .slider-max--horizontal {
   margin-left: 5px;
   transform: translateY(-50%);
+  left: 100%;
 }
 /* .slider-max--vertical {
 } */
 
 .slider-min--vertical {
   margin-right: 5px;
-  transform: translate(-100%, -50%);
-  transform: translate(0, 0);
-  /* //TODO разные транслейты перебивают друг друга(translateX and translateY) */
+  transform: translate(-10%, -120%);
 }
 
 .slider-min--horizontal {
@@ -68,6 +67,7 @@
 .values {
   display: flex;
   justify-content: flex-start;
+  position: absolute;
 }
 .slider-container {
   width: auto;
@@ -84,9 +84,11 @@
 } */
 .slider-main--vertical {
   display: inline-block;
+  position: relative;
 }
 .slider-main--horizontal {
-  display: flex;
+  display: inline-flex;
+  position: relative;
 }
 .slider-marker--vertical {
   display: flex;

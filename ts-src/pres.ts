@@ -147,7 +147,7 @@ class Pres extends EventMixin {
       min.classList.add(`slider-min--${orientation}`);
       max.classList.add(`slider-max--${orientation}`);
       main.classList.add(`slider-main--${orientation}`);
-      marker.classList.add(`slider-marker slider-marker--${orientation}`);
+      marker.className = `slider-marker slider-marker--${orientation}`;
     }
 
     return main;

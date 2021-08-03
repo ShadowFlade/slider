@@ -9,6 +9,10 @@ $.fn.slider = function (this: JQuery, options: object): JQuery {
       app.tilt();
       return this;
     };
+    $.fn.slider.scale = (option: boolean) => {
+      app.scale(option);
+      return this;
+    };
   });
 };
 $('#slider').slider({});
