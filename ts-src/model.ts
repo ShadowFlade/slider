@@ -20,8 +20,8 @@ type IStyles = {
 };
 type Settings = {
   className: string;
-  type: string;
-  orientation: string;
+  type: 'single' | 'double';
+  orientation: 'horizontal' | 'vertical';
   stepSize: number;
   pxPerValue: number;
   marginLeft: number;
@@ -239,6 +239,24 @@ class Model extends EventMixin {
 
   public getOption(option: string) {
     return this._settings.styles[option];
+  }
+  public calcMain(value, target: HTMLElement) {
+    let nValue;
+    if (value % this.coords.stepSize == 0) {
+      nValue = value;
+    } else {
+      nValue = this.coords.stepSize * Math.trunc(value / this.coords.stepSize);
+    }
+
+    const main = (value * this.coords.pxPerValue) / this.coords.stepSize;
+    this.coords.main = main;
+    this.coords.value = nValue;
+    this.coords.target = target;
+    if (this.validate(this.coords)) {
+      this.trigger('coords changed', this.coords);
+      return;
+    }
+    return;
   }
 
   public setOptions(options: { [key: string]: string | number }) {

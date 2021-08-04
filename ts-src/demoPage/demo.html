@@ -10,90 +10,94 @@
     <title>demo</title>
   </head>
   <body>
-    <div id="qwe"></div>
-    <div class="panel">
-      <div class="panel__title">Settings</div>
-      <div class="panel__content">
-        <div class="panel__digits">
-          <div class="panel__item">
-            <div class="item">
-              <div class="label limits__label">min</div>
-              <input
-                placeholder="0"
-                type="number"
-                class="value limits__value"
-              />
-            </div>
-            <div class="item">
-              <div class="label limits__label">max</div>
-              <input
-                placeholder="99999"
-                type="number"
-                class="value limits__value"
-              />
-            </div>
-          </div>
-          <div class="panel__item">
-            <div class="item panel__fromto__item">
-              <div class="label">from</div>
-              <input placeholder="100" type="number" class="value" />
-            </div>
-            <div class="item panel__fromto__item">
-              <div class="label">to</div>
-              <input placeholder="300" type="number" class="value" disabled />
-            </div>
-          </div>
-
-          <div class="panel__item">
-            <div class="item">
-              <div class="label">step</div>
-              <input placeholder="100" type="number" class="value" />
-            </div>
-          </div>
-        </div>
-        <div class="panel__settings">
-          <div class="switch__item">
-            <label class="switch__label" for="orientation"> orientation </label>
-            <div class="switch">
-              <div class="container">
+    <div class="content">
+      <div id="qwe"></div>
+      <div class="panel">
+        <div class="panel__title">Settings</div>
+        <div class="panel__content">
+          <div class="panel__digits">
+            <div class="panel__item">
+              <div class="item">
+                <div class="label limits__label">min</div>
                 <input
-                  type="checkbox"
-                  onchange=""
-                  id="orientation"
-                  class="toggle-button"
+                  placeholder="0"
+                  type="number"
+                  class="value limits__value"
+                />
+              </div>
+              <div class="item">
+                <div class="label limits__label">max</div>
+                <input
+                  placeholder="99999"
+                  type="number"
+                  class="value limits__value"
                 />
               </div>
             </div>
-          </div>
-          <div class="switch__item">
-            <label class="switch__label" for="range"> range </label>
-            <div class="switch">
-              <div class="container">
-                <input type="checkbox" id="range" class="toggle-button" />
+            <div class="panel__item">
+              <div class="item panel__fromto__item">
+                <div class="label">from</div>
+                <input placeholder="100" type="number" class="value" />
+              </div>
+              <div class="item panel__fromto__item">
+                <div class="label">to</div>
+                <input placeholder="300" type="number" class="value" disabled />
+              </div>
+            </div>
+
+            <div class="panel__item">
+              <div class="item">
+                <div class="label">step</div>
+                <input placeholder="100" type="number" class="value" />
               </div>
             </div>
           </div>
-          <div class="switch__item">
-            <label class="switch__label" for="scale"> scale </label>
-            <div class="switch">
-              <div class="container">
-                <input type="checkbox" id="scale" class="toggle-button" />
+          <div class="panel__settings">
+            <div class="switch__item">
+              <label class="switch__label" for="orientation">
+                orientation
+              </label>
+              <div class="switch">
+                <div class="container">
+                  <input
+                    type="checkbox"
+                    onchange=""
+                    id="orientation"
+                    class="toggle-button"
+                  />
+                </div>
               </div>
             </div>
-          </div>
-          <div class="switch__item">
-            <label class="switch__label" for="bar"> bar </label>
-            <div class="switch">
-              <div class="container">
-                <input type="checkbox" id="bar" class="toggle-button" />
+            <div class="switch__item">
+              <label class="switch__label" for="range"> range </label>
+              <div class="switch">
+                <div class="container">
+                  <input type="checkbox" id="range" class="toggle-button" />
+                </div>
               </div>
             </div>
-          </div>
-          <div class="switch__item">
-            <label class="switch__label" for="tip"> tip </label>
-            <div class="switch">
-              <div class="container">
-                <input type="checkbox" id="tip" class="toggle-button" />
+            <div class="switch__item">
+              <label class="switch__label" for="scale"> scale </label>
+              <div class="switch">
+                <div class="container">
+                  <input type="checkbox" id="scale" class="toggle-button" />
+                </div>
+              </div>
+            </div>
+            <div class="switch__item">
+              <label class="switch__label" for="bar"> bar </label>
+              <div class="switch">
+                <div class="container">
+                  <input type="checkbox" id="bar" class="toggle-button" />
+                </div>
+              </div>
+            </div>
+            <div class="switch__item">
+              <label class="switch__label" for="tip"> tip </label>
+              <div class="switch">
+                <div class="container">
+                  <input type="checkbox" id="tip" class="toggle-button" />
+                </div>
               </div>
             </div>
           </div>

@@ -25,6 +25,10 @@ $.fn.slider = function (this: JQuery, options: object): JQuery {
       app.range(option);
       return this;
     };
+    $.fn.slider.setValue = (value: number, number: 1 | 2) => {
+      app.setValue(value, number);
+      return this;
+    };
   });
 };
 $('#slider').slider({});

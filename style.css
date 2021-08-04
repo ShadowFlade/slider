@@ -95,7 +95,7 @@
   justify-content: space-evenly;
   position: relative;
   flex-direction: column;
-  left: 10px;
+  left: 5px;
 }
 
 .slider-marker--horizontal {

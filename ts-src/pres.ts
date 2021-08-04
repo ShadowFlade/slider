@@ -1,6 +1,8 @@
 import EventMixin from './eventemitter';
 import Model, { Settings } from './model';
 import View from './view';
+type HandleNum = 1 | 2;
+
 class Pres extends EventMixin {
   _item: Element;
 
@@ -317,7 +319,6 @@ class Pres extends EventMixin {
 
   public onMouseDown(): void {
     const handles = this._sliderHandles;
-    console.log(handles, 'handles from pres');
 
     const container = this._sliderContainer;
     const slider = this._slider;
@@ -382,6 +383,16 @@ class Pres extends EventMixin {
       return;
     }
     this._model.renew(data);
+  }
+
+  public setValue(value: number, target: HandleNum) {
+    let handle;
+    if (target == 1) {
+      handle = this._sliderHandles[0];
+    } else if (target == 2) {
+      handle = this._sliderHandles[1];
+    }
+    this._model.calcMain(value, handle);
   }
 
   getSettings() {

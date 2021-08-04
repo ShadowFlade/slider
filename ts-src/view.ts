@@ -42,6 +42,14 @@ class View extends EventMixin {
     if (this._sliderTooltip.getBoundingClientRect().left < 0) {
       this._sliderContainer.style.justifyContent = 'space-between';
       this._sliderContainer.style.flexDirection = 'row-reverse';
+      const min = Array.from(
+        this._item.getElementsByClassName(
+          'slider-min--vertical'
+        ) as HTMLCollectionOf<HTMLElement>
+      )[0];
+      min.style.transform = 'translate(150%, -120%)';
+      min.style.left = '10px';
+      this._sliderScale.style.left = '-5px';
       this._tooltipContainer.forEach((item) => {
         item.style.flexDirection = 'row';
         item.style.right = 'auto';
@@ -127,8 +135,6 @@ class View extends EventMixin {
           if (option.toString().includes('slider')) {
             this._slider.style[i] = j;
           } else if (option.toString().includes('progressBar')) {
-            console.log(j, 'suspect 1');
-
             this._sliderRange.style[i] = j;
           } else if (option.toString().includes('markUp')) {
             this._slider.style[i] = j;

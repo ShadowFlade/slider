@@ -51,7 +51,6 @@ class App {
       if (this._model._settings.type != 'double') {
         this._model._settings.type = 'double';
         this._pres.addHandle();
-        console.log('initiating on mouse down');
 
         this._pres.onMouseDown();
       }
@@ -59,6 +58,9 @@ class App {
       this._model._settings.type = 'single';
       this._pres.removeHandle();
     }
+  }
+  public setValue(value: number, target: 1 | 2) {
+    this._pres.setValue(value, target);
   }
   private changeStyles(item) {
     const classes = item.className;
