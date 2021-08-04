@@ -69,9 +69,20 @@ class App {
   public setLimits(min: number, max: number) {
     this._model._settings.maxValue = max;
     this._model._settings.minValue = min;
-    console.log('im setting');
 
     // this._model.initOptions({});
+    this._pres.init();
+    this._pres.onMouseDown();
+  }
+  public isRange() {
+    if (this._model._settings.type == 'double') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  public setStep(step) {
+    this._model._settings.stepSize = Number(step);
     this._pres.init();
     this._pres.onMouseDown();
   }

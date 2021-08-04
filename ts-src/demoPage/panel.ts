@@ -58,12 +58,55 @@ const minItem = document.getElementById('min') as HTMLInputElement;
 const maxItem = document.getElementById('max') as HTMLInputElement;
 let min: number = Number(minItem.value);
 let max: number = Number(maxItem.value);
-function handleChange(this: HTMLFormElement, e) {
+function handleChangeLimits(this: HTMLFormElement, e) {
   if (e.keyCode == 13) {
     //keycode for enter is 13
     $('qwe').slider.setLimits(minItem.value, maxItem.value);
     return false;
   }
 }
-maxItem.onkeydown = handleChange;
-minItem.onkeydown = handleChange;
+maxItem.onkeydown = handleChangeLimits;
+minItem.onkeydown = handleChangeLimits;
+
+const from = document.getElementById('from') as HTMLInputElement;
+const to = document.getElementById('to') as HTMLInputElement;
+
+from.onkeydown = handleChangeFrom;
+to.onkeydown = handleChangeTo;
+function handleChangeFrom(e) {
+  if (e.keyCode == 13) {
+    //keycode for enter is 13
+    console.log(from.value);
+
+    $('qwe').slider.setValue(from.value, 1);
+    return false;
+  }
+}
+function handleChangeTo(e) {
+  if (e.keyCode == 13) {
+    //keycode for enter is 13
+    console.log(to.value);
+
+    $('qwe').slider.setValue(to.value, 2);
+    return false;
+  }
+}
+const step = document.getElementById('step') as HTMLInputElement;
+step.onkeydown = handleStep;
+function handleStep(e) {
+  if (e.keyCode == 13) {
+    //keycode for enter is 13
+    console.log(step.value);
+
+    $('qwe').slider.setStep(step.value);
+    return false;
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  if ($('#qwe').slider.isRange()) {
+    to.disabled = false;
+  } else {
+    to.disabled = true;
+  }
+});

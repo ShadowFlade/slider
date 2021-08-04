@@ -34,6 +34,15 @@ $.fn.slider = function (this: JQuery, options: object): JQuery {
       app.setLimits(min, max);
       return this;
     };
+    $.fn.slider.isRange = () => {
+      app.isRange();
+      return this;
+    };
+    $.fn.slider.setStep = (value) => {
+      $(this).html('');
+      app.setStep(value);
+      return this;
+    };
   });
 };
 $('#slider').slider({});
