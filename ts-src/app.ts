@@ -69,6 +69,9 @@ class App {
   public setLimits(min: number, max: number) {
     this._model._settings.maxValue = max;
     this._model._settings.minValue = min;
+    console.log('im setting');
+
+    // this._model.initOptions({});
     this._pres.init();
     this._pres.onMouseDown();
   }

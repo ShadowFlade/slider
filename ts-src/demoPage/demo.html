@@ -16,10 +16,17 @@
         <div class="panel__title">Settings</div>
         <div class="panel__content">
           <div class="panel__digits">
-            <div class="panel__item">
+            <form
+              name="limits"
+              class="panel__item"
+              id="limits"
+              style="display: flex; margin-top: 10px"
+              onsubmit="submit"
+            >
               <div class="item">
                 <div class="label limits__label">min</div>
                 <input
+                  id="min"
                   placeholder="0"
                   type="number"
                   class="value limits__value"
@@ -28,12 +35,14 @@
               <div class="item">
                 <div class="label limits__label">max</div>
                 <input
+                  id="max"
                   placeholder="99999"
                   type="number"
                   class="value limits__value"
                 />
               </div>
-            </div>
+            </form>
+
             <div class="panel__item">
               <div class="item panel__fromto__item">
                 <div class="label">from</div>
@@ -72,7 +81,12 @@
               <label class="switch__label" for="range"> range </label>
               <div class="switch">
                 <div class="container">
-                  <input type="checkbox" id="range" class="toggle-button" />
+                  <input
+                    type="checkbox"
+                    id="range"
+                    class="toggle-button"
+                    checked
+                  />
                 </div>
               </div>
             </div>
@@ -80,7 +94,12 @@
               <label class="switch__label" for="scale"> scale </label>
               <div class="switch">
                 <div class="container">
-                  <input type="checkbox" id="scale" class="toggle-button" />
+                  <input
+                    type="checkbox"
+                    id="scale"
+                    class="toggle-button"
+                    checked
+                  />
                 </div>
               </div>
             </div>

@@ -396,6 +396,7 @@ class Pres extends EventMixin {
         throw new ReferenceError('Can not reference absent handle');
       }
     }
+
     this._model.calcMain(value, handle);
   }
 
