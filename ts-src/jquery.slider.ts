@@ -29,6 +29,11 @@ $.fn.slider = function (this: JQuery, options: object): JQuery {
       app.setValue(value, number);
       return this;
     };
+    $.fn.slider.setLimits = (min: number, max: number) => {
+      $(this).html('');
+      app.setLimits(min, max);
+      return this;
+    };
   });
 };
 $('#slider').slider({});

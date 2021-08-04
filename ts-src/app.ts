@@ -41,9 +41,13 @@ class App {
   }
   public tip(option: boolean) {
     if (!option) {
-      this._view._sliderTooltip.style.display = ' none';
+      this._view._sliderTooltipContainers.forEach((item) => {
+        item.style.display = 'none';
+      });
     } else {
-      this._view._sliderTooltip.style.display = '';
+      this._view._sliderTooltipContainers.forEach((item) => {
+        item.style.display = '';
+      });
     }
   }
   public range(option: boolean) {
@@ -61,6 +65,12 @@ class App {
   }
   public setValue(value: number, target: 1 | 2) {
     this._pres.setValue(value, target);
+  }
+  public setLimits(min: number, max: number) {
+    this._model._settings.maxValue = max;
+    this._model._settings.minValue = min;
+    this._pres.init();
+    this._pres.onMouseDown();
   }
   private changeStyles(item) {
     const classes = item.className;

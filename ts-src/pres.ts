@@ -390,7 +390,11 @@ class Pres extends EventMixin {
     if (target == 1) {
       handle = this._sliderHandles[0];
     } else if (target == 2) {
-      handle = this._sliderHandles[1];
+      if (this._model._settings.type == 'double') {
+        handle = this._sliderHandles[1];
+      } else {
+        throw new ReferenceError('Can not reference absent handle');
+      }
     }
     this._model.calcMain(value, handle);
   }

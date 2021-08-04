@@ -8,7 +8,7 @@ class View extends EventMixin {
   _sliderMain: HTMLElement;
   _sliderScale: HTMLElement;
   _sliderRange: HTMLElement;
-
+  _sliderTooltipContainers: HTMLElement[];
   _sliderHandles: HTMLElement[];
   _sliderContainer: HTMLElement;
   _tooltipContainer: HTMLElement[];
@@ -47,7 +47,7 @@ class View extends EventMixin {
           'slider-min--vertical'
         ) as HTMLCollectionOf<HTMLElement>
       )[0];
-      min.style.transform = 'translate(150%, -120%)';
+      // min.style.transform = 'translate(150%, -120%)';
       min.style.left = '10px';
       this._sliderScale.style.left = '-5px';
       this._tooltipContainer.forEach((item) => {
@@ -116,6 +116,11 @@ class View extends EventMixin {
         `slider-marker`
       ) as HTMLCollectionOf<HTMLElement>
     )[0];
+    this._sliderTooltipContainers = Array.from(
+      this._item.getElementsByClassName(
+        'tooltipContainer'
+      ) as HTMLCollectionOf<HTMLElement>
+    );
     const valueDivs: { div: HTMLElement; value: number }[] = Array.from(
       this._item.getElementsByClassName('jsSlider-clickable')
     ).map((item: HTMLElement) => {
