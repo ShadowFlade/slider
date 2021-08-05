@@ -4,10 +4,8 @@ import View from './view';
 import { Ori } from './view';
 function elemsDiff(arr: number[]) {
   let res = [];
-  for (let i = 0; i < arr.length - 1; i += 1) {
-    const value1 = +arr[i + 1];
-    const value2 = +arr[i];
-    const result = value1 - value2;
+  for (let i = 0; i < arr.length + 1; i += 1) {
+    const result = +arr[i + 1] - +arr[i];
     res.push(result);
   }
 
@@ -265,7 +263,6 @@ class Pres extends EventMixin {
       });
       majorMarkers = this._model._settings._maxPins;
     }
-
     const diff = this._model._settings.maxMinDifference;
     const ss = this._model._settings.stepSize;
     const maxPins = this._model._settings._maxPins;
@@ -293,9 +290,9 @@ class Pres extends EventMixin {
     const sumOfDiff = mainsDiff.reduce((acc, value) => {
       return acc + value;
     });
+
     const avg = Number(sumOfDiff) / mainsDiff.length;
     const margin = avg;
-
     return { valueArr, majorMarkers, altDrag, margin };
   }
 

@@ -188,10 +188,7 @@ class Model extends EventMixin {
 
   private validate(data) {
     //TODO dont mutate data
-
     if (data.main != data.prevMain) {
-      console.log(data.main);
-
       if (data.main >= data.mainMax) {
         data.main = data.mainMax;
         data.value = data.maxValue; // TODO figure out why we need this workaround,main mean does not work
