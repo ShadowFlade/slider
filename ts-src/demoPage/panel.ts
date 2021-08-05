@@ -76,7 +76,6 @@ to.onkeydown = handleChangeTo;
 function handleChangeFrom(e) {
   if (e.keyCode == 13) {
     //keycode for enter is 13
-    console.log(from.value);
 
     $('qwe').slider.setValue(from.value, 1);
     return false;
@@ -85,7 +84,6 @@ function handleChangeFrom(e) {
 function handleChangeTo(e) {
   if (e.keyCode == 13) {
     //keycode for enter is 13
-    console.log(to.value);
 
     $('qwe').slider.setValue(to.value, 2);
     return false;
@@ -96,7 +94,6 @@ step.onkeydown = handleStep;
 function handleStep(e) {
   if (e.keyCode == 13) {
     //keycode for enter is 13
-    console.log(step.value);
 
     $('qwe').slider.setStep(step.value);
     return false;

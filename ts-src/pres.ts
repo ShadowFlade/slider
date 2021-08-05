@@ -1,6 +1,16 @@
 import EventMixin from './eventemitter';
 import Model, { Settings } from './model';
 import View from './view';
+import { Ori } from './view';
+function elemsDiff(arr: number[]) {
+  let res = [];
+  for (let i = 0; i < arr.length + 1; i += 1) {
+    const result = +arr[i + 1] - +arr[i];
+    res.push(result);
+  }
+
+  return res;
+}
 type HandleNum = 1 | 2;
 
 class Pres extends EventMixin {
@@ -41,40 +51,55 @@ class Pres extends EventMixin {
 
   public init(): void {
     this.orientation = this._model._settings.orientation;
+    let widthOrHeight;
+    if (this.orientation == 'horizontal') {
+      widthOrHeight = this._model.getOptions().sliderWidth;
+    } else if (this.orientation == 'vertical') {
+      widthOrHeight = this._model.getOptions().sliderHeight;
+    }
 
     this._model.validateOptions();
     const options = this.convertOptions(this._model.getOptions());
     const behavior = this._model.getSettings();
-    const sliderObject = this._view.show(
-      this.makeSlider(behavior),
-      options,
-      this._model._settings.orientation
-    );
-    const { slider, range, handles, wrapper } = sliderObject;
-    this._slider = slider;
-    this._sliderRange = range;
-    this._sliderHandles = handles;
-    this._sliderMain = wrapper;
+
+    const { main: sliderMain, container } = this.makeSlider(behavior);
+    this._slider = sliderMain;
+    const { marginLeft, marginTop, handles, offsetWidth, offsetHeight } =
+      this._view.showSlider(sliderMain, this.orientation as Ori);
+    this._sliderHandles = handles as HTMLElement[];
     let mainMax: number;
     if (behavior.orientation === 'horizontal') {
-      mainMax =
-        this._slider.offsetWidth - this._sliderHandles[0].offsetWidth / 2;
+      mainMax = offsetWidth - this._sliderHandles[0].offsetWidth / 2;
     } else {
-      mainMax = this._slider.offsetHeight;
+      mainMax = offsetWidth - this._sliderHandles[0].offsetWidth / 2;
     }
-    const marginLeft = this._slider.getBoundingClientRect().left;
-    const marginTop = this._slider.getBoundingClientRect().top;
+    console.log(
+      mainMax,
+      sliderMain.offsetWidth,
+      sliderMain.offsetHeight,
+      ':main max from pres'
+    );
+
     this._model.setOptions({
       mainMax,
       marginLeft,
       marginTop,
     });
+    if (behavior.marker) {
+      const marker = this.makeMarker(behavior, widthOrHeight);
+      container.append(marker);
+    }
+
+    this._view.show(options, this._model._settings.orientation);
 
     this.built = true;
     this._model._settings.built = true;
   }
 
-  public makeSlider(behavior: Settings): HTMLElement {
+  public makeSlider(behavior: Settings): {
+    main: HTMLElement;
+    container: HTMLElement;
+  } {
     let direction: string;
     let orientation: string;
     let widthOrHeight: number;
@@ -124,7 +149,7 @@ class Pres extends EventMixin {
     main.append(max);
     slider.appendChild(range);
     slider.appendChild(handle);
-    handle.classList.add(`slider-handle--${orientation}`);
+    handle.className = `slider-handle slider-handle--${orientation}`;
 
     container.className = `slider-container slider-container--${orientation}`;
     tool.className = `tooltip tooltip--${orientation}`;
@@ -136,19 +161,61 @@ class Pres extends EventMixin {
     min.dataset.value = min.textContent;
     max.textContent = String(behavior.maxValue);
     max.dataset.value = max.textContent;
+    min.classList.add(`slider-min--${orientation}`);
+    max.classList.add(`slider-max--${orientation}`);
+    main.classList.add(`slider-main--${orientation}`);
 
-    if (behavior.marker) {
-      marker = this.makeMarker(behavior, widthOrHeight);
+    return { main, container };
+  }
 
-      container.append(marker);
-
-      min.classList.add(`slider-min--${orientation}`);
-      max.classList.add(`slider-max--${orientation}`);
-      main.classList.add(`slider-main--${orientation}`);
-      marker.className = `slider-marker slider-marker--${orientation}`;
+  private makeMarker(behavior, widthOrHeight) {
+    const orientation = this.orientation;
+    let marginCss: string;
+    if (orientation === 'horizontal') {
+      marginCss = 'marginLeft';
+    } else if (orientation === 'vertical') {
+      marginCss = 'marginTop';
     }
+    const markerDiv = document.createElement('div');
 
-    return main;
+    const { valueArr, majorMarkers, altDrag } = this.calcPins(
+      behavior,
+      widthOrHeight
+    );
+    const listOfValues = valueArr;
+    let j = 0;
+    for (let i = 0; i < majorMarkers; i += 1) {
+      const majorMarker = document.createElement('div');
+      markerDiv.append(majorMarker);
+      const margin = (widthOrHeight / majorMarkers) * 0.0027 * widthOrHeight; // maybe will need to make new margin for altdrag m=math.trunc((v*ppv)/ss)
+      const markerValue = document.createElement('label');
+      markerValue.className = 'jsSlider-clickable marker-value';
+      markerDiv.classList.add(`slider-marker--${orientation}`);
+      majorMarker.classList.add(`marker--major--${orientation}`);
+
+      if (i === 0) {
+        majorMarker.style[marginCss] = '0';
+      } else {
+        majorMarker.style[marginCss] = margin + 'px';
+      }
+
+      if (!altDrag) {
+        const value = behavior.stepSize * (i + 1);
+        majorMarker.dataset.value = value.toString();
+        markerValue.dataset.value = value.toString();
+        markerValue.textContent = value.toString();
+        majorMarker.append(markerValue);
+      } else {
+        const value = listOfValues[j];
+        majorMarker.dataset.value = value.toString();
+        markerValue.dataset.value = value.toString();
+        markerValue.textContent = value.toString();
+        majorMarker.append(markerValue);
+        j += 1;
+      }
+    }
+    markerDiv.className = `slider-marker slider-marker--${orientation}`;
+    return markerDiv;
   }
 
   public addHandle(handl?, rang?, directio?) {
@@ -193,15 +260,7 @@ class Pres extends EventMixin {
     // console.log(this._sliderHandles);
   }
 
-  private makeMarker(behavior, widthOrHeight) {
-    const orientation = this.orientation;
-    let marginCss: string;
-    if (orientation === 'horizontal') {
-      marginCss = 'marginLeft';
-    } else if (orientation === 'vertical') {
-      marginCss = 'marginTop';
-    }
-    const markerDiv = document.createElement('div');
+  private calcPins(behavior, widthOrHeight) {
     let altDrag;
     let majorMarkers = Math.trunc(
       (behavior.maxValue - behavior.minValue) / behavior.stepSize
@@ -214,46 +273,10 @@ class Pres extends EventMixin {
       });
       majorMarkers = this._model._settings._maxPins;
     }
-    const listOfValues = this.calcPins();
-    let j = 0;
-    for (let i = 0; i < majorMarkers; i += 1) {
-      const majorMarker = document.createElement('div');
-      markerDiv.append(majorMarker);
-      const margin = (widthOrHeight / majorMarkers) * 0.0027 * widthOrHeight; // maybe will need to make new margin for altdrag m=math.trunc((v*ppv)/ss)
-      const markerValue = document.createElement('label');
-      markerValue.className = 'jsSlider-clickable marker-value';
-      markerDiv.classList.add(`slider-marker--${orientation}`);
-      majorMarker.classList.add(`marker--major--${orientation}`);
-
-      if (i === 0) {
-        majorMarker.style[marginCss] = '0';
-      } else {
-        majorMarker.style[marginCss] = margin + 'px';
-      }
-
-      if (!altDrag) {
-        const value = behavior.stepSize * (i + 1);
-        majorMarker.dataset.value = value.toString();
-        markerValue.dataset.value = value.toString();
-        markerValue.textContent = value.toString();
-        majorMarker.append(markerValue);
-      } else {
-        const value = listOfValues[j];
-        majorMarker.dataset.value = value.toString();
-        markerValue.dataset.value = value.toString();
-        markerValue.textContent = value.toString();
-        majorMarker.append(markerValue);
-        j += 1;
-      }
-    }
-    return markerDiv;
-  }
-
-  private calcPins() {
     const diff = this._model._settings.maxMinDifference;
     const ss = this._model._settings.stepSize;
     const maxPins = this._model._settings._maxPins;
-    const n = Math.trunc(diff / (ss * maxPins));
+    const n = Math.trunc(diff / (ss * maxPins)); //каждый n-ый элемент valueArr будет помещен на scale
 
     const valueArr = [];
     for (let i = 1; i < diff / ss; i += n) {
@@ -261,8 +284,31 @@ class Pres extends EventMixin {
 
       valueArr.push(value);
     }
+    const valueObj = {};
+    valueArr.forEach((value) => {
+      const math = Math.trunc(
+        (value * this._model._settings.pxPerValue) / this._model.coords.stepSize
+      );
+      valueObj[String(valueArr.indexOf(value))] = {
+        value: value,
+        assumputedMain: math,
+      };
+    });
+    // console.log(valueObj, 'valueobj');
 
-    return valueArr;
+    const mains = [];
+
+    Object.keys(valueObj).forEach((key) => {
+      mains.push(valueObj[key].assumputedMain);
+    });
+    let mainsDiff = elemsDiff(mains);
+    mainsDiff = mainsDiff.reduce((acc, value) => {
+      return acc + value;
+    });
+
+    const avg = Number(mainsDiff) / mains.length;
+    const margin = avg;
+    return { valueArr, majorMarkers, altDrag };
   }
 
   convertOptions(options: object) {
@@ -386,7 +432,7 @@ class Pres extends EventMixin {
   }
 
   public setValue(value: number, target: HandleNum) {
-    let handle;
+    let handle: HTMLElement;
     if (target == 1) {
       handle = this._sliderHandles[0];
     } else if (target == 2) {

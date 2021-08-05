@@ -1,7 +1,7 @@
 import Model from './model';
 import EventMixin from './eventemitter';
 import Pres from './pres';
-
+type Ori = 'horizontal' | 'vertical';
 class View extends EventMixin {
   _slider: HTMLElement;
 
@@ -33,8 +33,7 @@ class View extends EventMixin {
     this._item = item;
   }
 
-  public show(slider, options, pos) {
-    this._item.appendChild(slider);
+  public show(options, pos) {
     // const className = this.trigger('settingRequired', 'classsName') //TODO why this doesnt work
     this.fetchDivs(pos);
     this.initiateOptions(options);
@@ -70,6 +69,31 @@ class View extends EventMixin {
       handles: this._sliderHandles,
       wrapper: this._sliderMain,
     };
+  }
+
+  public showSlider(sliderMain, ori: Ori) {
+    this._item.appendChild(sliderMain);
+    console.log(sliderMain.offsetWidth, ':offset from view');
+
+    const marginLeft = sliderMain.getBoundingClientRect().left;
+    const marginTop = sliderMain.getBoundingClientRect().top;
+    const offsetWidth = sliderMain.offsetWidth;
+    const offsetHeight = sliderMain.offsetHeight;
+    const handles = this.fetchItem('slider-handle', false);
+    return { marginLeft, marginTop, handles, offsetWidth, offsetHeight };
+  }
+
+  private fetchItem(className, single: boolean): HTMLElement | HTMLElement[] {
+    const item = Array.from(
+      this._item.getElementsByClassName(
+        className
+      ) as HTMLCollectionOf<HTMLElement>
+    );
+    if (single) {
+      return item[0];
+    } else {
+      return item;
+    }
   }
 
   private fetchDivs(orientation) {
@@ -384,4 +408,5 @@ function numberOfDigits(x) {
 
   return value;
 }
+export { Ori };
 export default View;
