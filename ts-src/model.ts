@@ -32,6 +32,7 @@ type Settings = {
   betweenMarkers: number;
   _maxPins: number;
   mainMax: number;
+  mainMin: number;
   toolTip: boolean;
   altDrag: boolean;
   marker: boolean;
@@ -113,6 +114,7 @@ class Model extends EventMixin {
     marker: true,
     betweenMarkers: 40,
     mainMax: 0,
+    mainMin: 0,
     altDrag: false,
     pxPerValue: 0,
     marginLeft: 0,
@@ -140,6 +142,7 @@ class Model extends EventMixin {
         this._settings[key] = options[key];
       }
     });
+
     this.coords.altDrag = this._settings.altDrag;
     this._settings.maxMinDifference =
       this._settings.maxValue - this._settings.minValue;
@@ -149,9 +152,9 @@ class Model extends EventMixin {
     this.coords.minValue = this._settings.minValue;
     this.coords.marginLeft = this._settings.marginLeft;
     this.coords.marginTop = this._settings.marginTop;
-
+    this.coords.mainMax = this._settings.mainMax;
+    this.coords.mainMin = this._settings.mainMin;
     if (this._settings.orientation == 'horizontal') {
-      this.coords.mainMax = this._settings.mainMax;
       this.coords.mainAxis = 'x';
       if (this._settings.altDrag) {
         this.coords.valuePerPx = diff / this._settings.mainMax;
@@ -159,7 +162,6 @@ class Model extends EventMixin {
     } else if (this._settings.orientation == 'vertical') {
       this.coords.mainAxis = 'y';
       this.coords.valuePerPx = diff / this._settings.styles.sliderHeight;
-      this.coords.mainMax = this._settings.styles.sliderHeight;
     }
     this.coords.pxPerValue =
       this._settings.mainMax / (diff / this.coords.stepSize);
@@ -186,7 +188,10 @@ class Model extends EventMixin {
 
   private validate(data) {
     //TODO dont mutate data
+
     if (data.main != data.prevMain) {
+      console.log(data.main);
+
       if (data.main >= data.mainMax) {
         data.main = data.mainMax;
         data.value = data.maxValue; // TODO figure out why we need this workaround,main mean does not work
@@ -265,9 +270,6 @@ class Model extends EventMixin {
 
   public setOptions(options: { [key: string]: string | number }) {
     this.initOptions(options);
-    // if (this._settings.built) {
-    //   this.trigger('settings changed');
-    // }
   }
 
   public getOptions() {

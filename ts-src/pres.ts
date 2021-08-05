@@ -4,8 +4,10 @@ import View from './view';
 import { Ori } from './view';
 function elemsDiff(arr: number[]) {
   let res = [];
-  for (let i = 0; i < arr.length + 1; i += 1) {
-    const result = +arr[i + 1] - +arr[i];
+  for (let i = 0; i < arr.length - 1; i += 1) {
+    const value1 = +arr[i + 1];
+    const value2 = +arr[i];
+    const result = value1 - value2;
     res.push(result);
   }
 
@@ -57,7 +59,6 @@ class Pres extends EventMixin {
     } else if (this.orientation == 'vertical') {
       widthOrHeight = this._model.getOptions().sliderHeight;
     }
-
     this._model.validateOptions();
     const options = this.convertOptions(this._model.getOptions());
     const behavior = this._model.getSettings();
@@ -68,22 +69,15 @@ class Pres extends EventMixin {
       this._view.showSlider(sliderMain, this.orientation as Ori);
     this._sliderHandles = handles as HTMLElement[];
     let mainMax: number;
-    if (behavior.orientation === 'horizontal') {
-      mainMax = offsetWidth - this._sliderHandles[0].offsetWidth / 2;
-    } else {
-      mainMax = offsetWidth - this._sliderHandles[0].offsetWidth / 2;
-    }
-    console.log(
-      mainMax,
-      sliderMain.offsetWidth,
-      sliderMain.offsetHeight,
-      ':main max from pres'
-    );
+    let mainMin: number;
+    mainMax = offsetWidth - this._sliderHandles[0].offsetWidth / 2;
+    mainMin = this._sliderHandles[0].offsetWidth / 2;
 
     this._model.setOptions({
       mainMax,
       marginLeft,
       marginTop,
+      mainMin,
     });
     if (behavior.marker) {
       const marker = this.makeMarker(behavior, widthOrHeight);
@@ -178,7 +172,7 @@ class Pres extends EventMixin {
     }
     const markerDiv = document.createElement('div');
 
-    const { valueArr, majorMarkers, altDrag } = this.calcPins(
+    const { valueArr, majorMarkers, altDrag, margin } = this.calcPins(
       behavior,
       widthOrHeight
     );
@@ -187,7 +181,7 @@ class Pres extends EventMixin {
     for (let i = 0; i < majorMarkers; i += 1) {
       const majorMarker = document.createElement('div');
       markerDiv.append(majorMarker);
-      const margin = (widthOrHeight / majorMarkers) * 0.0027 * widthOrHeight; // maybe will need to make new margin for altdrag m=math.trunc((v*ppv)/ss)
+      //  margin = (widthOrHeight / majorMarkers) * 0.0027 * widthOrHeight; // maybe will need to make new margin for altdrag m=math.trunc((v*ppv)/ss)
       const markerValue = document.createElement('label');
       markerValue.className = 'jsSlider-clickable marker-value';
       markerDiv.classList.add(`slider-marker--${orientation}`);
@@ -256,8 +250,6 @@ class Pres extends EventMixin {
 
     this._slider.insertAdjacentElement('afterbegin', this._sliderRange);
     this._sliderHandles[1].remove();
-
-    // console.log(this._sliderHandles);
   }
 
   private calcPins(behavior, widthOrHeight) {
@@ -273,45 +265,41 @@ class Pres extends EventMixin {
       });
       majorMarkers = this._model._settings._maxPins;
     }
+
     const diff = this._model._settings.maxMinDifference;
     const ss = this._model._settings.stepSize;
     const maxPins = this._model._settings._maxPins;
     const n = Math.trunc(diff / (ss * maxPins)); //каждый n-ый элемент valueArr будет помещен на scale
-
     const valueArr = [];
     for (let i = 1; i < diff / ss; i += n) {
       const value = ss * i;
-
       valueArr.push(value);
     }
     const valueObj = {};
     valueArr.forEach((value) => {
-      const math = Math.trunc(
-        (value * this._model._settings.pxPerValue) / this._model.coords.stepSize
+      let x = Math.trunc(
+        (value * this._model.coords.pxPerValue) / this._model.coords.stepSize
       );
       valueObj[String(valueArr.indexOf(value))] = {
         value: value,
-        assumputedMain: math,
+        assumputedMain: x,
       };
     });
-    // console.log(valueObj, 'valueobj');
-
     const mains = [];
-
     Object.keys(valueObj).forEach((key) => {
       mains.push(valueObj[key].assumputedMain);
     });
     let mainsDiff = elemsDiff(mains);
-    mainsDiff = mainsDiff.reduce((acc, value) => {
+    const sumOfDiff = mainsDiff.reduce((acc, value) => {
       return acc + value;
     });
-
-    const avg = Number(mainsDiff) / mains.length;
+    const avg = Number(sumOfDiff) / mainsDiff.length;
     const margin = avg;
-    return { valueArr, majorMarkers, altDrag };
+
+    return { valueArr, majorMarkers, altDrag, margin };
   }
 
-  convertOptions(options: object) {
+  private convertOptions(options: object) {
     const newOptions = {
       slider: {
         width: 0,

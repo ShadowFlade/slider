@@ -73,7 +73,6 @@ class View extends EventMixin {
 
   public showSlider(sliderMain, ori: Ori) {
     this._item.appendChild(sliderMain);
-    console.log(sliderMain.offsetWidth, ':offset from view');
 
     const marginLeft = sliderMain.getBoundingClientRect().left;
     const marginTop = sliderMain.getBoundingClientRect().top;
