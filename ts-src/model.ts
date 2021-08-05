@@ -163,6 +163,7 @@ class Model extends EventMixin {
     }
     this.coords.pxPerValue =
       this._settings.mainMax / (diff / this.coords.stepSize);
+
     this.validateOptions();
   }
 
@@ -184,17 +185,19 @@ class Model extends EventMixin {
   }
 
   private validate(data) {
-    if (data.main >= data.mainMax) {
-      data.main = data.mainMax;
-      data.value = data.maxValue; // TODO figure out why we need this workaround,main mean does not work
-    } else if (data.main <= data.mainMin) {
-      data.main = data.mainMin;
-      data.value = data.minValue;
-    }
+    //TODO dont mutate data
     if (data.main != data.prevMain) {
+      if (data.main >= data.mainMax) {
+        data.main = data.mainMax;
+        data.value = data.maxValue; // TODO figure out why we need this workaround,main mean does not work
+      } else if (data.main <= data.mainMin) {
+        data.main = data.mainMin;
+        data.value = data.minValue;
+      }
       return data;
+    } else {
+      return false;
     }
-    return false;
   }
 
   public renew(data: { [key: string]: number }): Renew {
@@ -222,6 +225,7 @@ class Model extends EventMixin {
     }
     if (this._settings.altDrag) {
       this.coords.main = axis - margin;
+
       this.coords.value =
         divisionFloor(this.coords.main, pxPerValue) * this.coords.stepSize;
 
