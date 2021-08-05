@@ -4,7 +4,7 @@ import View from './view';
 import { Ori } from './view';
 function elemsDiff(arr: number[]) {
   let res = [];
-  for (let i = 0; i < arr.length + 1; i += 1) {
+  for (let i = 0; i < arr.length - 1; i += 1) {
     const result = +arr[i + 1] - +arr[i];
     res.push(result);
   }
@@ -274,6 +274,8 @@ class Pres extends EventMixin {
     }
     const valueObj = {};
     valueArr.forEach((value) => {
+      console.log(this._model.coords.pxPerValue, 'px per value');
+
       let x = Math.trunc(
         (value * this._model.coords.pxPerValue) / this._model.coords.stepSize
       );
@@ -282,6 +284,8 @@ class Pres extends EventMixin {
         assumputedMain: x,
       };
     });
+    console.log(valueObj, 'value obj');
+
     const mains = [];
     Object.keys(valueObj).forEach((key) => {
       mains.push(valueObj[key].assumputedMain);
@@ -293,6 +297,8 @@ class Pres extends EventMixin {
 
     const avg = Number(sumOfDiff) / mainsDiff.length;
     const margin = avg;
+    console.log('🚀 ~ Pres ~ calcPins ~ margin', margin);
+
     return { valueArr, majorMarkers, altDrag, margin };
   }
 
