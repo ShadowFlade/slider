@@ -61,11 +61,13 @@ class Pres extends EventMixin {
     const options = this.convertOptions(this._model.getOptions());
     const behavior = this._model.getSettings();
 
-    const { main: sliderMain, container } = this.makeSlider(behavior);
-    this._slider = sliderMain;
+    const { main: sliderMain, container, slider } = this.makeSlider(behavior);
+    this._slider = slider;
     const { marginLeft, marginTop, handles, offsetWidth, offsetHeight } =
       this._view.showSlider(sliderMain, this.orientation as Ori);
     this._sliderHandles = handles as HTMLElement[];
+    console.log('🚀 ~ Pres ~ init ~ this._sliderHandles', this._sliderHandles);
+
     let mainMax: number;
     let mainMin: number;
     mainMax = offsetWidth - this._sliderHandles[0].offsetWidth / 2;
@@ -91,6 +93,7 @@ class Pres extends EventMixin {
   public makeSlider(behavior: Settings): {
     main: HTMLElement;
     container: HTMLElement;
+    slider: HTMLElement;
   } {
     let direction: string;
     let orientation: string;
@@ -140,9 +143,11 @@ class Pres extends EventMixin {
     main.append(container);
     main.append(max);
     slider.appendChild(range);
+    this._sliderRange = range;
     slider.appendChild(handle);
     handle.className = `slider-handle slider-handle--${orientation}`;
-
+    this._sliderHandles = [];
+    this._sliderHandles.push(handle);
     container.className = `slider-container slider-container--${orientation}`;
     tool.className = `tooltip tooltip--${orientation}`;
 
@@ -157,7 +162,7 @@ class Pres extends EventMixin {
     max.classList.add(`slider-max--${orientation}`);
     main.classList.add(`slider-main--${orientation}`);
 
-    return { main, container };
+    return { main, container, slider };
   }
 
   private makeMarker(behavior, widthOrHeight) {
@@ -186,7 +191,7 @@ class Pres extends EventMixin {
       majorMarker.classList.add(`marker--major--${orientation}`);
 
       if (i === 0) {
-        majorMarker.style[marginCss] = '0';
+        majorMarker.style[marginCss] = `${this._model.coords.pxPerValue}px`;
       } else {
         majorMarker.style[marginCss] = margin + 'px';
       }
@@ -214,8 +219,11 @@ class Pres extends EventMixin {
     let handle;
     let range;
     let direction;
+    this._model._settings.type = 'double';
+
     if (!handl) {
       handle = this._sliderHandles[0];
+
       range = this._sliderRange;
     } else {
       handle = handl;
@@ -233,9 +241,15 @@ class Pres extends EventMixin {
     handleCLone.style[direction] = '20%';
     handle.after(range);
     range.after(handleCLone);
-    if (this._sliderHandles) {
-      this._sliderHandles[1] = handleCLone;
-    }
+    console.log('🚀 ~ Pres ~ addHandle ~ _sliderHandles', this._sliderHandles);
+
+    this._sliderHandles.push(handleCLone);
+    this._view._sliderHandles = this._sliderHandles;
+    console.log('🚀 ~ Pres ~ addHandle ~ _sliderHandles', this._sliderHandles);
+    // if (this._sliderHandles) {
+
+    //   this._sliderHandles[1] = handleCLone;
+    // }
   }
   public removeHandle() {
     this._model._settings.type = 'single';
@@ -246,8 +260,11 @@ class Pres extends EventMixin {
       this._sliderRange.style.top = '0px';
     }
 
-    this._slider.insertAdjacentElement('afterbegin', this._sliderRange);
+    // this._sliderHandles[0].after(this._sliderRange);
+    this._sliderHandles[0].before(this._sliderRange);
+    // this._slider.insertAdjacentElement('afterbegin', this._sliderRange);
     this._sliderHandles[1].remove();
+    this._sliderHandles = this._sliderHandles.slice(0, 1);
   }
 
   private calcPins(behavior, widthOrHeight) {
@@ -266,7 +283,7 @@ class Pres extends EventMixin {
     const diff = this._model._settings.maxMinDifference;
     const ss = this._model._settings.stepSize;
     const maxPins = this._model._settings._maxPins;
-    const n = Math.trunc(diff / (ss * maxPins)); //каждый n-ый элемент valueArr будет помещен на scale
+    const n = Math.trunc(diff / (ss * maxPins)); //каждый n-ый элемент из возможныъ value будет помещен на scale
     const valueArr = [];
     for (let i = 1; i < diff / ss; i += n) {
       const value = ss * i;
@@ -274,8 +291,6 @@ class Pres extends EventMixin {
     }
     const valueObj = {};
     valueArr.forEach((value) => {
-      console.log(this._model.coords.pxPerValue, 'px per value');
-
       let x = Math.trunc(
         (value * this._model.coords.pxPerValue) / this._model.coords.stepSize
       );
@@ -284,7 +299,6 @@ class Pres extends EventMixin {
         assumputedMain: x,
       };
     });
-    console.log(valueObj, 'value obj');
 
     const mains = [];
     Object.keys(valueObj).forEach((key) => {
@@ -296,8 +310,7 @@ class Pres extends EventMixin {
     });
 
     const avg = Number(sumOfDiff) / mainsDiff.length;
-    const margin = avg;
-    console.log('🚀 ~ Pres ~ calcPins ~ margin', margin);
+    const margin = avg - this._model.coords.pxPerValue;
 
     return { valueArr, majorMarkers, altDrag, margin };
   }

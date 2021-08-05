@@ -103,7 +103,7 @@ class Model extends EventMixin {
 
   public _settings: Settings = {
     className: 'slider',
-    orientation: 'vertical',
+    orientation: 'horizontal',
     type: 'double',
     stepSize: 90,
     toolTip: true,
@@ -282,13 +282,15 @@ class Model extends EventMixin {
   }
   public calcInterval(data): object {
     const interval = this.interval;
+
+    interval.set(data.target, data.value);
+
     const value = interval.values()[0];
     const value2 = interval.values()[1];
-    // const values = interval.values();
+
     const floor = Math.min(value, value2);
     const ceil = Math.max(value, value2);
 
-    interval.set(data.target, data.value);
     return {
       floor,
       ceil,

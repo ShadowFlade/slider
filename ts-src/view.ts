@@ -203,9 +203,12 @@ class View extends EventMixin {
 
     if (data.clicked) {
       dataObject = this.reactOnClick(newCoords);
-
-      newLeft = dataObject.newLeft;
-      pin = dataObject.pin;
+      if (dataObject) {
+        newLeft = dataObject.newLeft;
+        pin = dataObject.pin;
+      } else {
+        return false;
+      }
     } else {
       dataObject = this.reactOnDrag(newCoords);
 
@@ -341,9 +344,11 @@ class View extends EventMixin {
     const minOffset = this._sliderHandles[0][offset];
 
     const maxOffset = this._sliderHandles[1][offset];
+    console.log(this._sliderHandles, ':from view !!!!!!!!!!!!');
 
     const length = Math.abs(minOffset - maxOffset);
     const handleOffset = Math.min(minOffset, maxOffset);
+    console.log('🚀 ~ View ~ rangeInterval ~ handleOffset', handleOffset);
 
     this._sliderRange.style[direction] = handleOffset + 'px';
     this._sliderRange.style[widthOrHeight] = length + 'px';
