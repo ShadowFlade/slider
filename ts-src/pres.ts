@@ -66,7 +66,6 @@ class Pres extends EventMixin {
     const { marginLeft, marginTop, handles, offsetWidth, offsetHeight } =
       this._view.showSlider(sliderMain, this.orientation as Ori);
     this._sliderHandles = handles as HTMLElement[];
-    console.log('🚀 ~ Pres ~ init ~ this._sliderHandles', this._sliderHandles);
 
     let mainMax: number;
     let mainMin: number;
@@ -241,11 +240,9 @@ class Pres extends EventMixin {
     handleCLone.style[direction] = '20%';
     handle.after(range);
     range.after(handleCLone);
-    console.log('🚀 ~ Pres ~ addHandle ~ _sliderHandles', this._sliderHandles);
 
     this._sliderHandles.push(handleCLone);
     this._view._sliderHandles = this._sliderHandles;
-    console.log('🚀 ~ Pres ~ addHandle ~ _sliderHandles', this._sliderHandles);
     // if (this._sliderHandles) {
 
     //   this._sliderHandles[1] = handleCLone;
@@ -260,9 +257,7 @@ class Pres extends EventMixin {
       this._sliderRange.style.top = '0px';
     }
 
-    // this._sliderHandles[0].after(this._sliderRange);
     this._sliderHandles[0].before(this._sliderRange);
-    // this._slider.insertAdjacentElement('afterbegin', this._sliderRange);
     this._sliderHandles[1].remove();
     this._sliderHandles = this._sliderHandles.slice(0, 1);
   }

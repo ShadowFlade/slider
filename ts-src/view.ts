@@ -73,7 +73,6 @@ class View extends EventMixin {
 
   public showSlider(sliderMain, ori: Ori) {
     this._item.appendChild(sliderMain);
-
     const marginLeft = sliderMain.getBoundingClientRect().left;
     const marginTop = sliderMain.getBoundingClientRect().top;
     const offsetWidth = sliderMain.offsetWidth;
@@ -82,12 +81,15 @@ class View extends EventMixin {
     return { marginLeft, marginTop, handles, offsetWidth, offsetHeight };
   }
 
-  private fetchItem(className, single: boolean): HTMLElement | HTMLElement[] {
+  private fetchItem(
+    className: string,
+    single: boolean,
+    elem: HTMLElement = this._item
+  ): HTMLElement | HTMLElement[] {
     const item = Array.from(
-      this._item.getElementsByClassName(
-        className
-      ) as HTMLCollectionOf<HTMLElement>
+      elem.getElementsByClassName(className) as HTMLCollectionOf<HTMLElement>
     );
+
     if (single) {
       return item[0];
     } else {
@@ -178,11 +180,19 @@ class View extends EventMixin {
 
   public refreshCoords(data) {
     const shiftX = data.shiftX;
+    const pinPoints = this.valueDivsArray;
     let newLeft: string;
     let dataObject;
     let handle: HTMLElement;
-    // const handle=data.target
-    const pinPoints = this.valueDivsArray;
+    let direction: string;
+    let widthOrHeight: string;
+    if (this._model._settings.orientation == 'vertical') {
+      direction = 'top';
+      widthOrHeight = 'height';
+    } else if (this._model._settings.orientation == 'horizontal') {
+      direction = 'left';
+      widthOrHeight = 'width';
+    }
     if (this._model._settings.type == 'single') {
       handle = this._sliderHandles[0];
     } else if (this._model._settings.type == 'double') {
@@ -216,21 +226,12 @@ class View extends EventMixin {
       pin = dataObject.pin;
     }
 
-    if (data.mainAxis == 'x') {
-      handle.style.left = newLeft + 'px';
+    handle.style[direction] = newLeft + 'px';
 
-      if (this._model._settings.type == 'double') {
-        this.rangeInterval(data.mainAxis);
-      } else {
-        range.style.width = newLeft + 'px';
-      }
-    } else if (data.mainAxis == 'y') {
-      handle.style.top = newLeft + 'px';
-      if (this._model._settings.type == 'double') {
-        this.rangeInterval(data.mainAxis);
-      } else {
-        range.style.height = newLeft + 'px';
-      }
+    if (this._model._settings.type == 'double') {
+      this.rangeInterval(data.mainAxis);
+    } else {
+      range.style[widthOrHeight] = newLeft + 'px';
     }
 
     const value = numberOfDigits(data.value);
@@ -344,11 +345,9 @@ class View extends EventMixin {
     const minOffset = this._sliderHandles[0][offset];
 
     const maxOffset = this._sliderHandles[1][offset];
-    console.log(this._sliderHandles, ':from view !!!!!!!!!!!!');
 
     const length = Math.abs(minOffset - maxOffset);
     const handleOffset = Math.min(minOffset, maxOffset);
-    console.log('🚀 ~ View ~ rangeInterval ~ handleOffset', handleOffset);
 
     this._sliderRange.style[direction] = handleOffset + 'px';
     this._sliderRange.style[widthOrHeight] = length + 'px';
