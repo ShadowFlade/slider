@@ -55,7 +55,6 @@ class App {
       if (this._model._settings.type != 'double') {
         this._model._settings.type = 'double';
         this._pres.addHandle();
-
         this._pres.onMouseDown();
       }
     } else {

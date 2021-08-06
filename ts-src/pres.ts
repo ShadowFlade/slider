@@ -242,11 +242,11 @@ class Pres extends EventMixin {
     range.after(handleCLone);
 
     this._sliderHandles.push(handleCLone);
-    this._view._sliderHandles = this._sliderHandles;
-    // if (this._sliderHandles) {
 
-    //   this._sliderHandles[1] = handleCLone;
-    // }
+    this._view._sliderHandles = this._sliderHandles;
+    if (this.built) {
+      this._view.rangeInterval(this._model.coords.mainAxis);
+    }
   }
   public removeHandle() {
     this._model._settings.type = 'single';
@@ -260,6 +260,9 @@ class Pres extends EventMixin {
     this._sliderHandles[0].before(this._sliderRange);
     this._sliderHandles[1].remove();
     this._sliderHandles = this._sliderHandles.slice(0, 1);
+    if (this.built) {
+      this._view.rangeInterval(this._model.coords.mainAxis);
+    }
   }
 
   private calcPins(behavior, widthOrHeight) {

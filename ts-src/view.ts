@@ -201,9 +201,11 @@ class View extends EventMixin {
 
     const range = this._sliderRange;
 
-    const toolTip = handle.getElementsByClassName(
-      `tooltip--${this.orientation}`
-    )[0];
+    const toolTip = this.fetchItem(
+      `tooltip--${this.orientation}`,
+      true,
+      handle
+    ) as HTMLDivElement;
     const newCoords = Object.assign(data, {
       shiftX: shiftX,
       newLeft: newLeft,
@@ -328,7 +330,7 @@ class View extends EventMixin {
     return { newLeft, pin };
   }
 
-  private rangeInterval(mainAxis) {
+  public rangeInterval(mainAxis) {
     let offset: string;
     let widthOrHeight: string;
     let direction: string;
