@@ -1,6 +1,6 @@
 import App from './app';
 declare let $: any;
-$.fn.slider = function (this: JQuery, options: object): JQuery {
+$.fn.slider = function (this: JQuery, options?: object): JQuery {
   return this.each(function () {
     const app = new App(this, options);
 
@@ -45,4 +45,4 @@ $.fn.slider = function (this: JQuery, options: object): JQuery {
     };
   });
 };
-$('#slider').slider({});
+$('#slider').slider();

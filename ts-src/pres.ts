@@ -16,15 +16,15 @@ type HandleNum = 1 | 2;
 class Pres extends EventMixin {
   _item: Element;
 
-  _slider: HTMLElement;
+  // _slider: HTMLElement;
 
-  _sliderContainer: HTMLElement;
+  // _sliderContainer: HTMLElement;
 
-  _sliderRange: HTMLElement;
+  // _sliderRange: HTMLElement;
 
-  _sliderMain: HTMLElement;
+  // _sliderMain: HTMLElement;
 
-  _sliderHandles: HTMLElement[];
+  // _sliderHandles: HTMLElement[];
 
   _model: Model;
 
@@ -50,27 +50,27 @@ class Pres extends EventMixin {
   }
 
   public init(): void {
-    this.orientation = this._model._settings.orientation;
+    const orientation = this._model.getSetting('orientation');
     let widthOrHeight;
-    if (this.orientation == 'horizontal') {
-      widthOrHeight = this._model.getOptions().sliderWidth;
-    } else if (this.orientation == 'vertical') {
-      widthOrHeight = this._model.getOptions().sliderHeight;
+    if (orientation == 'horizontal') {
+      widthOrHeight = this._model.getStyle('sliderWidth');
+    } else if (orientation == 'vertical') {
+      widthOrHeight = this._model.getStyle('sliderHeight');
     }
     this._model.validateOptions();
-    const options = this.convertOptions(this._model.getOptions());
+    const options = this.convertOptions(this._model.getStyles());
     const behavior = this._model.getSettings();
 
     const { main: sliderMain, container, slider } = this.makeSlider(behavior);
-    this._slider = slider;
+    // this._slider = slider;
     const { marginLeft, marginTop, handles, offsetWidth, offsetHeight } =
-      this._view.showSlider(sliderMain, this.orientation as Ori);
-    this._sliderHandles = handles as HTMLElement[];
+      this._view.showSlider(sliderMain, orientation as Ori);
+    // this._sliderHandles = handles as HTMLElement[];
 
     let mainMax: number;
     let mainMin: number;
-    mainMax = offsetWidth - this._sliderHandles[0].offsetWidth / 2;
-    mainMin = this._sliderHandles[0].offsetWidth / 2;
+    mainMax = offsetWidth - handles[0].offsetWidth / 2;
+    mainMin = handles[0].offsetWidth / 2;
 
     this._model.setOptions({
       mainMax,
@@ -83,9 +83,9 @@ class Pres extends EventMixin {
       container.append(marker);
     }
 
-    this._view.show(options, this._model._settings.orientation);
+    this._view.implementStyles(options, this._model._settings.orientation);
 
-    this.built = true;
+    // this.built = true;
     this._model._settings.built = true;
   }
 
@@ -94,33 +94,34 @@ class Pres extends EventMixin {
     container: HTMLElement;
     slider: HTMLElement;
   } {
+    const viewEls = this._view._elements;
     let direction: string;
     let orientation: string;
     let widthOrHeight: number;
     if (behavior.orientation === 'horizontal') {
-      widthOrHeight = this._model.getOptions().sliderWidth;
+      widthOrHeight = this._model.getStyle('sliderWidth');
       orientation = 'horizontal';
       direction = 'left';
     } else {
       orientation = 'vertical';
-      widthOrHeight = this._model.getOptions().sliderHeight;
+      widthOrHeight = this._model.getStyle('sliderHeight');
       direction = 'top';
     }
     let marker: HTMLDivElement;
     const main = document.createElement('div');
     main.classList.add('slider-main');
     const container = document.createElement('div');
-    this._sliderContainer = container;
+    // this._sliderContainer = container;
     const slider = document.createElement('div');
     slider.classList.add('slider');
     const range = document.createElement('div');
     range.classList.add('slider-range');
 
     const handle = document.createElement('div');
-    if (this.orientation === 'horizontal') {
+    if (orientation === 'horizontal') {
       range.style.width = '0px';
       handle.style[direction] = '0px';
-    } else if (this.orientation === 'vertical') {
+    } else if (orientation === 'vertical') {
       range.style.height = '0px';
       handle.style[direction] = '0px';
     }
@@ -142,11 +143,11 @@ class Pres extends EventMixin {
     main.append(container);
     main.append(max);
     slider.appendChild(range);
-    this._sliderRange = range;
+    // this._sliderRange = range;
     slider.appendChild(handle);
     handle.className = `slider-handle slider-handle--${orientation}`;
-    this._sliderHandles = [];
-    this._sliderHandles.push(handle);
+    // this._view._elements._sliderHandles = [];
+    viewEls._sliderHandles.push(handle);
     container.className = `slider-container slider-container--${orientation}`;
     tool.className = `tooltip tooltip--${orientation}`;
 
@@ -165,7 +166,7 @@ class Pres extends EventMixin {
   }
 
   private makeMarker(behavior, widthOrHeight) {
-    const orientation = this.orientation;
+    const orientation = this._model.getSetting('orientation');
     let marginCss: string;
     if (orientation === 'horizontal') {
       marginCss = 'marginLeft';
@@ -183,7 +184,6 @@ class Pres extends EventMixin {
     for (let i = 0; i < majorMarkers; i += 1) {
       const majorMarker = document.createElement('div');
       markerDiv.append(majorMarker);
-      //  margin = (widthOrHeight / majorMarkers) * 0.0027 * widthOrHeight; // maybe will need to make new margin for altdrag m=math.trunc((v*ppv)/ss)
       const markerValue = document.createElement('label');
       markerValue.className = 'jsSlider-clickable marker-value';
       markerDiv.classList.add(`slider-marker--${orientation}`);
@@ -218,12 +218,13 @@ class Pres extends EventMixin {
     let handle;
     let range;
     let direction;
+    const viewEls = this._view._elements;
     this._model._settings.type = 'double';
 
     if (!handl) {
-      handle = this._sliderHandles[0];
+      handle = viewEls._sliderHandles[0];
 
-      range = this._sliderRange;
+      range = viewEls._sliderRange;
     } else {
       handle = handl;
       range = rang;
@@ -240,27 +241,34 @@ class Pres extends EventMixin {
     handleCLone.style[direction] = '20%';
     handle.after(range);
     range.after(handleCLone);
-
-    this._sliderHandles.push(handleCLone);
-
-    this._view._sliderHandles = this._sliderHandles;
-    if (this.built) {
+    viewEls._sliderHandles.push(handleCLone);
+    // this._view.addElement(this._sliderHandles)
+    // this._view._elements._sliderHandles = this._sliderHandles;
+    if (this._model._settings.built) {
       this._view.rangeInterval(this._model.coords.mainAxis);
+      this.showValue(handleCLone);
     }
   }
+  private showValue(handle) {
+    const offset = handle.getBoundingClientRect().left;
+    const { value, target } = this._model.calcValue(handle, offset);
+    this._view.showValue(target, value);
+  }
   public removeHandle() {
+    const viewEls = this._view._elements;
+
     this._model._settings.type = 'single';
     const orient = this._model._settings.orientation;
     if (orient === 'horizontal') {
-      this._sliderRange.style.left = '0px';
+      viewEls._sliderRange.style.left = '0px';
     } else if (orient === 'vertical') {
-      this._sliderRange.style.top = '0px';
+      viewEls._sliderRange.style.top = '0px';
     }
 
-    this._sliderHandles[0].before(this._sliderRange);
-    this._sliderHandles[1].remove();
-    this._sliderHandles = this._sliderHandles.slice(0, 1);
-    if (this.built) {
+    viewEls._sliderHandles[0].before(viewEls._sliderRange);
+    viewEls._sliderHandles[1].remove();
+    viewEls._sliderHandles = viewEls._sliderHandles.slice(0, 1);
+    if (this._model._settings.built) {
       this._view.rangeInterval(this._model.coords.mainAxis);
     }
   }
@@ -366,10 +374,10 @@ class Pres extends EventMixin {
   }
 
   public onMouseDown(): void {
-    const handles = this._sliderHandles;
+    const handles = this._view._elements._sliderHandles;
 
-    const container = this._sliderContainer;
-    const slider = this._slider;
+    const container = this._view._elements._sliderContainer;
+    const slider = this._view._elements._slider;
     const model = this._model;
     const marginLeft = slider.getBoundingClientRect().left;
     const marginTop = slider.getBoundingClientRect().top;
@@ -434,12 +442,14 @@ class Pres extends EventMixin {
   }
 
   public setValue(value: number, target: HandleNum) {
+    const viewEls = this._view._elements;
+
     let handle: HTMLElement;
     if (target == 1) {
-      handle = this._sliderHandles[0];
+      handle = viewEls._sliderHandles[0];
     } else if (target == 2) {
       if (this._model._settings.type == 'double') {
-        handle = this._sliderHandles[1];
+        handle = viewEls._sliderHandles[1];
       } else {
         throw new ReferenceError('Can not reference absent handle');
       }

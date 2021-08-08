@@ -135,13 +135,15 @@ class Model extends EventMixin {
   }
 
   public initOptions(options: { [key: string]: string | number }) {
-    Object.keys(options).forEach((key: string): void => {
-      if (this.modifiable_options.includes(key)) {
-        this._settings.styles[key] = options[key];
-      } else {
-        this._settings[key] = options[key];
-      }
-    });
+    if (options) {
+      Object.keys(options).forEach((key: string): void => {
+        if (this.modifiable_options.includes(key)) {
+          this._settings.styles[key] = options[key];
+        } else {
+          this._settings[key] = options[key];
+        }
+      });
+    }
 
     this.coords.altDrag = this._settings.altDrag;
     this._settings.maxMinDifference =
@@ -230,8 +232,10 @@ class Model extends EventMixin {
 
       this.coords.value =
         divisionFloor(this.coords.main, pxPerValue) * this.coords.stepSize;
+      console.log(axis, margin, pxPerValue, this.coords.stepSize, 'from model');
 
       const validatedCoords = this.validate(this.coords);
+
       this.coords.prevMain = this.coords.main;
       if (this._settings.type == 'double') {
         setTimeout(this.calcInterval.bind(this), 0, validatedCoords);
@@ -243,9 +247,24 @@ class Model extends EventMixin {
     }
   }
 
-  public getOption(option: string) {
-    return this._settings.styles[option];
+  public calcValue(target, offset) {
+    const value =
+      divisionFloor(offset - this.coords.marginLeft, this.coords.pxPerValue) *
+      this.coords.stepSize;
+    console.log(
+      offset,
+      this.coords.marginLeft,
+      this.coords.valuePerPx,
+      this.coords.stepSize,
+      'from model'
+    );
+
+    return {
+      value: value,
+      target: target,
+    };
   }
+
   public calcMain(value, target: HTMLElement) {
     let nValue;
     if (value % this.coords.stepSize == 0) {
@@ -269,8 +288,15 @@ class Model extends EventMixin {
     this.initOptions(options);
   }
 
-  public getOptions() {
+  public getStyles() {
     return this._settings.styles;
+  }
+  public getStyle(option: string) {
+    return this._settings.styles[option];
+  }
+
+  public getSetting(option: string) {
+    return this._settings[option];
   }
 
   public getSettings() {

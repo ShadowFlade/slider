@@ -27,25 +27,25 @@ class App {
   }
   public scale(option: boolean) {
     if (!option) {
-      this._view._sliderScale.style.display = 'none';
+      this._view._elements._sliderScale.style.display = 'none';
     } else {
-      this._view._sliderScale.style.display = '';
+      this._view._elements._sliderScale.style.display = '';
     }
   }
   public bar(option: boolean) {
     if (!option) {
-      this._view._sliderRange.style.display = 'none';
+      this._view._elements._sliderRange.style.display = 'none';
     } else {
-      this._view._sliderRange.style.display = '';
+      this._view._elements._sliderRange.style.display = '';
     }
   }
   public tip(option: boolean) {
     if (!option) {
-      this._view._sliderTooltipContainers.forEach((item) => {
+      this._view._elements._sliderTooltipContainers.forEach((item) => {
         item.style.display = 'none';
       });
     } else {
-      this._view._sliderTooltipContainers.forEach((item) => {
+      this._view._elements._sliderTooltipContainers.forEach((item) => {
         item.style.display = '';
       });
     }
