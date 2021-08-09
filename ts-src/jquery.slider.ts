@@ -43,6 +43,10 @@ $.fn.slider = function (this: JQuery, options?: object): JQuery {
       app.setStep(value);
       return this;
     };
+    $.fn.slider.noStick = (option: boolean) => {
+      app.noStick(option);
+      return this;
+    };
   });
 };
 $('#slider').slider();

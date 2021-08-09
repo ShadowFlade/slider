@@ -131,6 +131,7 @@ class Pres extends EventMixin {
     const tooltipStick = document.createElement('div');
     tooltipStick.className = `tooltipStick tooltipStick--${orientation}`;
     tooltipContainer.append(tooltipStick);
+    this._view._elements._sliderTooltipSticks.push(tooltipStick);
     tooltipContainer.append(tool);
 
     handle.append(tooltipContainer);
@@ -190,7 +191,7 @@ class Pres extends EventMixin {
       majorMarker.classList.add(`marker--major--${orientation}`);
 
       if (i === 0) {
-        majorMarker.style[marginCss] = `${this._model.coords.pxPerValue}px`;
+        majorMarker.style[marginCss] = `${this._model._settings.pxPerValue}px`;
       } else {
         majorMarker.style[marginCss] = margin + 'px';
       }
@@ -239,18 +240,35 @@ class Pres extends EventMixin {
     }
     const handleCLone: HTMLElement = handle.cloneNode(true) as HTMLElement;
     handleCLone.style[direction] = '20%';
+    const tooltipContainer = handleCLone.getElementsByClassName(
+      'tooltipContainer'
+    )[0] as HTMLElement;
+    this._view._elements._sliderTooltipContainers.push(tooltipContainer);
     handle.after(range);
     range.after(handleCLone);
+    const stick = this._view.fetchHTMLEl(
+      'tooltipStick',
+      true,
+      handleCLone
+    ) as HTMLElement;
+    viewEls._sliderTooltipSticks.push(stick);
     viewEls._sliderHandles.push(handleCLone);
     // this._view.addElement(this._sliderHandles)
     // this._view._elements._sliderHandles = this._sliderHandles;
     if (this._model._settings.built) {
-      this._view.rangeInterval(this._model.coords.mainAxis);
+      this._view.rangeInterval(this._model._settings.orientation);
       this.showValue(handleCLone);
     }
   }
   private showValue(handle) {
-    const offset = handle.getBoundingClientRect().left;
+    let direction;
+    if (this._model._settings.orientation == 'horizontal') {
+      direction = 'left';
+    } else if (this._model._settings.orientation == 'vertical') {
+      direction = 'top';
+    }
+    const offset = handle.getBoundingClientRect()[direction];
+
     const { value, target } = this._model.calcValue(handle, offset);
     this._view.showValue(target, value);
   }
@@ -269,7 +287,7 @@ class Pres extends EventMixin {
     viewEls._sliderHandles[1].remove();
     viewEls._sliderHandles = viewEls._sliderHandles.slice(0, 1);
     if (this._model._settings.built) {
-      this._view.rangeInterval(this._model.coords.mainAxis);
+      this._view.rangeInterval(this._model._settings.orientation);
     }
   }
 
@@ -298,7 +316,8 @@ class Pres extends EventMixin {
     const valueObj = {};
     valueArr.forEach((value) => {
       let x = Math.trunc(
-        (value * this._model.coords.pxPerValue) / this._model.coords.stepSize
+        (value * this._model._settings.pxPerValue) /
+          this._model._settings.stepSize
       );
       valueObj[String(valueArr.indexOf(value))] = {
         value: value,
@@ -316,7 +335,7 @@ class Pres extends EventMixin {
     });
 
     const avg = Number(sumOfDiff) / mainsDiff.length;
-    const margin = avg - this._model.coords.pxPerValue;
+    const margin = avg - this._model._settings.pxPerValue;
 
     return { valueArr, majorMarkers, altDrag, margin };
   }

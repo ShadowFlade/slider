@@ -13,6 +13,7 @@ type Elements<T> = {
   _sliderContainer: T;
   _tooltipContainer: T[];
   _sliderTooltip: T;
+  _sliderTooltipSticks: T[];
 };
 class View extends EventMixin {
   valueDivs: Object[];
@@ -32,11 +33,12 @@ class View extends EventMixin {
     _sliderMain: null,
     _sliderScale: null,
     _sliderRange: null,
-    _sliderTooltipContainers: null,
+    _sliderTooltipContainers: [],
     _sliderHandles: [],
     _sliderContainer: null,
     _tooltipContainer: null,
     _sliderTooltip: null,
+    _sliderTooltipSticks: [],
   };
   constructor(pres, options, item, model: Model) {
     super();
@@ -93,7 +95,7 @@ class View extends EventMixin {
     return { marginLeft, marginTop, handles, offsetWidth, offsetHeight };
   }
 
-  private fetchHTMLEl(
+  public fetchHTMLEl(
     className: string,
     single: boolean,
     elem: HTMLElement = this._item
@@ -243,7 +245,7 @@ class View extends EventMixin {
     handle.style[direction] = newLeft + 'px';
 
     if (this._model._settings.type == 'double') {
-      this.rangeInterval(data.mainAxis);
+      this.rangeInterval(this._model._settings.orientation);
     } else {
       range.style[widthOrHeight] = newLeft + 'px';
     }
@@ -342,15 +344,15 @@ class View extends EventMixin {
     return { newLeft, pin };
   }
 
-  public rangeInterval(mainAxis) {
+  public rangeInterval(orientation) {
     let offset: string;
     let widthOrHeight: string;
     let direction: string;
-    if (mainAxis == 'x') {
+    if (orientation == 'horizontal') {
       offset = 'offsetLeft';
       widthOrHeight = 'width';
       direction = 'left';
-    } else if (mainAxis == 'y') {
+    } else if (orientation == 'vertical') {
       offset = 'offsetTop';
       widthOrHeight = 'height';
       direction = 'top';
@@ -372,7 +374,7 @@ class View extends EventMixin {
   public showValue(target, value) {
     const tool = target.getElementsByClassName('tooltip')[0];
 
-    tool.textContent = value;
+    tool.textContent = Math.abs(value); //Math.abs is a hack and it shouldnt be there
   }
 
   private matchHandleAndPin(value) {

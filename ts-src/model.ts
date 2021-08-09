@@ -1,4 +1,5 @@
 import EventMixin from './eventemitter';
+import { Ori } from './view';
 
 function divisionFloor(x: number, y: number): number {
   const result = Math.trunc(x / y);
@@ -6,9 +7,7 @@ function divisionFloor(x: number, y: number): number {
   return result;
 }
 type Renew = {
-  (data: ICoords): void;
-  valuePerPx: number;
-  pxPerValue: number;
+  (data: ICoords): void | ICoords;
 };
 type IStyles = {
   progressBarColor: string;
@@ -38,25 +37,18 @@ type Settings = {
   marker: boolean;
   built: boolean;
   styles: IStyles;
+  valuePerPx: number;
+  valueWidth: number;
 };
 
 type ICoords = {
-  marginTop: number;
-  mainAxis: string;
   main: number;
   prevMain: number;
-  mainMin: number;
-  mainMax: number;
-  stepSize: number;
+
   value: number;
   prevValue: number;
   caller: string;
-  valuePerPx: number;
-  pxPerValue: number;
-  maxValue: number;
-  minValue: number;
-  marginLeft: number;
-  valueWidth: number;
+
   clicked: boolean;
 
   altDrag: boolean;
@@ -80,24 +72,17 @@ class Model extends EventMixin {
   ];
   public interval: Map<HTMLDivElement, number> = new Map();
   public coords: ICoords = {
-    mainAxis: 'x',
     main: 0,
     prevMain: 0,
-    mainMin: 0,
-    mainMax: 0,
+
     altDrag: false,
-    stepSize: 0,
+
     value: 1,
     prevValue: 0,
     caller: '',
-    maxValue: 0,
-    minValue: 0,
-    valuePerPx: 1,
-    valueWidth: 0,
-    marginLeft: 0,
-    marginTop: 0,
+
     clicked: false,
-    pxPerValue: 0,
+
     target: null,
   };
 
@@ -120,6 +105,9 @@ class Model extends EventMixin {
     marginLeft: 0,
     marginTop: 0,
     built: false,
+    valuePerPx: 1,
+    valueWidth: 0,
+
     styles: {
       progressBarColor: 'green',
       sliderColor: 'red',
@@ -149,24 +137,16 @@ class Model extends EventMixin {
     this._settings.maxMinDifference =
       this._settings.maxValue - this._settings.minValue;
     const diff = this._settings.maxMinDifference;
-    this.coords.stepSize = this._settings.stepSize;
-    this.coords.maxValue = this._settings.maxValue;
-    this.coords.minValue = this._settings.minValue;
-    this.coords.marginLeft = this._settings.marginLeft;
-    this.coords.marginTop = this._settings.marginTop;
-    this.coords.mainMax = this._settings.mainMax;
-    this.coords.mainMin = this._settings.mainMin;
+
     if (this._settings.orientation == 'horizontal') {
-      this.coords.mainAxis = 'x';
       if (this._settings.altDrag) {
-        this.coords.valuePerPx = diff / this._settings.mainMax;
+        this._settings.valuePerPx = diff / this._settings.mainMax;
       }
     } else if (this._settings.orientation == 'vertical') {
-      this.coords.mainAxis = 'y';
-      this.coords.valuePerPx = diff / this._settings.styles.sliderHeight;
+      this._settings.valuePerPx = diff / this._settings.styles.sliderHeight;
     }
-    this.coords.pxPerValue =
-      this._settings.mainMax / (diff / this.coords.stepSize);
+    this._settings.pxPerValue =
+      this._settings.mainMax / (diff / this._settings.stepSize);
 
     this.validateOptions();
   }
@@ -188,15 +168,19 @@ class Model extends EventMixin {
     }
   }
 
-  private validate(data) {
+  private validate(data: ICoords) {
     //TODO dont mutate data
-    if (data.main != data.prevMain) {
-      if (data.main >= data.mainMax) {
-        data.main = data.mainMax;
-        data.value = data.maxValue; // TODO figure out why we need this workaround,main mean does not work
-      } else if (data.main <= data.mainMin) {
-        data.main = data.mainMin;
-        data.value = data.minValue;
+    const max = this._settings.mainMax;
+    const min = this._settings.mainMin;
+    const maxValue = this._settings.maxValue;
+    const minValue = this._settings.minValue;
+    if (data.main != max) {
+      if (data.main >= max) {
+        data.main = max;
+        data.value = maxValue; // TODO figure out why we need this workaround,main mean does not work
+      } else if (data.main <= min) {
+        data.main = min;
+        data.value = minValue;
       }
       return data;
     } else {
@@ -204,19 +188,19 @@ class Model extends EventMixin {
     }
   }
 
-  public renew(data: { [key: string]: number }): Renew {
-    const valuePerPx = this.coords.valuePerPx;
-    const pxPerValue = this.coords.pxPerValue;
-    const stepSize = this.coords.stepSize;
+  public renew(data: { [key: string]: number }): ICoords {
+    const valuePerPx = this._settings.valuePerPx;
+    const pxPerValue = this._settings.pxPerValue;
+    const stepSize = this._settings.stepSize;
     let axis = 0;
     let margin = 0;
 
     if (this._settings.orientation == 'vertical') {
       axis = data.y;
-      margin = this.coords.marginTop;
+      margin = this._settings.marginTop;
     } else if (this._settings.orientation == 'horizontal') {
       axis = data.x;
-      margin = this.coords.marginLeft;
+      margin = this._settings.marginLeft;
     }
     this.coords.caller = 'model'; // TODO this shouldnt be here,have to think of a better way
     for (const i in data) {
@@ -231,15 +215,12 @@ class Model extends EventMixin {
       this.coords.main = axis - margin;
 
       this.coords.value =
-        divisionFloor(this.coords.main, pxPerValue) * this.coords.stepSize;
-      console.log(axis, margin, pxPerValue, this.coords.stepSize, 'from model');
+        divisionFloor(this.coords.main, pxPerValue) * this._settings.stepSize;
 
       const validatedCoords = this.validate(this.coords);
 
       this.coords.prevMain = this.coords.main;
-      if (this._settings.type == 'double') {
-        setTimeout(this.calcInterval.bind(this), 0, validatedCoords);
-      }
+
       if (validatedCoords) {
         this.trigger('coords changed', validatedCoords);
         return validatedCoords;
@@ -248,17 +229,15 @@ class Model extends EventMixin {
   }
 
   public calcValue(target, offset) {
+    let margin;
+    if (this._settings.orientation == 'horizontal') {
+      margin = 'marginLeft';
+    } else if (this._settings.orientation == 'vertical') {
+      margin = 'marginTop';
+    }
     const value =
-      divisionFloor(offset - this.coords.marginLeft, this.coords.pxPerValue) *
-      this.coords.stepSize;
-    console.log(
-      offset,
-      this.coords.marginLeft,
-      this.coords.valuePerPx,
-      this.coords.stepSize,
-      'from model'
-    );
-
+      divisionFloor(offset - this.coords[margin], this._settings.pxPerValue) *
+      this._settings.stepSize;
     return {
       value: value,
       target: target,
@@ -267,13 +246,14 @@ class Model extends EventMixin {
 
   public calcMain(value, target: HTMLElement) {
     let nValue;
-    if (value % this.coords.stepSize == 0) {
+    if (value % this._settings.stepSize == 0) {
       nValue = value;
     } else {
-      nValue = this.coords.stepSize * Math.trunc(value / this.coords.stepSize);
+      nValue =
+        this._settings.stepSize * Math.trunc(value / this._settings.stepSize);
     }
 
-    const main = (value * this.coords.pxPerValue) / this.coords.stepSize;
+    const main = (value * this._settings.pxPerValue) / this._settings.stepSize;
     this.coords.main = main;
     this.coords.value = nValue;
     this.coords.target = target;
@@ -311,8 +291,8 @@ class Model extends EventMixin {
 
     interval.set(data.target, data.value);
 
-    const value = interval.values()[0];
-    const value2 = interval.values()[1];
+    const value = Number(Array.from(interval.values())[0]);
+    const value2 = Number(Array.from(interval.values())[1]);
 
     const floor = Math.min(value, value2);
     const ceil = Math.max(value, value2);

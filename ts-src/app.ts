@@ -85,6 +85,10 @@ class App {
     this._pres.init();
     this._pres.onMouseDown();
   }
+  public noStick(option: boolean) {
+    if (!option) {
+    }
+  }
   private changeStyles(item) {
     const classes = item.className;
     let substr = 'vertical';
