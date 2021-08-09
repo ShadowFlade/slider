@@ -191,7 +191,7 @@ class Pres extends EventMixin {
       majorMarker.classList.add(`marker--major--${orientation}`);
 
       if (i === 0) {
-        majorMarker.style[marginCss] = `${this._model._settings.pxPerValue}px`;
+        majorMarker.style[marginCss] = 1.5 * margin + 'px';
       } else {
         majorMarker.style[marginCss] = margin + 'px';
       }
@@ -307,17 +307,24 @@ class Pres extends EventMixin {
     const diff = this._model._settings.maxMinDifference;
     const ss = this._model._settings.stepSize;
     const maxPins = this._model._settings._maxPins;
-    const n = Math.trunc(diff / (ss * maxPins)); //каждый n-ый элемент из возможныъ value будет помещен на scale
+    const n = Math.trunc(diff / (ss * maxPins));
+    console.log(n, 'from pres');
+    //каждый n-ый элемент из возможныъ value будет помещен на scale
     const valueArr = [];
-    for (let i = 1; i < diff / ss; i += n) {
+    for (let i = n; i < diff / ss; i += n) {
       const value = ss * i;
       valueArr.push(value);
     }
     const valueObj = {};
     valueArr.forEach((value) => {
       let x = Math.trunc(
-        (value * this._model._settings.pxPerValue) /
+        (value * this._model._settings.valuePerPx) / //mb mistake here (mb need pxperValue)
           this._model._settings.stepSize
+      );
+      console.log(
+        this._model._settings.pxPerValue,
+        this._model._settings.valuePerPx,
+        'from pres makemarker'
       );
       valueObj[String(valueArr.indexOf(value))] = {
         value: value,
@@ -335,7 +342,7 @@ class Pres extends EventMixin {
     });
 
     const avg = Number(sumOfDiff) / mainsDiff.length;
-    const margin = avg - this._model._settings.pxPerValue;
+    const margin = avg;
 
     return { valueArr, majorMarkers, altDrag, margin };
   }
