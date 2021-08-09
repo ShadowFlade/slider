@@ -1,4 +1,4 @@
-import Model from './model';
+import Model, { ICoords } from './model';
 import EventMixin from './eventemitter';
 import Pres from './pres';
 type Ori = 'horizontal' | 'vertical';
@@ -11,7 +11,7 @@ type Elements<T> = {
   _sliderTooltipContainers: T[];
   _sliderHandles: T[];
   _sliderContainer: T;
-  _tooltipContainer: T[];
+
   _sliderTooltip: T;
   _sliderTooltipSticks: T[];
 };
@@ -19,8 +19,6 @@ class View extends EventMixin {
   valueDivs: Object[];
 
   valueDivsArray: number[];
-
-  _model: Model;
 
   _pres: Pres;
 
@@ -36,20 +34,19 @@ class View extends EventMixin {
     _sliderTooltipContainers: [],
     _sliderHandles: [],
     _sliderContainer: null,
-    _tooltipContainer: null,
+
     _sliderTooltip: null,
     _sliderTooltipSticks: [],
   };
-  constructor(pres, options, item, model: Model) {
+  constructor(pres, options, item) {
     super();
-    this._model = model;
+
     this._pres = pres;
     this._item = item;
   }
 
   public implementStyles(options, pos) {
-    // const className = this.trigger('settingRequired', 'classsName') //TODO why this doesnt work
-    this.fetchDivs(pos);
+    this._pres.fetchDivs();
     this.initiateOptions(options);
     this.orientation = pos;
     if (this._elements._sliderTooltip.getBoundingClientRect().left < 0) {
@@ -63,7 +60,7 @@ class View extends EventMixin {
       // min.style.transform = 'translate(150%, -120%)';
       min.style.left = '10px';
       this._elements._sliderScale.style.left = '-5px';
-      this._elements._tooltipContainer.forEach((item) => {
+      this._elements._sliderTooltipContainers.forEach((item) => {
         item.style.flexDirection = 'row';
         item.style.right = 'auto';
 
@@ -111,55 +108,41 @@ class View extends EventMixin {
     }
   }
 
-  private fetchDivs(orientation) {
-    this._elements._sliderMain = Array.from(
-      this._item.getElementsByClassName(
-        `${this._model._settings.className}-main`
-      ) as HTMLCollectionOf<HTMLElement>
-    )[0];
-    this._elements._slider = Array.from(
-      this._item.getElementsByClassName(
-        this._model._settings.className
-      ) as HTMLCollectionOf<HTMLElement>
-    )[0];
-    this._elements._sliderRange = Array.from(
-      this._item.getElementsByClassName(
-        `${this._model._settings.className}-range`
-      ) as HTMLCollectionOf<HTMLElement>
-    )[0];
-    this._elements._sliderHandles = Array.from(
-      this._item.getElementsByClassName(
-        `${this._model._settings.className}-handle--${orientation}`
-      ) as HTMLCollectionOf<HTMLElement>
-    );
+  public fetchDivs(orientation: string, defClassName: string) {
+    this._elements._sliderMain = this.fetchHTMLEl(
+      `${defClassName}-main`,
+      true
+    ) as HTMLElement;
+    this._elements._slider = this.fetchHTMLEl(
+      defClassName,
+      true
+    ) as HTMLElement;
+    this._elements._sliderRange = this.fetchHTMLEl(
+      `${defClassName}-range`,
+      true
+    ) as HTMLElement;
+    this._elements._sliderHandles = this.fetchHTMLEl(
+      `${defClassName}-handle--${orientation}`,
+      false
+    ) as HTMLElement[];
 
-    this._elements._sliderTooltip = Array.from(
-      this._item.getElementsByClassName(
-        `tooltip--${orientation}`
-      ) as HTMLCollectionOf<HTMLElement>
-    )[0];
+    this._elements._sliderTooltip = this.fetchHTMLEl(
+      'tooltip',
+      true
+    ) as HTMLElement;
+    this._elements._sliderContainer = this.fetchHTMLEl(
+      `${defClassName}-container`,
+      true
+    ) as HTMLElement;
+    this._elements._sliderScale = this.fetchHTMLEl(
+      `${defClassName}-marker`,
+      true
+    ) as HTMLElement;
+    this._elements._sliderTooltipContainers = this.fetchHTMLEl(
+      'tooltipContainer',
+      false
+    ) as HTMLElement[];
 
-    this._elements._sliderContainer = Array.from(
-      this._item.getElementsByClassName(
-        `${this._model._settings.className}-container`
-      ) as HTMLCollectionOf<HTMLElement>
-    )[0];
-
-    this._elements._tooltipContainer = Array.from(
-      this._item.getElementsByClassName(
-        `tooltipContainer`
-      ) as HTMLCollectionOf<HTMLElement>
-    );
-    this._elements._sliderScale = Array.from(
-      this._item.getElementsByClassName(
-        `slider-marker`
-      ) as HTMLCollectionOf<HTMLElement>
-    )[0];
-    this._elements._sliderTooltipContainers = Array.from(
-      this._item.getElementsByClassName(
-        'tooltipContainer'
-      ) as HTMLCollectionOf<HTMLElement>
-    );
     const valueDivs: { div: HTMLElement; value: number }[] = Array.from(
       this._item.getElementsByClassName('jsSlider-clickable')
     ).map((item: HTMLElement) => {
@@ -192,24 +175,26 @@ class View extends EventMixin {
     }
   }
 
-  public refreshCoords(data) {
+  public refreshCoords(data, ori: Ori, type: string) {
     const shiftX = data.shiftX;
+    console.log('🚀 ~ View ~ refreshCoords ~ shiftX', shiftX);
+
     const pinPoints = this.valueDivsArray;
     let newLeft: string;
     let dataObject;
     let handle: HTMLElement;
     let direction: string;
     let widthOrHeight: string;
-    if (this._model._settings.orientation == 'vertical') {
+    if (ori == 'vertical') {
       direction = 'top';
       widthOrHeight = 'height';
-    } else if (this._model._settings.orientation == 'horizontal') {
+    } else if (ori == 'horizontal') {
       direction = 'left';
       widthOrHeight = 'width';
     }
-    if (this._model._settings.type == 'single') {
+    if (type == 'single') {
       handle = this._elements._sliderHandles[0];
-    } else if (this._model._settings.type == 'double') {
+    } else if (type == 'double') {
       handle = data.target;
     }
 
@@ -228,7 +213,7 @@ class View extends EventMixin {
     let pin;
 
     if (data.clicked) {
-      dataObject = this.reactOnClick(newCoords);
+      dataObject = this.reactOnClick(newCoords, ori, type);
       if (dataObject) {
         newLeft = dataObject.newLeft;
         pin = dataObject.pin;
@@ -236,7 +221,7 @@ class View extends EventMixin {
         return false;
       }
     } else {
-      dataObject = this.reactOnDrag(newCoords);
+      dataObject = this.reactOnDrag(newCoords, ori, type);
 
       newLeft = dataObject.newLeft;
       pin = dataObject.pin;
@@ -244,8 +229,8 @@ class View extends EventMixin {
 
     handle.style[direction] = newLeft + 'px';
 
-    if (this._model._settings.type == 'double') {
-      this.rangeInterval(this._model._settings.orientation);
+    if (type == 'double') {
+      this.rangeInterval(ori);
     } else {
       range.style[widthOrHeight] = newLeft + 'px';
     }
@@ -258,7 +243,7 @@ class View extends EventMixin {
     // toolTip.textContent = data.value;
   }
 
-  private reactOnDrag(data) {
+  private reactOnDrag(data, ori: Ori, type: string) {
     let direction = '0';
     let widthOrHeight = '';
     let newLeft = data.newLeft;
@@ -309,8 +294,8 @@ class View extends EventMixin {
     };
   }
 
-  private reactOnClick(data) {
-    if (this._model._settings.type == 'double') {
+  private reactOnClick(data, ori, type) {
+    if (type == 'double') {
       return false;
     }
     const handle = this._elements._sliderHandles[0];

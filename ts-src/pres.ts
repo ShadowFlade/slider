@@ -16,25 +16,11 @@ type HandleNum = 1 | 2;
 class Pres extends EventMixin {
   _item: Element;
 
-  // _slider: HTMLElement;
-
-  // _sliderContainer: HTMLElement;
-
-  // _sliderRange: HTMLElement;
-
-  // _sliderMain: HTMLElement;
-
-  // _sliderHandles: HTMLElement[];
-
   _model: Model;
 
   _view: View;
 
   pxOptions: Array<string> = ['height', 'width'];
-
-  orientation: string;
-
-  built: boolean;
 
   constructor(model: Model, item: Element) {
     super();
@@ -62,10 +48,8 @@ class Pres extends EventMixin {
     const behavior = this._model.getSettings();
 
     const { main: sliderMain, container, slider } = this.makeSlider(behavior);
-    // this._slider = slider;
     const { marginLeft, marginTop, handles, offsetWidth, offsetHeight } =
       this._view.showSlider(sliderMain, orientation as Ori);
-    // this._sliderHandles = handles as HTMLElement[];
 
     let mainMax: number;
     let mainMin: number;
@@ -85,7 +69,6 @@ class Pres extends EventMixin {
 
     this._view.implementStyles(options, this._model._settings.orientation);
 
-    // this.built = true;
     this._model._settings.built = true;
   }
 
@@ -166,7 +149,7 @@ class Pres extends EventMixin {
     return { main, container, slider };
   }
 
-  private makeMarker(behavior, widthOrHeight) {
+  private makeMarker(behavior: Settings, widthOrHeight: number): HTMLElement {
     const orientation = this._model.getSetting('orientation');
     let marginCss: string;
     if (orientation === 'horizontal') {
@@ -290,7 +273,11 @@ class Pres extends EventMixin {
       this._view.rangeInterval(this._model._settings.orientation);
     }
   }
-
+  public fetchDivs() {
+    const className = this._model._settings.className;
+    const ori: Ori = this._model._settings.orientation;
+    this._view.fetchDivs(ori, className);
+  }
   private calcPins(behavior, widthOrHeight) {
     let altDrag;
     let majorMarkers = Math.trunc(
@@ -308,7 +295,6 @@ class Pres extends EventMixin {
     const ss = this._model._settings.stepSize;
     const maxPins = this._model._settings._maxPins;
     const n = Math.trunc(diff / (ss * maxPins));
-    console.log(n, 'from pres');
     //каждый n-ый элемент из возможныъ value будет помещен на scale
     const valueArr = [];
     for (let i = n; i < diff / ss; i += n) {
@@ -321,11 +307,7 @@ class Pres extends EventMixin {
         (value * this._model._settings.valuePerPx) / //mb mistake here (mb need pxperValue)
           this._model._settings.stepSize
       );
-      console.log(
-        this._model._settings.pxPerValue,
-        this._model._settings.valuePerPx,
-        'from pres makemarker'
-      );
+
       valueObj[String(valueArr.indexOf(value))] = {
         value: value,
         assumputedMain: x,
@@ -401,7 +383,8 @@ class Pres extends EventMixin {
 
   public onMouseDown(): void {
     const handles = this._view._elements._sliderHandles;
-
+    const ori = this._model._settings.orientation;
+    const type = this._model._settings.type;
     const container = this._view._elements._sliderContainer;
     const slider = this._view._elements._slider;
     const model = this._model;
@@ -419,15 +402,19 @@ class Pres extends EventMixin {
           const shiftX = event.clientX - handle.getBoundingClientRect().left;
 
           const mouseMove = (e) => {
-            this.transferData({
-              y: e.clientY,
-              x: e.clientX,
-              shiftX: shiftX,
-              marginLeft: marginLeft,
-              clicked: false,
-              marginTop: marginTop,
-              target: event.target,
-            });
+            this.transferData(
+              {
+                y: e.clientY,
+                x: e.clientX,
+                shiftX: shiftX,
+                marginLeft: marginLeft,
+                clicked: false,
+                marginTop: marginTop,
+                target: event.target,
+              },
+              ori,
+              type
+            );
           };
           const onMouseUp = (e) => {
             document.removeEventListener('pointermove', mouseMove);
@@ -445,23 +432,27 @@ class Pres extends EventMixin {
         const value =
           (target.getElementsByClassName('marker-value')[0] as HTMLElement) ||
           target;
-        this.transferData({
-          y: event.clientY,
-          x: target.getBoundingClientRect().left,
+        this.transferData(
+          {
+            y: event.clientY,
+            x: target.getBoundingClientRect().left,
 
-          value: value.dataset.value,
-          clicked: true,
-          target: target,
-          marginLeft: marginLeft,
-          marginTop: marginTop,
-        });
+            value: value.dataset.value,
+            clicked: true,
+            target: target,
+            marginLeft: marginLeft,
+            marginTop: marginTop,
+          },
+          ori,
+          type
+        );
       }
     });
   }
 
-  private transferData(data) {
+  private transferData(data, ori: Ori, type: 'double' | 'single') {
     if (data.caller == 'model') {
-      this._view.refreshCoords(data);
+      this._view.refreshCoords(data, ori, type);
       return;
     }
     this._model.renew(data);
@@ -484,7 +475,7 @@ class Pres extends EventMixin {
     this._model.calcMain(value, handle);
   }
 
-  getSettings() {
+  public getSettings() {
     return this._model.getSettings();
   }
 }

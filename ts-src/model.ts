@@ -74,15 +74,11 @@ class Model extends EventMixin {
   public coords: ICoords = {
     main: 0,
     prevMain: 0,
-
     altDrag: false,
-
     value: 1,
     prevValue: 0,
     caller: '',
-
     clicked: false,
-
     target: null,
   };
 
@@ -95,7 +91,7 @@ class Model extends EventMixin {
     maxValue: 1360,
     minValue: 0,
     maxMinDifference: 0,
-    _maxPins: 5, // optimal minimal number of pins
+    _maxPins: 5, // optimal maximum number of pins
     marker: true,
     betweenMarkers: 40,
     mainMax: 0,

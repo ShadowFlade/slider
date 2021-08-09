@@ -1,27 +1,27 @@
 interface eventmixin {
-  _eventHandlers: {}
-  on(eventname: string, handler: Function): void
-  off(eventname: string, handler: Function): void
-  trigger(eventaname: string, args: any, context?): void
+  _eventHandlers: {};
+  on(eventname: string, handler: Function): void;
+  off(eventname: string, handler: Function): void;
+  trigger(eventaname: string, args: any, context?): void;
 }
 
 class EventMixin implements eventmixin {
-  _eventHandlers: {}
+  _eventHandlers: {};
 
   on(eventName: string, handler: Function) {
-    if (!this._eventHandlers) this._eventHandlers = {}
+    if (!this._eventHandlers) this._eventHandlers = {};
     if (!this._eventHandlers[eventName]) {
-      this._eventHandlers[eventName] = []
+      this._eventHandlers[eventName] = [];
     }
-    this._eventHandlers[eventName].push(handler)
+    this._eventHandlers[eventName].push(handler);
   }
 
   off(eventName: string, handler: Function) {
-    const handlers = this._eventHandlers && this._eventHandlers[eventName]
-    if (!handlers) return
+    const handlers = this._eventHandlers && this._eventHandlers[eventName];
+    if (!handlers) return;
     for (let i = 0; i < handlers.length; i++) {
       if (handlers[i] === handler) {
-        handlers.splice(i--, 1)
+        handlers.splice(i--, 1);
       }
     }
   }
@@ -31,17 +31,19 @@ class EventMixin implements eventmixin {
   // }
 
   trigger(eventName: string, args?) {
+    let x;
     if (!this._eventHandlers || !this._eventHandlers[eventName]) {
-      return
+      return;
     }
 
     this._eventHandlers[eventName].forEach((handler) => {
-      const that = this
-      const result = handler.call(this, args)
+      const result = handler.call(this, args);
 
-      return result // ??
-    })
+      x = result;
+      return result;
+    });
+    return x;
   }
 }
 
-export default EventMixin
+export default EventMixin;
