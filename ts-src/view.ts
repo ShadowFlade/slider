@@ -1,7 +1,7 @@
 import Model, { ICoords } from './model';
 import EventMixin from './eventemitter';
 import Pres from './pres';
-type Ori = 'horizontal' | 'vertical';
+import { Type, Ori } from './model';
 type Elements<T> = {
   _slider: T;
 
@@ -82,7 +82,7 @@ class View extends EventMixin {
     };
   }
 
-  public showSlider(sliderMain, ori: Ori) {
+  public showSlider(sliderMain: HTMLElement, ori: Ori) {
     this._item.appendChild(sliderMain);
     const marginLeft = sliderMain.getBoundingClientRect().left;
     const marginTop = sliderMain.getBoundingClientRect().top;
@@ -175,9 +175,8 @@ class View extends EventMixin {
     }
   }
 
-  public refreshCoords(data, ori: Ori, type: string) {
+  public refreshCoords(data, ori: Ori, type: Type) {
     const shiftX = data.shiftX;
-    console.log('🚀 ~ View ~ refreshCoords ~ shiftX', shiftX);
 
     const pinPoints = this.valueDivsArray;
     let newLeft: string;

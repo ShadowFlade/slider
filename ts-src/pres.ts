@@ -1,7 +1,7 @@
 import EventMixin from './eventemitter';
 import Model, { Settings } from './model';
 import View from './view';
-import { Ori } from './view';
+import { Ori, Type } from './model';
 function elemsDiff(arr: number[]) {
   let res = [];
   for (let i = 0; i < arr.length - 1; i += 1) {
@@ -450,12 +450,12 @@ class Pres extends EventMixin {
     });
   }
 
-  private transferData(data, ori: Ori, type: 'double' | 'single') {
+  private transferData(data, ori?: Ori, type?: Type) {
     if (data.caller == 'model') {
       this._view.refreshCoords(data, ori, type);
       return;
     }
-    this._model.renew(data);
+    this._model.renew(data, ori, type);
   }
 
   public setValue(value: number, target: HandleNum) {

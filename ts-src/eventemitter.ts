@@ -30,14 +30,14 @@ class EventMixin implements eventmixin {
   //   this.events[eventName] = this.events[eventName].filter(eventCallback => callback !== eventCallback);
   // }
 
-  trigger(eventName: string, args?) {
+  trigger(eventName: string, ...args) {
     let x;
     if (!this._eventHandlers || !this._eventHandlers[eventName]) {
       return;
     }
 
     this._eventHandlers[eventName].forEach((handler) => {
-      const result = handler.call(this, args);
+      const result = handler.call(this, ...args);
 
       x = result;
       return result;

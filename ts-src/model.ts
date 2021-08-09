@@ -1,11 +1,11 @@
 import EventMixin from './eventemitter';
-import { Ori } from './view';
 
 function divisionFloor(x: number, y: number): number {
   const result = Math.trunc(x / y);
-
   return result;
 }
+type Ori = 'horizontal' | 'vertical';
+type Type = 'double' | 'single';
 type Renew = {
   (data: ICoords): void | ICoords;
 };
@@ -19,10 +19,11 @@ type IStyles = {
 };
 type Settings = {
   className: string;
-  type: 'single' | 'double';
-  orientation: 'horizontal' | 'vertical';
+  orientation: Ori;
+  type: Type;
   stepSize: number;
   pxPerValue: number;
+  valuePerPx: number;
   marginLeft: number;
   marginTop: number;
   maxValue: number;
@@ -32,25 +33,21 @@ type Settings = {
   _maxPins: number;
   mainMax: number;
   mainMin: number;
+  valueWidth: number;
   toolTip: boolean;
   altDrag: boolean;
   marker: boolean;
   built: boolean;
   styles: IStyles;
-  valuePerPx: number;
-  valueWidth: number;
 };
 
 type ICoords = {
   main: number;
   prevMain: number;
-
   value: number;
   prevValue: number;
   caller: string;
-
   clicked: boolean;
-
   altDrag: boolean;
   target: object;
 };
@@ -74,11 +71,11 @@ class Model extends EventMixin {
   public coords: ICoords = {
     main: 0,
     prevMain: 0,
-    altDrag: false,
     value: 1,
     prevValue: 0,
     caller: '',
     clicked: false,
+    altDrag: false,
     target: null,
   };
 
@@ -87,22 +84,25 @@ class Model extends EventMixin {
     orientation: 'horizontal',
     type: 'double',
     stepSize: 90,
-    toolTip: true,
+    pxPerValue: 0,
+    valuePerPx: 1,
+    marginLeft: 0,
+    marginTop: 0,
     maxValue: 1360,
     minValue: 0,
     maxMinDifference: 0,
-    _maxPins: 5, // optimal maximum number of pins
-    marker: true,
     betweenMarkers: 40,
+    _maxPins: 5, // optimal maximum number of pins
     mainMax: 0,
     mainMin: 0,
-    altDrag: false,
-    pxPerValue: 0,
-    marginLeft: 0,
-    marginTop: 0,
-    built: false,
-    valuePerPx: 1,
     valueWidth: 0,
+    toolTip: true,
+
+    marker: true,
+
+    altDrag: false,
+
+    built: false,
 
     styles: {
       progressBarColor: 'green',
@@ -184,7 +184,7 @@ class Model extends EventMixin {
     }
   }
 
-  public renew(data: { [key: string]: number }): ICoords {
+  public renew(data: { [key: string]: number }, ori, type): ICoords {
     const valuePerPx = this._settings.valuePerPx;
     const pxPerValue = this._settings.pxPerValue;
     const stepSize = this._settings.stepSize;
@@ -218,7 +218,7 @@ class Model extends EventMixin {
       this.coords.prevMain = this.coords.main;
 
       if (validatedCoords) {
-        this.trigger('coords changed', validatedCoords);
+        this.trigger('coords changed', validatedCoords, ori, type);
         return validatedCoords;
       }
     }
@@ -300,5 +300,5 @@ class Model extends EventMixin {
   }
 }
 
-export { ICoords, Settings };
+export { ICoords, Settings, Type, Ori };
 export default Model;
