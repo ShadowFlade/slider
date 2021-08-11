@@ -128,7 +128,8 @@ class Model extends EventMixin {
         }
       });
     }
-
+  }
+  private correctOptions() {
     this.coords.altDrag = this._settings.altDrag;
     this._settings.maxMinDifference =
       this._settings.maxValue - this._settings.minValue;
@@ -262,6 +263,7 @@ class Model extends EventMixin {
 
   public setOptions(options: { [key: string]: string | number }) {
     this.initOptions(options);
+    this.correctOptions();
   }
 
   public getStyles() {
