@@ -93,15 +93,12 @@ class Model extends EventMixin {
     maxMinDifference: 0,
     betweenMarkers: 40,
     _maxPins: 5, // optimal maximum number of pins
-    mainMax: 0,
+    mainMax: 200,
     mainMin: 0,
     valueWidth: 0,
     toolTip: true,
-
     marker: true,
-
     altDrag: false,
-
     built: false,
 
     styles: {
@@ -128,6 +125,7 @@ class Model extends EventMixin {
         }
       });
     }
+    this.correctOptions();
   }
   private correctOptions() {
     this.coords.altDrag = this._settings.altDrag;
@@ -136,9 +134,7 @@ class Model extends EventMixin {
     const diff = this._settings.maxMinDifference;
 
     if (this._settings.orientation == 'horizontal') {
-      if (this._settings.altDrag) {
-        this._settings.valuePerPx = diff / this._settings.mainMax;
-      }
+      this._settings.valuePerPx = diff / this._settings.mainMax;
     } else if (this._settings.orientation == 'vertical') {
       this._settings.valuePerPx = diff / this._settings.styles.sliderHeight;
     }
@@ -233,8 +229,10 @@ class Model extends EventMixin {
       margin = 'marginTop';
     }
     const value =
-      divisionFloor(offset - this.coords[margin], this._settings.pxPerValue) *
-      this._settings.stepSize;
+      divisionFloor(
+        offset - this._settings[margin],
+        this._settings.pxPerValue
+      ) * this._settings.stepSize;
     return {
       value: value,
       target: target,
