@@ -82,12 +82,14 @@ class View extends EventMixin {
     };
   }
 
-  public showSlider(sliderMain: HTMLElement, ori: Ori) {
-    this._item.appendChild(sliderMain);
-    const marginLeft = sliderMain.getBoundingClientRect().left;
-    const marginTop = sliderMain.getBoundingClientRect().top;
-    const offsetWidth = sliderMain.offsetWidth;
-    const offsetHeight = sliderMain.offsetHeight;
+  public showSlider(sliderMain: Node, ori: Ori) {
+    //     const item1 = sliderMain.innerHTML;
+    // this._item.insertAdjacentHTML('beforeend', item1);
+    const main = this._item.appendChild(sliderMain) as HTMLElement;
+    const marginLeft = main.getBoundingClientRect().left;
+    const marginTop = main.getBoundingClientRect().top;
+    const offsetWidth = main.offsetWidth;
+    const offsetHeight = main.offsetHeight;
     const handles = this.fetchHTMLEl('slider-handle', false);
     return { marginLeft, marginTop, handles, offsetWidth, offsetHeight };
   }

@@ -282,22 +282,22 @@ class Model extends EventMixin {
   public getItem() {
     return this._item;
   }
-  public calcInterval(data): object {
-    const interval = this.interval;
+  // public calcInterval(data): object {
+  //   const interval = this.interval;
 
-    interval.set(data.target, data.value);
+  //   interval.set(data.target, data.value);
 
-    const value = Number(Array.from(interval.values())[0]);
-    const value2 = Number(Array.from(interval.values())[1]);
+  //   const value = Number(Array.from(interval.values())[0]);
+  //   const value2 = Number(Array.from(interval.values())[1]);
 
-    const floor = Math.min(value, value2);
-    const ceil = Math.max(value, value2);
+  //   const floor = Math.min(value, value2);
+  //   const ceil = Math.max(value, value2);
 
-    return {
-      floor,
-      ceil,
-    };
-  }
+  //   return {
+  //     floor,
+  //     ceil,
+  //   };
+  // }
 }
 
 export { ICoords, Settings, Type, Ori };

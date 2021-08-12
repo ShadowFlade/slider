@@ -49,7 +49,7 @@ class Pres extends EventMixin {
 
     const { main: sliderMain, container, slider } = this.makeSlider(behavior);
     const { marginLeft, marginTop, handles, offsetWidth, offsetHeight } =
-      this._view.showSlider(sliderMain, orientation as Ori);
+      this._view.showSlider(sliderMain as Node, orientation as Ori);
 
     let mainMax: number;
     let mainMin: number;
@@ -64,7 +64,7 @@ class Pres extends EventMixin {
     });
     if (behavior.marker) {
       const marker = this.makeMarker(behavior, widthOrHeight);
-      container.append(marker);
+      container.appendChild(marker);
     }
 
     this._view.implementStyles(options, this._model._settings.orientation);
@@ -73,9 +73,9 @@ class Pres extends EventMixin {
   }
 
   public makeSlider(behavior: Settings): {
-    main: HTMLElement;
-    container: HTMLElement;
-    slider: HTMLElement;
+    main: Node;
+    container: Node;
+    slider: Node;
   } {
     const viewEls = this._view._elements;
     let direction: string;
