@@ -15,6 +15,10 @@ type Elements<T> = {
   _sliderTooltip: T;
   _sliderTooltipSticks: T[];
 };
+type Fetch = {
+  (className: string, single: true, item?): HTMLElement;
+  (className: string, single: false, item?): HTMLElement[];
+};
 class View extends EventMixin {
   valueDivs: Object[];
 
@@ -83,9 +87,12 @@ class View extends EventMixin {
   }
 
   public showSlider(sliderMain: Node, ori: Ori) {
-    //     const item1 = sliderMain.innerHTML;
-    // this._item.insertAdjacentHTML('beforeend', item1);
+    console.log(sliderMain);
+
     const main = this._item.appendChild(sliderMain) as HTMLElement;
+    console.log(sliderMain);
+    // const main = this.fetchHTMLEl('slider-main', true) as HTMLElement; //had to do that because otherwise test were failing(node|htmlelement problem)
+    console.log(main);
     const marginLeft = main.getBoundingClientRect().left;
     const marginTop = main.getBoundingClientRect().top;
     const offsetWidth = main.offsetWidth;
@@ -104,9 +111,9 @@ class View extends EventMixin {
     );
 
     if (single) {
-      return item[0];
+      return item[0] as HTMLElement;
     } else {
-      return item;
+      return item as HTMLElement[];
     }
   }
 

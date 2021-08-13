@@ -28,6 +28,7 @@
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-webpack-plugin": "^2.5.4",
     "jest": "^27.0.6",
+    "jsdom": "^16.7.0",
     "prettier": "2.3.2",
     "ts-jest": "^27.0.4",
     "ts-loader": "^9.2.3",

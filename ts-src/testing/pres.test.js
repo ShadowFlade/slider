@@ -24,10 +24,20 @@ describe('Presenter', () => {
     pres=new Pres(model,item)
     view = new View(pres,{},item)
   });
-  test ('should create div element on the page',()=> {
-    // const item=document.createElement('div')
-    const app=new App(item,{})
-    expect(item.children).toBeGreaterThan(0)
+
+
+  test('should render an element',()=> {
+    const el=document.createElement('div')
+    const el2=document.createElement('div')
+
+    el2.classList.add('slider-handle')
+
+    document.body.appendChild(el2)
+    const handle=document.getElementsByClassName('slider-handle')
+    
+    view.showSlider(el2,'horizontal')
+    expect(item.children.length).toBeGreaterThan(0)
+    expect(handle).toBeDefined()
 
   })
 
