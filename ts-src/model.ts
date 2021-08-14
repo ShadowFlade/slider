@@ -159,6 +159,12 @@ class Model extends EventMixin {
       [this._settings.styles.sliderWidth, this._settings.styles.sliderHeight] =
         [this._settings.styles.sliderHeight, this._settings.styles.sliderWidth];
     }
+    if (this._settings.maxValue < this._settings.minValue) {
+      [this._settings.maxValue, this._settings.minValue] = [
+        this._settings.minValue,
+        this._settings.maxValue,
+      ];
+    }
   }
 
   private validate(data: ICoords) {

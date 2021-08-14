@@ -31,14 +31,12 @@ class View extends EventMixin {
   orientation: string;
   public _elements: Elements<HTMLElement> = {
     _slider: null,
-
     _sliderMain: null,
     _sliderScale: null,
     _sliderRange: null,
     _sliderTooltipContainers: [],
     _sliderHandles: [],
     _sliderContainer: null,
-
     _sliderTooltip: null,
     _sliderTooltipSticks: [],
   };
@@ -53,15 +51,11 @@ class View extends EventMixin {
     this._pres.fetchDivs();
     this.initiateOptions(options);
     this.orientation = pos;
+
     if (this._elements._sliderTooltip.getBoundingClientRect().left < 0) {
       this._elements._sliderContainer.style.justifyContent = 'space-between';
       this._elements._sliderContainer.style.flexDirection = 'row-reverse';
-      const min = Array.from(
-        this._item.getElementsByClassName(
-          'slider-min--vertical'
-        ) as HTMLCollectionOf<HTMLElement>
-      )[0];
-      // min.style.transform = 'translate(150%, -120%)';
+      const min = this.fetchHTMLEl('slider-min--vertical', true) as HTMLElement;
       min.style.left = '10px';
       this._elements._sliderScale.style.left = '-5px';
       this._elements._sliderTooltipContainers.forEach((item) => {
@@ -78,6 +72,7 @@ class View extends EventMixin {
         }); //TODO should be a nicer way
       });
     }
+
     return {
       slider: this._elements._slider,
       range: this._elements._sliderRange,
@@ -87,12 +82,7 @@ class View extends EventMixin {
   }
 
   public showSlider(sliderMain: Node, ori: Ori) {
-    console.log(sliderMain);
-
-    const main = this._item.appendChild(sliderMain) as HTMLElement;
-    console.log(sliderMain);
-    // const main = this.fetchHTMLEl('slider-main', true) as HTMLElement; //had to do that because otherwise test were failing(node|htmlelement problem)
-    console.log(main);
+    const main = this._item.appendChild(sliderMain as Node) as HTMLElement;
     const marginLeft = main.getBoundingClientRect().left;
     const marginTop = main.getBoundingClientRect().top;
     const offsetWidth = main.offsetWidth;
@@ -186,7 +176,6 @@ class View extends EventMixin {
 
   public refreshCoords(data, ori: Ori, type: Type) {
     const shiftX = data.shiftX;
-
     const pinPoints = this.valueDivsArray;
     let newLeft: string;
     let dataObject;

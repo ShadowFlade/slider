@@ -146,7 +146,7 @@ class Pres extends EventMixin {
     max.classList.add(`slider-max--${orientation}`);
     main.classList.add(`slider-main--${orientation}`);
 
-    return { main, container, slider };
+    return { main: main as Node, container, slider };
   }
 
   private makeMarker(behavior: Settings, widthOrHeight: number): HTMLElement {
