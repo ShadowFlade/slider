@@ -4,15 +4,13 @@ import Pres from './pres';
 import { Type, Ori } from './model';
 type Elements<T> = {
   _slider: T;
-
   _sliderMain: T;
   _sliderScale: T;
   _sliderRange: T;
   _sliderTooltipContainers: T[];
   _sliderHandles: T[];
   _sliderContainer: T;
-
-  _sliderTooltip: T;
+  _sliderTooltip: T[];
   _sliderTooltipSticks: T[];
 };
 type Fetch = {
@@ -52,7 +50,7 @@ class View extends EventMixin {
     this.initiateOptions(options);
     this.orientation = pos;
 
-    if (this._elements._sliderTooltip.getBoundingClientRect().left < 0) {
+    if (this._elements._sliderTooltip[0].getBoundingClientRect().left < 0) {
       this._elements._sliderContainer.style.justifyContent = 'space-between';
       this._elements._sliderContainer.style.flexDirection = 'row-reverse';
       const min = this.fetchHTMLEl('slider-min--vertical', true) as HTMLElement;
@@ -127,8 +125,8 @@ class View extends EventMixin {
 
     this._elements._sliderTooltip = this.fetchHTMLEl(
       'tooltip',
-      true
-    ) as HTMLElement;
+      false
+    ) as HTMLElement[];
     this._elements._sliderContainer = this.fetchHTMLEl(
       `${defClassName}-container`,
       true
@@ -219,7 +217,6 @@ class View extends EventMixin {
       }
     } else {
       dataObject = this.reactOnDrag(newCoords, ori, type);
-
       newLeft = dataObject.newLeft;
       pin = dataObject.pin;
     }
@@ -270,6 +267,7 @@ class View extends EventMixin {
 
     // newLeft = neededCoords - margin - handleHeight / 2
     // if (data.mainAxis == 'x') {
+
     if (data.altDrag) {
       newLeft = data.main - data.shiftX;
     } else {
@@ -308,7 +306,7 @@ class View extends EventMixin {
 
     handle.style[direction] = newLeft + 'px';
     this._elements._sliderRange.style[widthOrHeight] = newLeft + 'px';
-    this._elements._sliderTooltip.textContent = data.value;
+    this._elements._sliderTooltip[0].textContent = data.value;
 
     if (pinPointsValues.includes(data.value)) {
       for (const i of this.valueDivs) {

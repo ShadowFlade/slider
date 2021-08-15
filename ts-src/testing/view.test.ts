@@ -118,9 +118,9 @@ describe('pres implement styles:', () => {
     }
   });
 
-  test('should refresh coordinates', () => {
-    const xs = [200, 1, 10, 100, 199];
-    const values = [1, 10, 100, 1000, 1361];
+  test('should refresh coordinates,horizontal single', () => {
+    const xs = [200, 15, 10, 100, 199];
+    const values = [100, 1000, 1361];
     const handles = [
       Array.from(view._elements._sliderHandles)[0],
       Array.from(view._elements._sliderHandles)[1],
@@ -132,29 +132,45 @@ describe('pres implement styles:', () => {
       prevValue: 0,
       caller: '',
       clicked: false,
-      altDrag: false,
+      altDrag: true,
       target: null,
       shiftX: 0,
     };
-    view._elements._sliderRange.style.width = 0;
+    view._elements._sliderRange.style.width = '0px';
     const rangeWidth = view._elements._sliderRange.style.width;
-    console.log(rangeWidth, 'rangewidth');
 
     const handleLeft1 = view._elements._sliderHandles[0].style.left;
     const handleLeft2 = view._elements._sliderHandles[1].style.left;
     const toolTipiValue = view._elements._sliderTooltip.textContent;
 
-    for (let i of xs) {
-      for (let j of values) {
-        for (let k of handles) {
+    function deepCheck(handle) {
+      data.target = handle;
+      for (let i of xs) {
+        for (let j of values) {
           data.main = i;
           data.value = j;
-          data.target = k;
+
           view.refreshCoords(data, 'horizontal', 'single');
-          console.log(view._elements._sliderRange.style.width);
-          expect(rangeWidth).not.toBe(view._elements._sliderRange.style.width);
+          expect(rangeWidth).not.toEqual(
+            view._elements._sliderRange.style.width
+          );
+
+          let handleReceiver;
+          let numOfHandle;
+          if (handle == view._elements._sliderHandles[0]) {
+            handleReceiver = handleLeft1;
+            numOfHandle = 0;
+          } else {
+            handleReceiver = handleLeft2;
+            numOfHandle = 1;
+          }
+          expect(handleReceiver).not.toEqual(handle.style.left);
+          expect(toolTipiValue).not.toEqual(
+            view._elements._sliderTooltip[numOfHandle].textContent
+          );
         }
       }
     }
+    deepCheck(view._elements._sliderHandles[0]);
   });
 });
