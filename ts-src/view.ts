@@ -338,16 +338,29 @@ class View extends EventMixin {
       direction = 'top';
     }
 
-    const minOffset = this._elements._sliderHandles[0][offset];
-    // if (this._elements._sliderHandles[1]) {
-
-    // }
-    const maxOffset = this._elements._sliderHandles[1]?.[offset] || null;
-
+    const minOffset = parseFloat(
+      this._elements._sliderHandles[0].style[direction]
+    );
+    const maxOffset =
+      parseFloat(this._elements._sliderHandles[1].style?.[direction]) || null;
     const length = Math.abs(minOffset - maxOffset);
     const handleOffset = Math.min(minOffset, maxOffset);
 
     this._elements._sliderRange.style[direction] = handleOffset + 'px';
+    // console.log(
+    //   this._elements._sliderHandles[0].style.left,
+    //   'left',
+    //   minOffset,
+    //   'offset left'
+    // );
+    // console.log(
+    //   this._elements._sliderHandles[1].style.left,
+    //   'left',
+    //   maxOffset,
+    //   'offset left'
+    // );
+    console.log(length);
+
     this._elements._sliderRange.style[widthOrHeight] = length + 'px';
   }
 
