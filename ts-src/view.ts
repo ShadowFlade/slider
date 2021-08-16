@@ -35,7 +35,7 @@ class View extends EventMixin {
     _sliderTooltipContainers: [],
     _sliderHandles: [],
     _sliderContainer: null,
-    _sliderTooltip: null,
+    _sliderTooltip: [],
     _sliderTooltipSticks: [],
   };
   constructor(pres, options, item) {
@@ -97,6 +97,7 @@ class View extends EventMixin {
     const item = Array.from(
       elem.getElementsByClassName(className) as HTMLCollectionOf<HTMLElement>
     );
+    console.log(item, 'item', item[0], 'item[0]');
 
     if (single) {
       return item[0] as HTMLElement;
@@ -124,9 +125,10 @@ class View extends EventMixin {
     ) as HTMLElement[];
 
     this._elements._sliderTooltip = this.fetchHTMLEl(
-      'tooltip',
+      `tooltip`,
       false
     ) as HTMLElement[];
+
     this._elements._sliderContainer = this.fetchHTMLEl(
       `${defClassName}-container`,
       true
@@ -195,11 +197,15 @@ class View extends EventMixin {
 
     const range = this._elements._sliderRange;
 
-    const toolTip = this.fetchHTMLEl(
-      `tooltip--${this.orientation}`,
-      true,
-      handle
-    ) as HTMLDivElement;
+    const toolTip = this.fetchHTMLEl(`tooltip`, true, handle) as HTMLDivElement;
+    // console.log(
+    //   toolTip,
+    //   'toolTip',
+    //   handle.firstChild,
+    //   'handle child',
+    //   toolTip == handle.firstChild
+    // );
+
     const newCoords = Object.assign(data, {
       shiftX: shiftX,
       newLeft: newLeft,
@@ -228,7 +234,6 @@ class View extends EventMixin {
     } else {
       range.style[widthOrHeight] = newLeft + 'px';
     }
-
     const value = numberOfDigits(data.value);
     handle.dataset.value = value;
     toolTip.textContent = value;
@@ -347,20 +352,6 @@ class View extends EventMixin {
     const handleOffset = Math.min(minOffset, maxOffset);
 
     this._elements._sliderRange.style[direction] = handleOffset + 'px';
-    // console.log(
-    //   this._elements._sliderHandles[0].style.left,
-    //   'left',
-    //   minOffset,
-    //   'offset left'
-    // );
-    // console.log(
-    //   this._elements._sliderHandles[1].style.left,
-    //   'left',
-    //   maxOffset,
-    //   'offset left'
-    // );
-    console.log(length);
-
     this._elements._sliderRange.style[widthOrHeight] = length + 'px';
   }
 
