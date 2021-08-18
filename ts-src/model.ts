@@ -66,6 +66,11 @@ class Model extends EventMixin {
     'height',
     'color',
     'background-color',
+    'progressBarColor',
+    'sliderColor',
+    'handleColor',
+    'sliderWidth',
+    'sliderHeight',
   ];
   public interval: Map<HTMLDivElement, number> = new Map();
   public coords: ICoords = {

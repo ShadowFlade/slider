@@ -26,13 +26,9 @@ beforeEach(() => {
     mainMin: 0,
     valueWidth: 0,
     toolTip: true,
-
     marker: true,
-
     altDrag: false,
-
     built: false,
-
     styles: {
       progressBarColor: 'green',
       sliderColor: 'red',

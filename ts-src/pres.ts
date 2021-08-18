@@ -11,6 +11,13 @@ function elemsDiff(arr: number[]) {
 
   return res;
 }
+function checkForZero(number: number) {
+  if (number != 0) {
+    return number;
+  } else {
+    throw new Error('can not operate with non-positive numbers');
+  }
+}
 type HandleNum = 1 | 2;
 
 class Pres extends EventMixin {
@@ -27,6 +34,7 @@ class Pres extends EventMixin {
     this._model = model;
     this._item = item;
     this._model.on('settings changed', this.init.bind(this));
+    console.log('im here');
   }
 
   public getView(view: View): void {
@@ -145,6 +153,7 @@ class Pres extends EventMixin {
     min.classList.add(`slider-min--${orientation}`);
     max.classList.add(`slider-max--${orientation}`);
     main.classList.add(`slider-main--${orientation}`);
+    console.log('made slider');
 
     return { main: main as Node, container, slider };
   }
@@ -158,13 +167,13 @@ class Pres extends EventMixin {
       marginCss = 'marginTop';
     }
     const markerDiv = document.createElement('div');
-
     const { valueArr, majorMarkers, altDrag, margin } = this.calcPins(
       behavior,
       widthOrHeight
     );
     const listOfValues = valueArr;
     let j = 0;
+
     for (let i = 0; i < majorMarkers; i += 1) {
       const majorMarker = document.createElement('div');
       markerDiv.append(majorMarker);
@@ -195,6 +204,8 @@ class Pres extends EventMixin {
       }
     }
     markerDiv.className = `slider-marker slider-marker--${orientation}`;
+    console.log('made maarker');
+
     return markerDiv;
   }
 
@@ -290,16 +301,21 @@ class Pres extends EventMixin {
       });
       majorMarkers = this._model._settings._maxPins;
     }
+    console.log('not here1');
+
     const diff = this._model._settings.maxMinDifference;
     const ss = this._model._settings.stepSize;
     const maxPins = this._model._settings._maxPins;
-    const n = Math.trunc(diff / (ss * maxPins));
+    const n = checkForZero(Math.trunc(diff / (ss * majorMarkers)));
     //каждый n-ый элемент из возможныъ value будет помещен на scale
+    console.log(diff, ss, maxPins, n);
+    console.log('hay');
     const valueArr = [];
     for (let i = n; i < diff / ss; i += n) {
       const value = ss * i;
       valueArr.push(value);
     }
+
     const valueObj = {};
     valueArr.forEach((value) => {
       let x = Math.trunc(
@@ -317,6 +333,7 @@ class Pres extends EventMixin {
     Object.keys(valueObj).forEach((key) => {
       mains.push(valueObj[key].assumputedMain);
     });
+
     let mainsDiff = elemsDiff(mains);
     const sumOfDiff = mainsDiff.reduce((acc, value) => {
       return acc + value;
@@ -401,7 +418,6 @@ class Pres extends EventMixin {
           const shiftX = event.clientX - handle.getBoundingClientRect().left;
 
           const mouseMove = (e) => {
-            console.log(e);
             this.transferData(
               {
                 y: e.clientY,
