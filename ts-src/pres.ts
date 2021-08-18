@@ -257,7 +257,6 @@ class Pres extends EventMixin {
   }
   public removeHandle() {
     const viewEls = this._view._elements;
-
     this._model._settings.type = 'single';
     const orient = this._model._settings.orientation;
     if (orient === 'horizontal') {
@@ -402,6 +401,7 @@ class Pres extends EventMixin {
           const shiftX = event.clientX - handle.getBoundingClientRect().left;
 
           const mouseMove = (e) => {
+            console.log(e);
             this.transferData(
               {
                 y: e.clientY,

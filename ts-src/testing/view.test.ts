@@ -60,8 +60,7 @@ describe('pres implement styles:', () => {
       'slider',
       'slider-main',
       'slider-range',
-      // 'slider-handle--horizontal',
-      // 'tooltip tooltip--horizontal',
+
       'slider-container',
       'slider-marker',
       'tooltipContainer',
@@ -70,11 +69,6 @@ describe('pres implement styles:', () => {
       const div = document.createElement('div');
       div.className = String(i);
       item.appendChild(div);
-      // if (i == 'slider-handle--horizontal') {
-      //   const tool = document.createElement('div');
-      //   tool.className = 'tooltip--horizontal';
-      //   div.appendChild(tool);
-      // }
     }
     const handle1 = document.createElement('div');
     handle1.className = 'slider-handle--horizontal';
@@ -89,18 +83,6 @@ describe('pres implement styles:', () => {
     const tool2 = document.createElement('div');
     tool2.classList.add('tooltip');
     handle2.appendChild(tool2);
-
-    // const handle1 = document.createElement('div');
-    // handle1.className = 'slider-handle--horizontal';
-    // item.appendChild(handle1);
-
-    // const handle2 = document.createElement('div') as Node;
-
-    // const handle2handle = item.appendChild(handle2) as HTMLElement;
-    // handle2handle.className = 'slider-handle--horizontal';
-    // const clone = document.createElement('div');
-    // clone.className = 'tooltip--horizontal';
-    // handle2.appendChild(clone as Node) as Node;
 
     const js1 = document.createElement('div');
     const js2 = document.createElement('div');
@@ -188,63 +170,6 @@ describe('pres implement styles:', () => {
 
     deepCheck(view._elements._sliderHandles[0]);
   });
-
-  // test('should refresh coordinates,horizontal double', () => {
-  //   const xs = [200, 15, 10, 100, 199];
-  //   const values = [100, 1000, 1361];
-  //   const handles = [
-  //     Array.from(view._elements._sliderHandles)[0],
-  //     Array.from(view._elements._sliderHandles)[1],
-  //   ];
-  //   const data = {
-  //     main: 0,
-  //     prevMain: 0,
-  //     value: 1,
-  //     prevValue: 0,
-  //     caller: '',
-  //     clicked: false,
-  //     altDrag: true,
-  //     target: null,
-  //     shiftX: 0,
-  //   };
-  //   view._elements._sliderRange.style.width = '0px';
-  //   const rangeWidth = view._elements._sliderRange.style.width;
-
-  //   const handleLeft1 = view._elements._sliderHandles[0].style.left;
-  //   const handleLeft2 = view._elements._sliderHandles[1].style.left;
-  //   const toolTipiValue = view._elements._sliderTooltip.textContent;
-
-  //   function deepCheck(handle) {
-  //     data.target = handle;
-  //     for (let i of xs) {
-  //       for (let j of values) {
-  //         data.main = i;
-  //         data.value = j;
-
-  //         view.refreshCoords(data, 'horizontal', 'single');
-  //         expect(rangeWidth).not.toEqual(
-  //           view._elements._sliderRange.style.width
-  //         );
-
-  //         let handleReceiver;
-  //         let numOfHandle;
-  //         if (handle == view._elements._sliderHandles[0]) {
-  //           handleReceiver = handleLeft1;
-  //           numOfHandle = 0;
-  //         } else {
-  //           handleReceiver = handleLeft2;
-  //           numOfHandle = 1;
-  //         }
-  //         expect(handleReceiver).not.toEqual(handle.style.left);
-  //         expect(toolTipiValue).not.toEqual(
-  //           view._elements._sliderTooltip[numOfHandle].textContent
-  //         );
-  //       }
-  //     }
-  //   }
-  //   deepCheck(view._elements._sliderHandles[0]);
-  //   deepCheck(view._elements._sliderHandles[1]);
-  // });
 });
 
 describe('refresh coords:', () => {
@@ -265,9 +190,7 @@ describe('refresh coords:', () => {
       'slider',
       'slider-main',
       'slider-range',
-      // 'slider-handle--horizontal',
-      // 'slider-handle--horizontal',
-      // 'tooltip tooltip--horizontal',
+
       'slider-container',
       'slider-marker',
       'tooltipContainer',
@@ -276,12 +199,6 @@ describe('refresh coords:', () => {
       const div = document.createElement('div');
       div.className = String(i);
       item.appendChild(div);
-      // if (i == 'slider-handle--horizontal') {
-      //   const tool = document.createElement('div');
-      //   tool.className = 'tooltip--horizontal';
-      //   div.appendChild(tool);
-      //   console.log('added tool to handle');
-      // }
     }
     const handle1 = document.createElement('div');
     handle1.className = 'slider-handle--horizontal';
@@ -296,13 +213,6 @@ describe('refresh coords:', () => {
     const tool2 = document.createElement('div');
     tool2.classList.add('tooltip');
     handle2.appendChild(tool2);
-
-    // const handle2handle = item.appendChild(handle2) as HTMLElement;
-    // handle2handle.className = 'slider-handle--horizontal';
-    // const clone = document.createElement('div');
-    // clone.className = 'tooltip--horizontal';
-    // handle2.appendChild(clone as Node) as Node;
-
     const js1 = document.createElement('div');
     const js2 = document.createElement('div');
     js1.classList.add('jsSlider-clickable');
@@ -368,10 +278,7 @@ describe('refresh coords:', () => {
             handleReceiver = handleLeft2;
             numOfHandle = 1;
           }
-          // console.log(handleReceiver, 'test left');
-          // console.log(model._settings.type, 'type');
           expect(handleReceiver).not.toEqual(handle.style.left);
-
           expect(toolTipiValue).not.toEqual(
             view._elements._sliderTooltip[numOfHandle].textContent
           );

@@ -97,7 +97,6 @@ class View extends EventMixin {
     const item = Array.from(
       elem.getElementsByClassName(className) as HTMLCollectionOf<HTMLElement>
     );
-    console.log(item, 'item', item[0], 'item[0]');
 
     if (single) {
       return item[0] as HTMLElement;
