@@ -44,6 +44,7 @@ type Settings = {
 type ICoords = {
   main: number;
   prevMain: number;
+  mainMax: number;
   value: number;
   prevValue: number;
   caller: string;
@@ -82,6 +83,7 @@ class Model extends EventMixin {
     clicked: false,
     altDrag: false,
     target: null,
+    mainMax: 0,
   };
 
   public _settings: Settings = {
@@ -134,6 +136,7 @@ class Model extends EventMixin {
   }
   private correctOptions() {
     this.coords.altDrag = this._settings.altDrag;
+    this.coords.mainMax = this._settings.mainMax;
     this._settings.maxMinDifference =
       this._settings.maxValue - this._settings.minValue;
     const diff = this._settings.maxMinDifference;
@@ -196,6 +199,7 @@ class Model extends EventMixin {
     const valuePerPx = this._settings.valuePerPx;
     const pxPerValue = this._settings.pxPerValue;
     const stepSize = this._settings.stepSize;
+
     let axis = 0;
     let margin = 0;
 
@@ -215,20 +219,16 @@ class Model extends EventMixin {
       this.validate(this.coords);
       this.trigger('coords changed', this.coords);
     }
-    if (this._settings.altDrag) {
-      this.coords.main = axis - margin;
 
-      this.coords.value =
-        divisionFloor(this.coords.main, pxPerValue) * this._settings.stepSize;
+    this.coords.main = axis - margin;
+    this.coords.value =
+      divisionFloor(this.coords.main, pxPerValue) * this._settings.stepSize;
 
-      const validatedCoords = this.validate(this.coords);
-
-      this.coords.prevMain = this.coords.main;
-
-      if (validatedCoords) {
-        this.trigger('coords changed', validatedCoords, ori, type);
-        return validatedCoords;
-      }
+    const validatedCoords = this.validate(this.coords);
+    this.coords.prevMain = this.coords.main;
+    if (validatedCoords) {
+      this.trigger('coords changed', validatedCoords, ori, type);
+      return validatedCoords;
     }
   }
 
@@ -258,7 +258,6 @@ class Model extends EventMixin {
       nValue =
         this._settings.stepSize * Math.trunc(value / this._settings.stepSize);
     }
-
     const main = (value * this._settings.pxPerValue) / this._settings.stepSize;
     this.coords.main = main;
     this.coords.value = nValue;

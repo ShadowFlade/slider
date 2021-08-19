@@ -75,7 +75,6 @@ class Pres extends EventMixin {
     }
 
     this._view.implementStyles(options, this._model._settings.orientation);
-
     this._model._settings.built = true;
   }
 
@@ -123,12 +122,11 @@ class Pres extends EventMixin {
     tooltipContainer.append(tooltipStick);
     this._view._elements._sliderTooltipSticks.push(tooltipStick);
     tooltipContainer.append(tool);
-
     handle.append(tooltipContainer);
     const min = document.createElement('span');
-    min.className = 'values jsSlider-clickable';
+    min.className = 'jsOffset values jsSlider-clickable';
     const max = document.createElement('span');
-    max.className = ' values jsSlider-clickable';
+    max.className = 'jsOffset values jsSlider-clickable';
     main.append(min);
     container.append(slider);
     main.append(container);
@@ -178,7 +176,7 @@ class Pres extends EventMixin {
       const markerValue = document.createElement('label');
       markerValue.className = 'jsSlider-clickable marker-value';
       markerDiv.classList.add(`slider-marker--${orientation}`);
-      majorMarker.classList.add(`marker--major--${orientation}`);
+      majorMarker.className = `jsOffset marker--major marker--major--${orientation}`;
 
       if (i === 0) {
         majorMarker.style[marginCss] = 1.5 * margin + 'px';

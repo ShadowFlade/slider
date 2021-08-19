@@ -21,7 +21,7 @@ class View extends EventMixin {
   valueDivs: Object[];
 
   valueDivsArray: number[];
-
+  offsetArray: number[];
   _pres: Pres;
 
   _item: HTMLElement;
@@ -105,7 +105,7 @@ class View extends EventMixin {
     }
   }
 
-  public fetchDivs(orientation: string, defClassName: string) {
+  public fetchDivs(orientation: Ori, defClassName: string) {
     this._elements._sliderMain = this.fetchHTMLEl(
       `${defClassName}-main`,
       true
@@ -144,7 +144,10 @@ class View extends EventMixin {
     const valueDivs: { div: HTMLElement; value: number }[] = Array.from(
       this._item.getElementsByClassName('jsSlider-clickable')
     ).map((item: HTMLElement) => {
-      return Object.create({ div: item, value: item.textContent });
+      return Object.create({
+        div: item,
+        value: item.textContent,
+      });
     });
 
     this.valueDivs = valueDivs;
@@ -193,9 +196,7 @@ class View extends EventMixin {
     } else if (type == 'double') {
       handle = data.target;
     }
-
     const range = this._elements._sliderRange;
-
     const toolTip = this.fetchHTMLEl(`tooltip`, true, handle) as HTMLDivElement;
     const newCoords = Object.assign(data, {
       shiftX: shiftX,
@@ -213,9 +214,13 @@ class View extends EventMixin {
         return false;
       }
     } else {
-      dataObject = this.reactOnDrag(newCoords, ori, type);
-      newLeft = dataObject.newLeft;
-      pin = dataObject.pin;
+      if (data.altDrag) {
+        dataObject = this.reactOnDrag(newCoords, ori, type);
+        newLeft = dataObject.newLeft;
+        pin = dataObject.pin;
+      } else {
+        newLeft = this.pinnedDrag(data, ori, type);
+      }
     }
 
     handle.style[direction] = newLeft + 'px';
@@ -239,7 +244,7 @@ class View extends EventMixin {
     let newLeft = data.newLeft;
     let margin: number;
     let value: number;
-    if (data.mainAxis == 'x') {
+    if (ori == 'horizontal') {
       direction = 'left';
       widthOrHeight = data.width;
       margin = data.marginLeft;
@@ -258,25 +263,12 @@ class View extends EventMixin {
     if (data.value == 0) {
       range.style[widthOrHeight] = '0';
     }
-    // const pin = this.matchHandleAndPin(data.value)
-    // let neededCoords = pin.getBoundingClientRect()[direction]
-
-    // newLeft = neededCoords - margin - handleHeight / 2
-    // if (data.mainAxis == 'x') {
 
     if (data.altDrag) {
       newLeft = data.main - data.shiftX;
     } else {
       newLeft += handle.offsetWidth / 2;
-      // if (pin.className.includes('values')) {
-      //   if (pin.className.includes('slider-min')) {
-      //     newLeft = 0
-      //   } else if (pin.className.includes('slider-max')) {
-      //     newLeft = data.mainMax - handleWidth / 2
-      //   }
-      // }
     }
-    // }
 
     return {
       newLeft,
@@ -284,7 +276,36 @@ class View extends EventMixin {
       value,
     };
   }
+  private pinnedDrag(data, ori: Ori, type: Type) {
+    let direction = '0';
+    let widthOrHeight = '';
+    let newLeft;
+    let margin: number;
+    let value: number;
+    const handleHeight = this._elements._sliderHandles[0].offsetWidth;
+    if (ori == 'horizontal') {
+      direction = 'left';
+      widthOrHeight = data.width;
+      margin = data.marginLeft;
+    } else {
+      direction = 'top';
+      widthOrHeight = data.height;
+      margin = data.marginTop;
+    }
+    const pin = this.matchHandleAndPin(data.main, ori);
+    let neededCoords = pin.getBoundingClientRect()[direction];
+    newLeft = neededCoords - margin - handleHeight / 2;
+    if (pin.className.includes('values')) {
+      if (pin.className.includes('slider-min')) {
+        newLeft = 0;
+      } else if (pin.className.includes('slider-max')) {
+        newLeft = data.mainMax - handleHeight / 2;
+      }
+    }
+    console.log(newLeft, 'return');
 
+    return newLeft;
+  }
   private reactOnClick(data, ori, type) {
     if (type == 'double') {
       return false;
@@ -348,26 +369,39 @@ class View extends EventMixin {
 
   public showValue(target, value) {
     const tool = target.getElementsByClassName('tooltip')[0];
-
     tool.textContent = Math.abs(value); //Math.abs is a hack and it shouldnt be there
   }
 
-  private matchHandleAndPin(value) {
-    const pinPoints = this.valueDivsArray;
+  private matchHandleAndPin(main, ori: Ori) {
+    let offset;
+    if (ori == 'horizontal') {
+      offset = 'offsetLeft';
+    } else {
+      offset = 'offsetTop';
+    }
+    const offsets = Array.from(
+      this._item.getElementsByClassName('jsOffset')
+    ).map((item: HTMLElement) => {
+      return { div: item, offset: item[offset] };
+    });
+
+    const offsetsNums = offsets.map((item) => {
+      return item.offset;
+    });
     let minDiff = Infinity;
-    let pinValue: number;
-    for (const i of pinPoints) {
-      const leastDiff = Math.abs(value - Number(i));
+    let pinOffset: number;
+    for (const offset of offsetsNums) {
+      const leastDiff = Math.abs(main - Number(offset));
       if (leastDiff < minDiff) {
         minDiff = leastDiff;
-        pinValue = Number(i);
+        pinOffset = Number(offset);
       }
     }
     let pin;
 
-    for (const i of this.valueDivs) {
-      const item = i as { div: HTMLElement; value: number };
-      if (pinValue == item.value) {
+    for (const i of offsets) {
+      const item = i;
+      if (pinOffset == item.offset) {
         pin = item.div;
         return pin;
       }

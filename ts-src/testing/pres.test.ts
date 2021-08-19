@@ -298,9 +298,9 @@ describe('interacting with dom', () => {
 
     view.implementStyles(options, position);
   });
-  test('listeners are attached', () => {
+  test('callback are called when listeners are attached', () => {
     const handle = view._elements._sliderHandles[0];
-
+    pres.onMouseDown();
     var evt = document.createEvent('MouseEvents');
     evt.initMouseEvent(
       'mousedown',
