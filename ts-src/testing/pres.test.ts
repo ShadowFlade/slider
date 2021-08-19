@@ -27,6 +27,7 @@ describe('pres independent methods', () => {
     pres = new Pres(model, item);
     view = new View(pres, {}, item);
     pres.getView(view);
+    pres.fetchDivs();
     oriVars = ['horizontal', 'vertical'];
     typeVars = ['double', 'single'];
     markerVars = [true, false];
@@ -149,6 +150,7 @@ describe('Pres:changing the elements', () => {
     pres = new Pres(model, item);
     view = new View(pres, {}, item);
     pres.getView(view);
+
     const classes = [
       'slider',
       'slider-main',
@@ -193,6 +195,7 @@ describe('Pres:changing the elements', () => {
         'background-color': 'green',
       },
     };
+    pres.fetchDivs();
 
     view.implementStyles(options, position);
   });
@@ -252,6 +255,7 @@ describe('interacting with dom', () => {
     pres = new Pres(model, item);
     view = new View(pres, {}, item);
     pres.getView(view);
+
     const classes = [
       'slider',
       'slider-main',
@@ -295,7 +299,7 @@ describe('interacting with dom', () => {
         'background-color': 'green',
       },
     };
-
+    pres.fetchDivs();
     view.implementStyles(options, position);
   });
   test('callback are called when listeners are attached', () => {

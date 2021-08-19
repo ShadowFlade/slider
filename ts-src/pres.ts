@@ -73,7 +73,7 @@ class Pres extends EventMixin {
       const marker = this.makeMarker(behavior, widthOrHeight);
       container.appendChild(marker);
     }
-
+    this.fetchDivs();
     this._view.implementStyles(options, this._model._settings.orientation);
     this._model._settings.built = true;
   }

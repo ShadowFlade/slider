@@ -46,7 +46,6 @@ class View extends EventMixin {
   }
 
   public implementStyles(options, pos) {
-    this._pres.fetchDivs();
     this.initiateOptions(options);
     this.orientation = pos;
 
@@ -184,6 +183,7 @@ class View extends EventMixin {
     let handle: HTMLElement;
     let direction: string;
     let widthOrHeight: string;
+    let value = data.value;
     if (ori == 'vertical') {
       direction = 'top';
       widthOrHeight = 'height';
@@ -219,7 +219,9 @@ class View extends EventMixin {
         newLeft = dataObject.newLeft;
         pin = dataObject.pin;
       } else {
-        newLeft = this.pinnedDrag(data, ori, type);
+        let { newLeft: nl, value: v } = this.pinnedDrag(data, ori, type);
+        newLeft = nl;
+        value = v;
       }
     }
 
@@ -230,12 +232,10 @@ class View extends EventMixin {
     } else {
       range.style[widthOrHeight] = newLeft + 'px';
     }
-    const value = numberOfDigits(data.value);
+    value = numberOfDigits(value);
     handle.dataset.value = value;
     toolTip.textContent = value;
     return;
-
-    // toolTip.textContent = data.value;
   }
 
   private reactOnDrag(data, ori: Ori, type: string) {
@@ -272,7 +272,6 @@ class View extends EventMixin {
 
     return {
       newLeft,
-      // pin,
       value,
     };
   }
@@ -293,6 +292,8 @@ class View extends EventMixin {
       margin = data.marginTop;
     }
     const pin = this.matchHandleAndPin(data.main, ori);
+
+    value = pin.dataset.value;
     let neededCoords = pin.getBoundingClientRect()[direction];
     newLeft = neededCoords - margin - handleHeight / 2;
     if (pin.className.includes('values')) {
@@ -302,9 +303,8 @@ class View extends EventMixin {
         newLeft = data.mainMax - handleHeight / 2;
       }
     }
-    console.log(newLeft, 'return');
 
-    return newLeft;
+    return { newLeft, value };
   }
   private reactOnClick(data, ori, type) {
     if (type == 'double') {
