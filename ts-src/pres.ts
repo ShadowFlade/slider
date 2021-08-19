@@ -12,7 +12,7 @@ function elemsDiff(arr: number[]) {
   return res;
 }
 function checkForZero(number: number) {
-  if (number != 0) {
+  if (number > 0) {
     return number;
   } else {
     throw new Error('can not operate with non-positive numbers');
@@ -34,7 +34,6 @@ class Pres extends EventMixin {
     this._model = model;
     this._item = item;
     this._model.on('settings changed', this.init.bind(this));
-    console.log('im here');
   }
 
   public getView(view: View): void {
@@ -153,7 +152,6 @@ class Pres extends EventMixin {
     min.classList.add(`slider-min--${orientation}`);
     max.classList.add(`slider-max--${orientation}`);
     main.classList.add(`slider-main--${orientation}`);
-    console.log('made slider');
 
     return { main: main as Node, container, slider };
   }
@@ -204,7 +202,6 @@ class Pres extends EventMixin {
       }
     }
     markerDiv.className = `slider-marker slider-marker--${orientation}`;
-    console.log('made maarker');
 
     return markerDiv;
   }
@@ -301,15 +298,13 @@ class Pres extends EventMixin {
       });
       majorMarkers = this._model._settings._maxPins;
     }
-    console.log('not here1');
 
     const diff = this._model._settings.maxMinDifference;
     const ss = this._model._settings.stepSize;
     const maxPins = this._model._settings._maxPins;
     const n = checkForZero(Math.trunc(diff / (ss * majorMarkers)));
     //каждый n-ый элемент из возможныъ value будет помещен на scale
-    console.log(diff, ss, maxPins, n);
-    console.log('hay');
+
     const valueArr = [];
     for (let i = n; i < diff / ss; i += n) {
       const value = ss * i;

@@ -197,14 +197,6 @@ class View extends EventMixin {
     const range = this._elements._sliderRange;
 
     const toolTip = this.fetchHTMLEl(`tooltip`, true, handle) as HTMLDivElement;
-    // console.log(
-    //   toolTip,
-    //   'toolTip',
-    //   handle.firstChild,
-    //   'handle child',
-    //   toolTip == handle.firstChild
-    // );
-
     const newCoords = Object.assign(data, {
       shiftX: shiftX,
       newLeft: newLeft,

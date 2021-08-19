@@ -100,39 +100,6 @@ describe('pres independent methods', () => {
     }
   });
 
-  test('calcPins performance', () => {
-    const settings = {
-      className: 'slider',
-      orientation: 'horizontal',
-      type: 'double',
-      stepSize: 90,
-      pxPerValue: 0,
-      valuePerPx: 1,
-      marginLeft: 0,
-      marginTop: 0,
-      maxValue: 300,
-      minValue: 0,
-      maxMinDifference: 0,
-      betweenMarkers: 40,
-      _maxPins: 5, // optimal maximum number of pins
-      mainMax: 200,
-      mainMin: 0,
-      valueWidth: 0,
-      toolTip: true,
-      marker: true,
-      altDrag: false,
-      built: false,
-      styles: {
-        progressBarColor: 'green',
-        sliderColor: 'red',
-        handleColor: 'black',
-        sliderWidth: 5,
-        sliderHeight: 200,
-      },
-    };
-    const markerDiv = pres.makeMarker(settings, model.getStyle('sliderWidth'));
-    const slider = pres.makeSlider(settings);
-  });
   test('should return valid options', () => {
     const options = model.getStyles();
     const validOptions = {
@@ -168,7 +135,7 @@ describe('pres independent methods', () => {
   });
 });
 
-describe('changing the elements', () => {
+describe('Pres:changing the elements', () => {
   let item;
   let model;
   let view;
