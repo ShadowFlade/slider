@@ -121,7 +121,7 @@ class View extends EventMixin {
       `${defClassName}-handle--${orientation}`,
       false
     ) as HTMLElement[];
-
+    // console.log(this._elements._sliderHandles, 'fetch divs');
     this._elements._sliderTooltip = this.fetchHTMLEl(
       `tooltip`,
       false
@@ -224,6 +224,7 @@ class View extends EventMixin {
         value = v;
       }
     }
+    // console.log(type, handle);
 
     handle.style[direction] = newLeft + 'px';
 
@@ -358,8 +359,14 @@ class View extends EventMixin {
     const minOffset = parseFloat(
       this._elements._sliderHandles[0].style[direction]
     );
-    const maxOffset =
-      parseFloat(this._elements._sliderHandles[1].style?.[direction]) || null;
+    let maxOffset;
+    if (this._elements._sliderHandles[1]) {
+      maxOffset =
+        parseFloat(this._elements._sliderHandles[1].style[direction]) || null; //only works if style.left is in pxs
+    } else {
+      maxOffset = null;
+    }
+
     const length = Math.abs(minOffset - maxOffset);
     const handleOffset = Math.min(minOffset, maxOffset);
 

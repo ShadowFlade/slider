@@ -16,6 +16,7 @@ describe('View', () => {
   let view;
   let pres;
   let document;
+  let offsets;
   beforeEach(() => {
     document = dom.window.document;
     item = document.createElement('div');
@@ -23,6 +24,7 @@ describe('View', () => {
     pres = new Pres(model, item);
     view = new View(pres, {}, item);
     pres.getView(view);
+
     pres.fetchDivs();
   });
 
@@ -42,90 +44,124 @@ describe('View', () => {
     expect(pres).toBeDefined();
     expect(view).toBeDefined();
   });
+  // test('should select a pin inferring from main', () => {
+  //   jest.mock('../view');
+  //   const view=new View({},{},'item')
+  //   view.matchHandleAndPin.mockImplementation((main) => {
+  //     const offsetsNums = offsets.map((item) => {
+  //       return item.offset;
+  //     });
+  //     let minDiff = Infinity;
+  //     let pinOffset: number;
+  //     for (const offset of offsetsNums) {
+  //       const leastDiff = Math.abs(main - Number(offset));
+  //       if (leastDiff < minDiff) {
+  //         minDiff = leastDiff;
+  //         pinOffset = Number(offset);
+  //       }
+  //     }
+  //     let pin;
+
+  //     for (const i of offsets) {
+  //       const item = i;
+  //       if (pinOffset == item.offset) {
+  //         pin = item.div;
+  //         return pin;
+  //       }
+  //     }
+  //   });
+  //   // view.valueDivs = divs;
+  //   // console.log(view.valueDivs[0].offsetLeft);
+  //   const mainsForCheck = [0, 1, 9, 10, 99, 100, 101, 157, 199, 200, 201];
+  //   for (let i of mainsForCheck) {
+  //     const pin = view.matchHandleAndPin(i, 'horizontal');
+  //     expect(pin).toBeDefined();
+  //   }
+  // });
 });
 
-describe('View implement styles:', () => {
-  let item;
-  let model;
-  let view;
-  let pres;
-  let document;
-  beforeEach(() => {
-    document = dom.window.document;
-    item = document.createElement('div');
-    document.body.appendChild(item);
-    model = new Model({}, item);
-    pres = new Pres(model, item);
-    view = new View(pres, {}, item);
-    pres.getView(view);
+// describe('View implement styles:', () => {
+//   let item;
+//   let model;
+//   let view;
+//   let pres;
+//   let document;
+//   beforeEach(() => {
+//     document = dom.window.document;
+//     item = document.createElement('div');
+//     document.body.appendChild(item);
+//     model = new Model({}, item);
+//     pres = new Pres(model, item);
+//     view = new View(pres, {}, item);
+//     pres.getView(view);
 
-    const classes = [
-      'slider',
-      'slider-main',
-      'slider-range',
+//     const classes = [
+//       'slider',
+//       'slider-main',
+//       'slider-range',
 
-      'slider-container',
-      'slider-marker',
-      'tooltipContainer',
-    ];
-    for (let i of classes) {
-      const div = document.createElement('div');
-      div.className = String(i);
-      item.appendChild(div);
-    }
-    const handle1 = document.createElement('div');
-    handle1.className = 'slider-handle--horizontal';
-    item.appendChild(handle1);
-    const tool1 = document.createElement('div');
-    tool1.classList.add('tooltip');
-    handle1.appendChild(tool1);
+//       'slider-container',
+//       'slider-marker',
+//       'tooltipContainer',
+//     ];
+//     for (let i of classes) {
+//       const div = document.createElement('div');
+//       div.className = String(i);
+//       item.appendChild(div);
+//     }
+//     const handle1 = document.createElement('div');
+//     handle1.className = 'slider-handle--horizontal';
+//     item.appendChild(handle1);
+//     const tool1 = document.createElement('div');
+//     tool1.classList.add('tooltip');
+//     handle1.appendChild(tool1);
 
-    const handle2 = document.createElement('div');
-    handle2.className = 'slider-handle--horizontal';
-    item.appendChild(handle2);
-    const tool2 = document.createElement('div');
-    tool2.classList.add('tooltip');
-    handle2.appendChild(tool2);
+//     const handle2 = document.createElement('div');
+//     handle2.className = 'slider-handle--horizontal';
+//     item.appendChild(handle2);
+//     const tool2 = document.createElement('div');
+//     tool2.classList.add('tooltip');
+//     handle2.appendChild(tool2);
 
-    const js1 = document.createElement('div');
-    const js2 = document.createElement('div');
-    js1.classList.add('jsSlider-clickable');
-    js2.classList.add('jsSlider-clickable');
-    js1.textContent = '19';
-    js2.textContent = '20';
-    const position = 'horizontal';
-    const options = {
-      slider: {
-        color: 'black',
-        'background-color': 'black',
-      },
-      progressBar: {
-        color: 'green',
-        'background-color': 'green',
-      },
-    };
-    pres.fetchDivs();
-    view.implementStyles(options, position);
-  });
-  test('should implement the styles and get HTMLElements', () => {
-    for (let i of Array.from(view._elements)) {
-      const item = i as HTMLElement;
-      expect(item.cssText).toBeDefined();
-    }
-    for (let i of Array.from(view._elements)) {
-      expect(i).toBeDefined();
-    }
-  });
-  test('should change styles if the scale does not fit on the left side', () => {
-    view._elements._sliderTooltip[0].style.left = '-5px';
-    console.log(
-      view._elements._sliderTooltip[0].getBoundingClientRect().left,
-      'left left'
-    );
+//     const js1 = document.createElement('div');
+//     const js2 = document.createElement('div');
+//     js1.classList.add('jsSlider-clickable');
+//     js2.classList.add('jsSlider-clickable');
+//     js1.textContent = '19';
+//     js2.textContent = '20';
+//     const position = 'horizontal';
+//     const options = {
+//       slider: {
+//         color: 'black',
+//         'background-color': 'black',
+//       },
+//       progressBar: {
+//         color: 'green',
+//         'background-color': 'green',
+//       },
+//     };
+//     pres.fetchDivs();
+//     view.implementStyles(options, position);
+//   });
+//   // test('should implement the styles and get HTMLElements', () => {
+//   //   for (let i of Array.from(view._elements)) {
+//   //     const item = i as HTMLElement;
+//   //     expect(item.cssText).toBeDefined();
+//   //   }
+//   //   for (let i of Array.from(view._elements)) {
+//   //     expect(i).toBeDefined();
+//   //   }
+//   // });
+//   test('should change styles if the scale does not fit on the left side', () => {
+//     view._elements._sliderTooltip[0].style.left = '-5px';
+//     console.log(
+//       view._elements._sliderTooltip[0].getBoundingClientRect().left,
+//       'left left'
+//     );
 
-    view.implementStyles({}, 'horizontal');
-  });
-});
+//     view.implementStyles({}, 'horizontal');
+//   });
+// });
 
 describe('View:refresh coordinates new', () => {
   let deepCheck;
@@ -133,6 +169,7 @@ describe('View:refresh coordinates new', () => {
   let model;
   let pres;
   let view;
+  let data;
   beforeEach(() => {
     document = dom.window.document;
     item = document.createElement('div');
@@ -193,7 +230,7 @@ describe('View:refresh coordinates new', () => {
       Array.from(view._elements._sliderHandles)[0],
       Array.from(view._elements._sliderHandles)[1],
     ];
-    const data = {
+    data = {
       main: 20,
       prevMain: 0,
       value: 1,
@@ -210,7 +247,7 @@ describe('View:refresh coordinates new', () => {
     const handleLeft2 = view._elements._sliderHandles[1].style.left;
 
     const toolTipiValue = view._elements._sliderTooltip.textContent;
-    deepCheck = function (handle, ori, type) {
+    deepCheck = function (data, handle, ori, type) {
       data.target = handle;
       for (let i of xs) {
         for (let j of values) {
@@ -238,14 +275,37 @@ describe('View:refresh coordinates new', () => {
     };
   });
   test('should refresh coordinates,horizontal,single', () => {
-    deepCheck(view._elements._sliderHandles[0], 'horizontal', 'single');
+    deepCheck(data, view._elements._sliderHandles[0], 'horizontal', 'single');
   });
 
   test('should refresh coordinates,horizontal,double', () => {
-    deepCheck(view._elements._sliderHandles[0], 'horizontal', 'double');
+    deepCheck(data, view._elements._sliderHandles[0], 'horizontal', 'double');
   });
   test('should refresh coordinates,horizontal,double,second handle', () => {
-    view._elements._sliderHandles[0].style.left = '2px';
-    deepCheck(view._elements._sliderHandles[1], 'horizontal', 'double');
+    view._elements._sliderHandles[0].style.left = '2px'; //so that 2 handles do not occupy the same position
+    deepCheck(data, view._elements._sliderHandles[1], 'horizontal', 'double');
+  });
+  test('should refresh coordinates when pinnerDrag is used', () => {
+    const d = {
+      main: 20,
+      prevMain: 0,
+      value: 1,
+      prevValue: 0,
+      caller: '',
+      clicked: false,
+      altDrag: false,
+      target: null,
+      shiftX: 0,
+    };
+    const mains = [50, 100, 150, 200];
+    const offsets = [];
+    for (let i of mains) {
+      const div = document.createElement('div');
+      div.classList.add('jsSlider-clickable');
+      div.textContent = String(i * 30);
+      item.appendChild(div);
+      offsets.push({ div: div, value: div.textContent, offset: i });
+    }
+    deepCheck(d, view._elements._sliderHandles[0], 'horizontal', 'single');
   });
 });

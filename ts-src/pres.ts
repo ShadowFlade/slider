@@ -228,7 +228,7 @@ class Pres extends EventMixin {
       direction = 'top';
     }
     const handleCLone: HTMLElement = handle.cloneNode(true) as HTMLElement;
-    handleCLone.style[direction] = '20%';
+    handleCLone.style[direction] = '20px';
     const tooltipContainer = handleCLone.getElementsByClassName(
       'tooltipContainer'
     )[0] as HTMLElement;
@@ -242,6 +242,8 @@ class Pres extends EventMixin {
     ) as HTMLElement;
     viewEls._sliderTooltipSticks.push(stick);
     viewEls._sliderHandles.push(handleCLone);
+    // console.log(viewEls._sliderHandles, 'after pushed');
+
     // this._view.addElement(this._sliderHandles)
     // this._view._elements._sliderHandles = this._sliderHandles;
     if (this._model._settings.built) {
@@ -392,8 +394,7 @@ class Pres extends EventMixin {
 
   public onMouseDown(): void {
     const handles = this._view._elements._sliderHandles;
-    const ori = this._model._settings.orientation;
-    const type = this._model._settings.type;
+
     const container = this._view._elements._sliderContainer;
     const slider = this._view._elements._slider;
     const model = this._model;
@@ -406,6 +407,8 @@ class Pres extends EventMixin {
       };
       handle.addEventListener('pointerdown', (event) => {
         event.preventDefault();
+        const ori = this._model._settings.orientation;
+        const type = this._model._settings.type;
         const target = event.target as HTMLDivElement;
         if (target == handle) {
           const shiftX = event.clientX - handle.getBoundingClientRect().left;
@@ -437,6 +440,8 @@ class Pres extends EventMixin {
 
     container.addEventListener('click', (event) => {
       const target = event.target as HTMLElement;
+      const ori = this._model._settings.orientation;
+      const type = this._model._settings.type;
       if (target.className.includes('jsSlider-clickable')) {
         const value =
           (target.getElementsByClassName('marker-value')[0] as HTMLElement) ||
