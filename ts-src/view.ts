@@ -22,6 +22,8 @@ class View extends EventMixin {
 
   valueDivsArray: number[];
   offsetArray: number[];
+  offsets: { div: HTMLElement; offset: number }[];
+  offsetsNums: number[];
   _pres: Pres;
 
   _item: HTMLElement;
@@ -153,6 +155,23 @@ class View extends EventMixin {
     this.valueDivsArray = valueDivs.map((item) => {
       return item.value;
     });
+    let offset;
+    if (orientation == 'horizontal') {
+      offset = 'offsetLeft';
+    } else {
+      offset = 'offsetTop';
+    }
+    const offsets = Array.from(
+      this._item.getElementsByClassName('jsOffset')
+    ).map((item: HTMLElement) => {
+      return { div: item, offset: item[offset] };
+    });
+
+    const offsetsNums = offsets.map((item) => {
+      return item.offset;
+    });
+    this.offsets = offsets;
+    this.offsetsNums = offsetsNums;
   }
 
   private initiateOptions(options) {
@@ -227,6 +246,7 @@ class View extends EventMixin {
     // console.log(type, handle);
 
     handle.style[direction] = newLeft + 'px';
+    console.log(newLeft, 'newleft from view');
 
     if (type == 'double') {
       this.rangeInterval(ori);
@@ -283,10 +303,12 @@ class View extends EventMixin {
     let margin: number;
     let value: number;
     const handleHeight = this._elements._sliderHandles[0].offsetWidth;
+    console.log('🚀 ~ View ~ pinnedDrag ~ handleHeight', handleHeight);
     if (ori == 'horizontal') {
       direction = 'left';
       widthOrHeight = data.width;
       margin = data.marginLeft;
+      console.log('🚀 ~ View ~ pinnedDrag ~ margin', margin);
     } else {
       direction = 'top';
       widthOrHeight = data.height;
@@ -296,6 +318,7 @@ class View extends EventMixin {
 
     value = pin.dataset.value;
     let neededCoords = pin.getBoundingClientRect()[direction];
+    console.log('🚀 ~ View ~ pinnedDrag ~ neededCoords', neededCoords);
     newLeft = neededCoords - margin - handleHeight / 2;
     if (pin.className.includes('values')) {
       if (pin.className.includes('slider-min')) {
@@ -381,20 +404,14 @@ class View extends EventMixin {
 
   private matchHandleAndPin(main, ori: Ori) {
     let offset;
+    const offsets = this.offsets;
+    const offsetsNums = this.offsetsNums;
     if (ori == 'horizontal') {
       offset = 'offsetLeft';
     } else {
       offset = 'offsetTop';
     }
-    const offsets = Array.from(
-      this._item.getElementsByClassName('jsOffset')
-    ).map((item: HTMLElement) => {
-      return { div: item, offset: item[offset] };
-    });
 
-    const offsetsNums = offsets.map((item) => {
-      return item.offset;
-    });
     let minDiff = Infinity;
     let pinOffset: number;
     for (const offset of offsetsNums) {
@@ -408,6 +425,7 @@ class View extends EventMixin {
 
     for (const i of offsets) {
       const item = i;
+
       if (pinOffset == item.offset) {
         pin = item.div;
         return pin;

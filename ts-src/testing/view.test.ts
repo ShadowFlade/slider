@@ -263,6 +263,7 @@ describe('View:refresh coordinates new', () => {
             handleReceiver = handleLeft2;
             numOfHandle = 1;
           }
+
           expect(rangeWidth).not.toEqual(
             view._elements._sliderRange.style.width
           );
@@ -296,16 +297,36 @@ describe('View:refresh coordinates new', () => {
       altDrag: false,
       target: null,
       shiftX: 0,
+      marginLeft: 0,
+      marginTop: 0,
     };
     const mains = [50, 100, 150, 200];
     const offsets = [];
     for (let i of mains) {
-      const div = document.createElement('div');
-      div.classList.add('jsSlider-clickable');
+      const div: HTMLElement = document.createElement('div');
+      div.classList.add('jsOffset');
       div.textContent = String(i * 30);
+      div.dataset.value = String(i * 30);
       item.appendChild(div);
+      div.getBoundingClientRect = jest.fn(() => {
+        return {
+          top: 0,
+          x: 0,
+          y: 0,
+          width: 0,
+          height: 0,
+          left: i,
+          right: 0,
+          bottom: 0,
+          toJSON: jest.fn(),
+        };
+      });
       offsets.push({ div: div, value: div.textContent, offset: i });
     }
+    view.offsets = offsets;
+    const nums = offsets.map((item) => item.offset);
+    view.offsetsNums = nums;
+
     deepCheck(d, view._elements._sliderHandles[0], 'horizontal', 'single');
   });
 });

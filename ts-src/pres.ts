@@ -398,7 +398,7 @@ class Pres extends EventMixin {
     const container = this._view._elements._sliderContainer;
     const slider = this._view._elements._slider;
     const model = this._model;
-    const marginLeft = slider.getBoundingClientRect().left;
+    const marginLeft = slider.getBoundingClientRect().left; //TODO should take from model?
     const marginTop = slider.getBoundingClientRect().top;
     model.on('coords changed', this.transferData.bind(this));
     for (const handle of handles) {
@@ -450,7 +450,6 @@ class Pres extends EventMixin {
           {
             y: event.clientY,
             x: target.getBoundingClientRect().left,
-
             value: value.dataset.value,
             clicked: true,
             target: target,
@@ -466,6 +465,8 @@ class Pres extends EventMixin {
 
   private transferData(data, ori?: Ori, type?: Type) {
     if (data.caller == 'model') {
+      data.marginLeft = this._model._settings.marginLeft; //TODO do not mutate data?
+      data.marginTop = this._model._settings.marginTop;
       this._view.refreshCoords(data, ori, type);
       return;
     }
