@@ -1,7 +1,7 @@
+$shadow: 2px -2px 2px #7e7e7e;
 .jsSlider-clicked {
   color: purple;
 }
-
 #slider {
   position: relative;
   margin-top: 50px;
@@ -13,6 +13,7 @@
   height: 10px;
   width: 200px;
   border-radius: 3px;
+  box-shadow: $shadow;
 }
 
 .slider-range {
@@ -21,10 +22,11 @@
   z-index: 2;
   position: absolute;
   width: 100%;
+  border-radius: 3px;
 }
-
-.slider-handle--horizontal {
-  background-color: black;
+.slider-handle {
+  $bgc: black;
+  background-color: $bgc;
   width: 10px;
   height: 10px;
   z-index: 5;
@@ -32,19 +34,28 @@
   position: absolute;
   left: 0;
   top: 50%;
+  &:active {
+    background-color: lighten($bgc, 30%);
+    &::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      border: 1px solid $bgc;
+      width: 150%;
+      height: 150%;
+    }
+  }
+}
+
+.slider-handle--horizontal {
   transform: translate(0, -50%);
   display: flex;
   justify-content: center;
 }
 .slider-handle--vertical {
-  background-color: black;
-  width: 10px;
-  height: 10px;
-  z-index: 5;
-  border-radius: 50%;
-  position: absolute;
-  left: 0;
-  top: 50%;
   transform: translate(-25%, 0);
 }
 
@@ -53,8 +64,6 @@
   transform: translateY(-50%);
   left: 100%;
 }
-/* .slider-max--vertical {
-} */
 
 .slider-min--vertical {
   margin-right: 5px;
@@ -154,6 +163,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  box-shadow: $shadow;
 }
 .tooltip--horizontal {
   top: -210%;

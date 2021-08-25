@@ -192,7 +192,6 @@ class View extends EventMixin {
             }
           } else if (option.toString().includes('tool')) {
             for (const tool of this._elements._sliderTooltip) {
-              console.log(i, j, 'ij');
               tool.style[i] = j;
             }
           }
@@ -355,9 +354,11 @@ class View extends EventMixin {
         if (item.value == data.value) {
           for (const i of this.valueDivs) {
             const item = i as { div: HTMLElement; value: number };
+
             item.div.style.color = '';
           }
-          item.div.style.color = String(this._temp.pinText);
+          console.log(item.div);
+          item.div.style.color = String(this._temp.pinTextColor);
         }
       }
     }

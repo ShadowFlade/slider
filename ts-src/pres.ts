@@ -400,7 +400,6 @@ class Pres extends EventMixin {
         }
       }
     }
-    console.log(newOptions, 'newopt');
     return newOptions;
   }
 

@@ -5,6 +5,7 @@
   "main": "ts-src",
   "scripts": {
     "dev": "webpack",
+    "build": "webpack --mode='production'",
     "start": "webpack serve --open",
     "lint": "eslint --debug ts-src/",
     "lint:write": "eslint --debug ts-src/ --fix",
@@ -22,14 +23,24 @@
     "@typescript-eslint/eslint-plugin": "^4.28.2",
     "@typescript-eslint/parser": "^4.28.2",
     "@webpack-cli/serve": "^1.5.1",
+    "autoprefixer": "^10.3.2",
     "babel-jest": "^27.0.6",
     "cross-env": "^7.0.3",
+    "css-loader": "^3.2.0",
+    "css-mqpacker": "^7.0.0",
+    "cssnano": "^4.1.11",
     "eslint": "^7.30.0",
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-webpack-plugin": "^2.5.4",
+    "file-loader": "^4.2.0",
     "jest": "^27.0.6",
     "jsdom": "^16.7.0",
+    "mini-css-extract-plugin": "^2.2.0",
+    "postcss": "^8.3.6",
+    "postcss-loader": "^6.1.1",
     "prettier": "2.3.2",
+    "sass-loader": "^8.0.0",
+    "style-loader": "^1.0.0",
     "ts-jest": "^27.0.4",
     "ts-loader": "^9.2.3",
     "typescript": "^4.3.4",
@@ -40,6 +51,7 @@
   "dependencies": {
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-prettier": "^8.3.0",
-    "jquery": "^3.6.0"
+    "jquery": "^3.6.0",
+    "node-sass": "^4.13.0"
   }
 }

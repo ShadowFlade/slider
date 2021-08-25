@@ -112,7 +112,7 @@ class Model extends EventMixin {
     styles: {
       progressBarColor: 'green',
       sliderColor: 'red',
-      handleColor: 'black',
+      handleColor: '',
       sliderWidth: 5,
       sliderHeight: 200,
       toolTextColor: 'green',

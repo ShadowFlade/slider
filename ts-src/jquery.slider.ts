@@ -1,9 +1,9 @@
 import App from './app';
+import './style.scss';
 declare let $: any;
 $.fn.slider = function (this: JQuery, options?: object): JQuery {
   return this.each(function () {
     const app = new App(this, options);
-
     $.fn.slider.tilt = () => {
       $(this).html('');
       app.tilt();
@@ -65,7 +65,6 @@ const data = {
   marker: true,
   progressBarColor: 'brown',
   sliderColor: 'red',
-  handleColor: 'black',
   sliderWidth: 5,
   sliderHeight: 200,
   pinTextColor: 'green',
