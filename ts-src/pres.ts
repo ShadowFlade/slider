@@ -38,7 +38,7 @@ class Pres extends EventMixin {
 
   public getView(view: View): void {
     this._view = view;
-
+    this._view._temp = this._model.temp;
     view.on('settingsRequired', this.getSettings.bind(this));
   }
 
@@ -220,7 +220,6 @@ class Pres extends EventMixin {
       range = rang;
       direction = directio;
     }
-
     const behavior = this._model.getSettings();
     if (behavior.orientation === 'horizontal') {
       direction = 'left';
@@ -242,10 +241,6 @@ class Pres extends EventMixin {
     ) as HTMLElement;
     viewEls._sliderTooltipSticks.push(stick);
     viewEls._sliderHandles.push(handleCLone);
-    // console.log(viewEls._sliderHandles, 'after pushed');
-
-    // this._view.addElement(this._sliderHandles)
-    // this._view._elements._sliderHandles = this._sliderHandles;
     if (this._model._settings.built) {
       this._view.rangeInterval(this._model._settings.orientation);
       this.showValue(handleCLone);
@@ -352,6 +347,9 @@ class Pres extends EventMixin {
       handle: {
         'background-color': '',
       },
+      tool: {
+        color: '',
+      },
     };
     for (const i in options) {
       if (i.toString().includes('slider')) {
@@ -387,8 +385,22 @@ class Pres extends EventMixin {
         } else {
           newOptions.handle[option] = options[i];
         }
+      } else if (i.toString().includes('tool')) {
+        let option = i.slice(4).toLowerCase();
+        if (option == 'color') {
+          option = 'background-color';
+        } else if (option == 'textcolor') {
+          option = 'color';
+        }
+        newOptions.tool[option] = options[i];
+        if (this.pxOptions.includes(option)) {
+          newOptions.tool[option] = `${options[i]}px`;
+        } else {
+          newOptions.tool[option] = options[i];
+        }
       }
     }
+    console.log(newOptions, 'newopt');
     return newOptions;
   }
 
@@ -470,6 +482,7 @@ class Pres extends EventMixin {
       this._view.refreshCoords(data, ori, type);
       return;
     }
+
     this._model.renew(data, ori, type);
   }
 

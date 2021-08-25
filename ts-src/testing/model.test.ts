@@ -34,6 +34,7 @@ describe('Model with default settings:', () => {
         handleColor: 'black',
         sliderWidth: 200,
         sliderHeight: 5,
+        toolTextColor: 'green',
       },
     };
     item = 'item';

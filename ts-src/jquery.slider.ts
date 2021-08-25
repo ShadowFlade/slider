@@ -68,5 +68,7 @@ const data = {
   handleColor: 'black',
   sliderWidth: 5,
   sliderHeight: 200,
+  pinTextColor: 'green',
+  toolTextColor: 'red',
 };
 $('#slider').slider(data);

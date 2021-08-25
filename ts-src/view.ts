@@ -12,6 +12,7 @@ type Elements<T> = {
   _sliderContainer: T;
   _sliderTooltip: T[];
   _sliderTooltipSticks: T[];
+  _sliderPins: T[];
 };
 type Fetch = {
   (className: string, single: true, item?): HTMLElement;
@@ -19,15 +20,13 @@ type Fetch = {
 };
 class View extends EventMixin {
   valueDivs: Object[];
-
   valueDivsArray: number[];
   offsetArray: number[];
   offsets: { div: HTMLElement; offset: number }[];
   offsetsNums: number[];
+  _temp: { [key: string]: string | number };
   _pres: Pres;
-
   _item: HTMLElement;
-
   orientation: string;
   public _elements: Elements<HTMLElement> = {
     _slider: null,
@@ -39,10 +38,11 @@ class View extends EventMixin {
     _sliderContainer: null,
     _sliderTooltip: [],
     _sliderTooltipSticks: [],
+    _sliderPins: [],
   };
+
   constructor(pres, options, item) {
     super();
-
     this._pres = pres;
     this._item = item;
   }
@@ -128,7 +128,6 @@ class View extends EventMixin {
       `tooltip`,
       false
     ) as HTMLElement[];
-
     this._elements._sliderContainer = this.fetchHTMLEl(
       `${defClassName}-container`,
       true
@@ -141,7 +140,10 @@ class View extends EventMixin {
       'tooltipContainer',
       false
     ) as HTMLElement[];
-
+    this._elements._sliderPins = this.fetchHTMLEl(
+      'jsSlider-clickable',
+      false
+    ) as HTMLElement[];
     const valueDivs: { div: HTMLElement; value: number }[] = Array.from(
       this._item.getElementsByClassName('jsSlider-clickable')
     ).map((item: HTMLElement) => {
@@ -187,6 +189,11 @@ class View extends EventMixin {
           } else if (option.toString().includes('handle')) {
             for (const handle of this._elements._sliderHandles) {
               handle.style[i] = j;
+            }
+          } else if (option.toString().includes('tool')) {
+            for (const tool of this._elements._sliderTooltip) {
+              console.log(i, j, 'ij');
+              tool.style[i] = j;
             }
           }
         }
@@ -243,8 +250,6 @@ class View extends EventMixin {
         value = v;
       }
     }
-    // console.log(type, handle);
-
     handle.style[direction] = newLeft + 'px';
 
     if (type == 'double') {
@@ -349,11 +354,10 @@ class View extends EventMixin {
         const item = i as { div: HTMLElement; value: number };
         if (item.value == data.value) {
           for (const i of this.valueDivs) {
-            // TODO is there a better way to do this?
             const item = i as { div: HTMLElement; value: number };
-            item.div.classList.remove('jsSlider-clicked');
+            item.div.style.color = '';
           }
-          item.div.classList.add('jsSlider-clicked');
+          item.div.style.color = String(this._temp.pinText);
         }
       }
     }

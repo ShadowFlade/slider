@@ -12,10 +12,10 @@ type Renew = {
 type IStyles = {
   progressBarColor: string;
   sliderColor: string;
-
   handleColor: string;
   sliderWidth: number;
   sliderHeight: number;
+  toolTextColor: string;
 };
 type Settings = {
   className: string;
@@ -85,7 +85,9 @@ class Model extends EventMixin {
     target: null,
     mainMax: 0,
   };
-
+  public temp = {
+    pinTextColor: '',
+  };
   public _settings: Settings = {
     className: 'slider',
     orientation: 'horizontal',
@@ -107,13 +109,13 @@ class Model extends EventMixin {
     marker: true,
     altDrag: false,
     built: false,
-
     styles: {
       progressBarColor: 'green',
       sliderColor: 'red',
       handleColor: 'black',
       sliderWidth: 5,
       sliderHeight: 200,
+      toolTextColor: 'green',
     },
   };
   constructor(options, item) {
@@ -125,8 +127,10 @@ class Model extends EventMixin {
   public initOptions(options: { [key: string]: string | number }) {
     if (options) {
       Object.keys(options).forEach((key: string): void => {
-        if (this.modifiable_options.includes(key)) {
+        if (key in this._settings.styles) {
           this._settings.styles[key] = options[key];
+        } else if (key in this.temp) {
+          this.temp[key] = options[key];
         } else {
           this._settings[key] = options[key];
         }
@@ -216,8 +220,12 @@ class Model extends EventMixin {
     }
 
     if (data.clicked) {
-      this.validate(this.coords);
-      this.trigger('coords changed', this.coords);
+      this.coords.main = axis - margin;
+      const validatedCoords = this.validate(this.coords);
+      if (validatedCoords) {
+        this.trigger('coords changed', validatedCoords, ori, type);
+        return validatedCoords;
+      }
     }
 
     this.coords.main = axis - margin;

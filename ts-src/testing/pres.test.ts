@@ -10,7 +10,7 @@ import App from '../app';
 import dom from './setup';
 import { FileWatcherEventKind } from 'typescript';
 
-describe('pres independent methods', () => {
+describe('Pres: independent methods', () => {
   let item;
   let model;
   let view;
@@ -114,6 +114,9 @@ describe('pres independent methods', () => {
       },
       handle: {
         'background-color': 'black',
+      },
+      tool: {
+        color: 'green',
       },
     };
     expect(pres.convertOptions(options)).toEqual(validOptions);
