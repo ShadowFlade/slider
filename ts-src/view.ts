@@ -246,7 +246,6 @@ class View extends EventMixin {
     // console.log(type, handle);
 
     handle.style[direction] = newLeft + 'px';
-    console.log(newLeft, 'newleft from view');
 
     if (type == 'double') {
       this.rangeInterval(ori);
@@ -303,12 +302,10 @@ class View extends EventMixin {
     let margin: number;
     let value: number;
     const handleHeight = this._elements._sliderHandles[0].offsetWidth;
-    console.log('🚀 ~ View ~ pinnedDrag ~ handleHeight', handleHeight);
     if (ori == 'horizontal') {
       direction = 'left';
       widthOrHeight = data.width;
       margin = data.marginLeft;
-      console.log('🚀 ~ View ~ pinnedDrag ~ margin', margin);
     } else {
       direction = 'top';
       widthOrHeight = data.height;
@@ -318,7 +315,6 @@ class View extends EventMixin {
 
     value = pin.dataset.value;
     let neededCoords = pin.getBoundingClientRect()[direction];
-    console.log('🚀 ~ View ~ pinnedDrag ~ neededCoords', neededCoords);
     newLeft = neededCoords - margin - handleHeight / 2;
     if (pin.className.includes('values')) {
       if (pin.className.includes('slider-min')) {
@@ -336,7 +332,7 @@ class View extends EventMixin {
     }
     const handle = this._elements._sliderHandles[0];
     const handleWidth = handle.offsetWidth;
-    const pin = data.target.parentNode;
+    const pin = data.target.parentElement;
     const pinPointsValues = this.valueDivsArray;
     let newLeft: number;
     const { offset, widthOrHeight, direction, margin } = this.convertValues({
@@ -344,7 +340,6 @@ class View extends EventMixin {
     });
     newLeft =
       pin.getBoundingClientRect()[direction] - data[margin] - handleWidth / 2;
-
     handle.style[direction] = newLeft + 'px';
     this._elements._sliderRange.style[widthOrHeight] = newLeft + 'px';
     this._elements._sliderTooltip[0].textContent = data.value;
