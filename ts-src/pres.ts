@@ -460,14 +460,15 @@ class Pres extends EventMixin {
   }
 
   private transferData(data, ori?: Ori, type?: Type) {
-    if (data.caller == 'model') {
-      data.marginLeft = this._model._settings.marginLeft; //TODO do not mutate data?
-      data.marginTop = this._model._settings.marginTop;
-      this._view.refreshCoords(data, ori, type);
+    const dataForTransfer = Object.assign({}, data);
+    if (dataForTransfer.caller == 'model') {
+      dataForTransfer.marginLeft = this._model._settings.marginLeft;
+      dataForTransfer.marginTop = this._model._settings.marginTop;
+      this._view.refreshCoords(dataForTransfer, ori, type);
       return;
     }
 
-    this._model.renew(data, ori, type);
+    this._model.renew(dataForTransfer, ori, type);
   }
 
   public setValue(value: number, target: HandleNum) {

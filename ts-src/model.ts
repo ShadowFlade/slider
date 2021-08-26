@@ -180,20 +180,20 @@ class Model extends EventMixin {
   }
 
   private validate(data: ICoords) {
-    //TODO dont mutate data
+    const validatedData = Object.assign({}, data);
     const max = this._settings.mainMax;
     const min = this._settings.mainMin;
     const maxValue = this._settings.maxValue;
     const minValue = this._settings.minValue;
-    if (data.main != max) {
-      if (data.main >= max) {
-        data.main = max;
-        data.value = maxValue; // TODO figure out why we need this workaround,main mean does not work
-      } else if (data.main <= min) {
-        data.main = min;
-        data.value = minValue;
+    if (validatedData.main != max) {
+      if (validatedData.main >= max) {
+        validatedData.main = max;
+        validatedData.value = maxValue; // TODO figure out why we need this workaround,main mean does not work
+      } else if (validatedData.main <= min) {
+        validatedData.main = min;
+        validatedData.value = minValue;
       }
-      return data;
+      return validatedData;
     } else {
       return false;
     }
