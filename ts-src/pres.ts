@@ -43,14 +43,16 @@ class Pres extends EventMixin {
   }
 
   public init(): void {
+    this._model.validateOptions();
     const orientation = this._model.getSetting('orientation');
     let widthOrHeight;
     if (orientation == 'horizontal') {
       widthOrHeight = this._model.getStyle('sliderWidth');
     } else if (orientation == 'vertical') {
+      console.log('fetching for vertical');
       widthOrHeight = this._model.getStyle('sliderHeight');
     }
-    this._model.validateOptions();
+
     const options = this.convertOptions(this._model.getStyles());
     const behavior = this._model.getSettings();
 
@@ -163,23 +165,25 @@ class Pres extends EventMixin {
       marginCss = 'marginTop';
     }
     const markerDiv = document.createElement('div');
-    const { valueArr, majorMarkers, altDrag, margin } = this.calcPins(
+    const { valuesForMarkers, majorMarkers, altDrag, margin } = this.calcPins(
       behavior,
       widthOrHeight
     );
-    const listOfValues = valueArr;
+    const listOfValues = valuesForMarkers;
     let j = 0;
 
-    for (let i = 0; i < majorMarkers; i += 1) {
+    for (let i = 0; i < valuesForMarkers.length - 1; i += 1) {
       const majorMarker = document.createElement('div');
       markerDiv.append(majorMarker);
       const markerValue = document.createElement('label');
-      markerValue.className = 'jsSlider-clickable marker-value';
+      markerValue.className = `jsSlider-clickable marker-value marker-value--${orientation}`;
       markerDiv.classList.add(`slider-marker--${orientation}`);
       majorMarker.className = `jsOffset marker--major marker--major--${orientation}`;
-
-      if (i === 0) {
-        majorMarker.style[marginCss] = 1.5 * margin + 'px';
+      if (i == 0) {
+        majorMarker.style[marginCss] =
+          margin -
+          this._view._elements._sliderHandles[0].offsetWidth / 2 +
+          'px';
       } else {
         majorMarker.style[marginCss] = margin + 'px';
       }
@@ -297,42 +301,23 @@ class Pres extends EventMixin {
     const diff = this._model._settings.maxMinDifference;
     const ss = this._model._settings.stepSize;
     const maxPins = this._model._settings._maxPins;
-    const n = checkForZero(Math.trunc(diff / (ss * majorMarkers)));
-    //каждый n-ый элемент из возможныъ value будет помещен на scale
+    const n = checkForZero(Math.trunc(diff / (ss * majorMarkers))); //каждый n-ый элемент из возможныъ value будет помещен на scale
 
-    const valueArr = [];
+    const valuesForMarkers = [];
     for (let i = n; i < diff / ss; i += n) {
       const value = ss * i;
-      valueArr.push(value);
+      valuesForMarkers.push(value);
     }
+    const margin = (valuesForMarkers[0] / diff) * widthOrHeight;
+    // console.log(
+    //   '🚀 ~ Pres ~ calcPins ~ margin',
+    //   margin,
+    //   valuesForMarkers[0],
+    //   diff,
+    //   widthOrHeight
+    // );
 
-    const valueObj = {};
-    valueArr.forEach((value) => {
-      let x = Math.trunc(
-        (value * this._model._settings.valuePerPx) / //mb mistake here (mb need pxperValue)
-          this._model._settings.stepSize
-      );
-
-      valueObj[String(valueArr.indexOf(value))] = {
-        value: value,
-        assumputedMain: x,
-      };
-    });
-
-    const mains = [];
-    Object.keys(valueObj).forEach((key) => {
-      mains.push(valueObj[key].assumputedMain);
-    });
-
-    let mainsDiff = elemsDiff(mains);
-    const sumOfDiff = mainsDiff.reduce((acc, value) => {
-      return acc + value;
-    });
-
-    const avg = Number(sumOfDiff) / mainsDiff.length;
-    const margin = avg;
-
-    return { valueArr, majorMarkers, altDrag, margin };
+    return { valuesForMarkers, majorMarkers, altDrag, margin };
   }
 
   private convertOptions(options: object) {
@@ -487,7 +472,6 @@ class Pres extends EventMixin {
 
   public setValue(value: number, target: HandleNum) {
     const viewEls = this._view._elements;
-
     let handle: HTMLElement;
     if (target == 1) {
       handle = viewEls._sliderHandles[0];

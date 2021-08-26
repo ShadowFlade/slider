@@ -56,7 +56,6 @@ class View extends EventMixin {
       this._elements._sliderContainer.style.flexDirection = 'row-reverse';
       const min = this.fetchHTMLEl('slider-min--vertical', true) as HTMLElement;
       min.style.left = '10px';
-      this._elements._sliderScale.style.left = '-5px';
       this._elements._sliderTooltipContainers.forEach((item) => {
         item.style.flexDirection = 'row';
         item.style.right = 'auto';
@@ -254,7 +253,7 @@ class View extends EventMixin {
     if (type == 'double') {
       this.rangeInterval(ori);
     } else {
-      range.style[widthOrHeight] = newLeft + 'px';
+      range.style[widthOrHeight] = newLeft + handle.offsetWidth / 2 + 'px';
     }
     value = numberOfDigits(value);
     handle.dataset.value = value;
@@ -357,7 +356,6 @@ class View extends EventMixin {
 
             item.div.style.color = '';
           }
-          console.log(item.div);
           item.div.style.color = String(this._temp.pinTextColor);
         }
       }
@@ -394,7 +392,8 @@ class View extends EventMixin {
     const handleOffset = Math.min(minOffset, maxOffset);
 
     this._elements._sliderRange.style[direction] = handleOffset + 'px';
-    this._elements._sliderRange.style[widthOrHeight] = length + 'px';
+    this._elements._sliderRange.style[widthOrHeight] =
+      length + this._elements._sliderHandles[0].offsetWidth / 2 + 'px';
   }
 
   public showValue(target, value) {

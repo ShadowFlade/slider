@@ -100,41 +100,34 @@ $shadow: 2px -2px 2px #7e7e7e;
   display: inline-flex;
   position: relative;
 }
-.slider-marker--vertical {
+.slider-marker {
   display: flex;
-  justify-content: space-evenly;
   position: relative;
+}
+.slider-marker--vertical {
   flex-direction: column;
   left: 5px;
 }
 
 .slider-marker--horizontal {
-  display: flex;
-  justify-content: space-evenly;
-  position: relative;
-  top: 15%;
   height: 20px;
   width: 100%;
+  top: -22%;
 }
-.marker--major--horizontal {
-  width: 2px;
-  height: 15px;
-
+.marker--major {
+  $length: 5px;
+  width: $length;
+  height: $length;
+  border-radius: 50%;
   text-align: center;
   position: relative;
   background-color: black;
+  z-index: 3;
 }
 .marker--major--horizontal:first-child {
   margin-left: 0;
 }
-.marker--major--vertical {
-  width: 15px;
-  height: 2px;
 
-  text-align: center;
-  position: relative;
-  background-color: black;
-}
 .marker--major--vertical:first-child {
   margin-top: 0;
 }
@@ -143,11 +136,16 @@ $shadow: 2px -2px 2px #7e7e7e;
 } */
 .marker-value {
   position: absolute;
-  top: 100%;
+  top: 150%;
   font-size: 11px;
   left: 50%;
   transform: translateX(-50%);
   user-select: none;
+}
+.marker-value--vertical {
+  top: -50%;
+  font-size: 11px;
+  left: -300%;
 }
 .tooltip {
   /* position: absolute; */

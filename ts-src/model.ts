@@ -271,7 +271,12 @@ class Model extends EventMixin {
     this.coords.value = nValue;
     this.coords.target = target;
     if (this.validate(this.coords)) {
-      this.trigger('coords changed', this.coords);
+      this.trigger(
+        'coords changed',
+        this.coords,
+        this._settings.orientation,
+        this._settings.type
+      );
       return;
     }
     return;
