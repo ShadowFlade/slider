@@ -2,26 +2,34 @@ var path = require('path')
 var webpack = require('webpack')
 const ESLintPlugin = require('eslint-webpack-plugin')
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-// const HtmlWebpackPlugin = require('html-webpack-plugin');
+const TerserPlugin = require("terser-webpack-plugin");
 
+const isDev = process.env.NODE_ENV === 'development'
+const isProd = !isDev
 module.exports = {
-  mode: 'development',
   devServer: {
-    contentBase: 'build/app.js',
+    contentBase: 'build/plugin.js',
     overlay: true,
     open: true,
   },
-  devtool: 'source-map',
+  devtool:  isDev ?'source-map' : false,
 
   entry: {
-    app:'./ts-src/jquery.slider.ts',
-    main:'./ts-src/demoPage/panel.ts',
+    plugin:'./ts-src/jquery.slider.ts',
 
-    // main: { import:  './build/main.js', dependOn: 'app' },
   },
   output: {
-    path: path.resolve(__dirname, './build'),
+    path: path.resolve(__dirname, './dist'),
     filename: `[name].js`,
+    clean:true
+  },
+  optimization: {
+    minimize: isProd ? true : false,
+    minimizer: [new TerserPlugin(
+      {
+        parallel: true,
+      }
+    )],
   },
   plugins: [
     // new webpack.ProvidePlugin({
@@ -46,61 +54,41 @@ module.exports = {
         test: /\.scss$/,
         exclude: /node_modules/,
         use: [
-          // 'style-loader',
           {
             loader:MiniCssExtractPlugin.loader,
             options:{
               esModule:false,
             }
           },
-          
           {
             loader: 'css-loader',
-
           },
           {
             loader: 'postcss-loader',
-
           },
           {
             loader: 'sass-loader',
-
           },
- 
     ],
   },
-  // {
-  //   test: /\.scss$/,
-  //   exclude: /node_modules/,
-  //   use: [
-  //       {
-  //           loader: 'file-loader',
-  //           options: { outputPath: 'css/', name: '[name].min.css'}
-  //       },
-  //       'sass-loader']
-  //   },
   {
     test: /\.css$/,
     use: [
-      // 'style-loader',
+
       MiniCssExtractPlugin.loader,
       {
         loader: 'css-loader',
         options: { sourceMap: true },
       },
-      // {
-      //   loader: 'postcss-loader',
-      //   options: {
-      //     sourceMap: true,
-      //     config: { path: `./postcss.config.js` },
-      //   },
-      // },
+
     ],
   }
   
 ]},
   plugins:[
-    new MiniCssExtractPlugin(
+    new MiniCssExtractPlugin({
+      filename: `[name].min.css`
+    }
     ),
   ],
   resolve: {
