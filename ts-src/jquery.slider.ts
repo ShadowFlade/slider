@@ -54,13 +54,8 @@ const data = {
   orientation: 'horizontal',
   type: 'single',
   stepSize: 90,
-  pxPerValue: 0,
-  valuePerPx: 1,
-  marginLeft: 0,
-  marginTop: 0,
   maxValue: 400,
   minValue: 0,
-  mainMin: 0,
   toolTip: true,
   marker: true,
   progressBarColor: 'brown',
@@ -70,4 +65,5 @@ const data = {
   pinTextColor: 'green',
   toolTextColor: 'red',
 };
+
 $('#slider').slider(data);
