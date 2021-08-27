@@ -101,7 +101,8 @@ Is used to change orientation. Look up `orientation` in **settings**.
 
 `$('#slider').slider.noStick(option)` Removes stick element if option is `false`.
 
-> All those methods return `this` (_plugin itself_) dictated by **JQuery** best practices.
+> All those methods return `this`(_plugin itself_) dictated by **JQuery** best practices.
+> _Except `isRange`,it returns boolean variable_)
 
 ## Demo page
 

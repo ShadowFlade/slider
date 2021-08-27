@@ -147,7 +147,7 @@ describe('View implement styles:', () => {
     min.classList.add('slider-min--vertical');
     item.appendChild(min);
     const styles = view._elements._sliderContainer.style.cssText;
-    view._elements._sliderTooltip[0].getBoundingClientRect = jest.fn(() => {
+    view._elements._tooltips[0].getBoundingClientRect = jest.fn(() => {
       return {
         top: 0,
         x: 0,
@@ -228,8 +228,8 @@ describe('View:refresh coordinates new', () => {
     const xs = [200, 15, 10, 100, 199];
     const values = [100, 1000, 1361];
     const handles = [
-      Array.from(view._elements._sliderHandles)[0],
-      Array.from(view._elements._sliderHandles)[1],
+      Array.from(view._elements._handles)[0],
+      Array.from(view._elements._handles)[1],
     ];
     data = {
       main: 20,
@@ -242,12 +242,12 @@ describe('View:refresh coordinates new', () => {
       target: null,
       shiftX: 0,
     };
-    view._elements._sliderRange.style.width = '0px';
-    const rangeWidth = view._elements._sliderRange.style.width;
-    const handleLeft1 = view._elements._sliderHandles[0].style.left;
-    const handleLeft2 = view._elements._sliderHandles[1].style.left;
+    view._elements._range.style.width = '0px';
+    const rangeWidth = view._elements._range.style.width;
+    const handleLeft1 = view._elements._handles[0].style.left;
+    const handleLeft2 = view._elements._handles[1].style.left;
 
-    const toolTipiValue = view._elements._sliderTooltip.textContent;
+    const toolTipiValue = view._elements._tooltips.textContent;
     deepCheck = function (data, handle, ori, type) {
       data.target = handle;
       for (let i of xs) {
@@ -257,7 +257,7 @@ describe('View:refresh coordinates new', () => {
           view.refreshCoords(data, ori, type);
           let handleReceiver;
           let numOfHandle;
-          if (handle == view._elements._sliderHandles[0]) {
+          if (handle == view._elements._handles[0]) {
             handleReceiver = handleLeft1;
             numOfHandle = 0;
           } else {
@@ -265,27 +265,25 @@ describe('View:refresh coordinates new', () => {
             numOfHandle = 1;
           }
 
-          expect(rangeWidth).not.toEqual(
-            view._elements._sliderRange.style.width
-          );
+          expect(rangeWidth).not.toEqual(view._elements._range.style.width);
           expect(handleReceiver).not.toEqual(handle.style.left);
           expect(toolTipiValue).not.toEqual(
-            view._elements._sliderTooltip[numOfHandle].textContent
+            view._elements._tooltips[numOfHandle].textContent
           );
         }
       }
     };
   });
   test('should refresh coordinates on drag,horizontal,single', () => {
-    deepCheck(data, view._elements._sliderHandles[0], 'horizontal', 'single');
+    deepCheck(data, view._elements._handles[0], 'horizontal', 'single');
   });
 
   test('should refresh coordinates on drag,horizontal,double', () => {
-    deepCheck(data, view._elements._sliderHandles[0], 'horizontal', 'double');
+    deepCheck(data, view._elements._handles[0], 'horizontal', 'double');
   });
   test('should refresh coordinates on drag,horizontal,double,second handle', () => {
-    view._elements._sliderHandles[0].style.left = '2px'; //so that 2 handles do not occupy the same position
-    deepCheck(data, view._elements._sliderHandles[1], 'horizontal', 'double');
+    view._elements._handles[0].style.left = '2px'; //so that 2 handles do not occupy the same position
+    deepCheck(data, view._elements._handles[1], 'horizontal', 'double');
   });
   test('should refresh coordinates on drag when pinnerDrag is used', () => {
     const d = {
@@ -345,7 +343,7 @@ describe('View:refresh coordinates new', () => {
     const nums = offsets.map((item) => item.offset);
     view.offsetsNums = nums;
 
-    deepCheck(d, view._elements._sliderHandles[0], 'horizontal', 'single');
+    deepCheck(d, view._elements._handles[0], 'horizontal', 'single');
   });
   test('should refresh coordinates when clicked', () => {});
 });
@@ -415,8 +413,8 @@ describe('refresh coords when clicked', () => {
     const xs = [200, 15, 10, 100, 199];
     const values = [100, 1000, 1361];
     const handles = [
-      Array.from(view._elements._sliderHandles)[0],
-      Array.from(view._elements._sliderHandles)[1],
+      Array.from(view._elements._handles)[0],
+      Array.from(view._elements._handles)[1],
     ];
     data = {
       main: 20,
@@ -429,11 +427,11 @@ describe('refresh coords when clicked', () => {
       target: null,
       shiftX: 0,
     };
-    view._elements._sliderRange.style.width = '0px';
-    const rangeWidth = view._elements._sliderRange.style.width;
-    const handleLeft1 = view._elements._sliderHandles[0].style.left;
-    const handleLeft2 = view._elements._sliderHandles[1].style.left;
-    const toolTipiValue = view._elements._sliderTooltip.textContent;
+    view._elements._range.style.width = '0px';
+    const rangeWidth = view._elements._range.style.width;
+    const handleLeft1 = view._elements._handles[0].style.left;
+    const handleLeft2 = view._elements._handles[1].style.left;
+    const toolTipiValue = view._elements._tooltips.textContent;
     deepCheck = function (data, handle, ori, type) {
       data.target = handle;
       for (let i of xs) {
@@ -443,7 +441,7 @@ describe('refresh coords when clicked', () => {
           view.refreshCoords(data, ori, type);
           let handleReceiver;
           let numOfHandle;
-          if (handle == view._elements._sliderHandles[0]) {
+          if (handle == view._elements._handles[0]) {
             handleReceiver = handleLeft1;
             numOfHandle = 0;
           } else {
@@ -451,11 +449,9 @@ describe('refresh coords when clicked', () => {
             numOfHandle = 1;
           }
           // console.log(data);
-          expect(rangeWidth).not.toEqual(
-            view._elements._sliderRange.style.width
-          );
+          expect(rangeWidth).not.toEqual(view._elements._range.style.width);
           expect(toolTipiValue).not.toEqual(
-            view._elements._sliderTooltip[numOfHandle].textContent
+            view._elements._tooltips[numOfHandle].textContent
           );
         }
       }

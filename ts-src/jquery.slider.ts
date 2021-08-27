@@ -53,10 +53,8 @@ $.fn.slider = function (this: JQuery, options?: object): JQuery {
     $.fn.slider.destroy = () => {
       $(this).html('');
       $(this).data('handle1', app.getValue(1));
-      console.log(app._model._settings.type);
 
       if ($(this).slider.isRange()) {
-        console.log('im range');
         $(this).data('handle2', app.getValue(2));
       }
     };
@@ -66,7 +64,6 @@ $.fn.slider = function (this: JQuery, options?: object): JQuery {
       } else {
         $(this).slider.setValue($(this).data('handle1'), 1);
         if ($(this).slider.isRange()) {
-          console.log(app._model._settings.type);
           $(this).slider.setValue($(this).data('handle2'), 2);
         }
       }

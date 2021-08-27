@@ -121,7 +121,7 @@ class Pres extends EventMixin {
     const tooltipStick = document.createElement('div');
     tooltipStick.className = `tooltipStick tooltipStick--${orientation}`;
     tooltipContainer.append(tooltipStick);
-    this._view._elements._sliderTooltipSticks.push(tooltipStick);
+    this._view._elements._tooltipsSticks.push(tooltipStick);
     tooltipContainer.append(tool);
     handle.append(tooltipContainer);
     const min = document.createElement('span');
@@ -133,11 +133,11 @@ class Pres extends EventMixin {
     main.append(container);
     main.append(max);
     slider.appendChild(range);
-    // this._sliderRange = range;
+    // this._range = range;
     slider.appendChild(handle);
     handle.className = `slider-handle slider-handle--${orientation}`;
-    // this._view._elements._sliderHandles = [];
-    viewEls._sliderHandles.push(handle);
+    // this._view._elements._handles = [];
+    viewEls._handles.push(handle);
     container.className = `slider-container slider-container--${orientation}`;
     tool.className = `tooltip tooltip--${orientation}`;
 
@@ -180,9 +180,7 @@ class Pres extends EventMixin {
       majorMarker.className = `jsOffset marker--major marker--major--${orientation}`;
       if (i == 0) {
         majorMarker.style[marginCss] =
-          margin -
-          this._view._elements._sliderHandles[0].offsetWidth / 2 +
-          'px';
+          margin - this._view._elements._handles[0].offsetWidth / 2 + 'px';
       } else {
         majorMarker.style[marginCss] = margin + 'px';
       }
@@ -215,9 +213,9 @@ class Pres extends EventMixin {
     this._model._settings.type = 'double';
 
     if (!handl) {
-      handle = viewEls._sliderHandles[0];
+      handle = viewEls._handles[0];
 
-      range = viewEls._sliderRange;
+      range = viewEls._range;
     } else {
       handle = handl;
       range = rang;
@@ -234,7 +232,7 @@ class Pres extends EventMixin {
     const tooltipContainer = handleCLone.getElementsByClassName(
       'tooltipContainer'
     )[0] as HTMLElement;
-    this._view._elements._sliderTooltipContainers.push(tooltipContainer);
+    this._view._elements._tooltipContainers.push(tooltipContainer);
     handle.after(range);
     range.after(handleCLone);
     const stick = this._view.fetchHTMLEl(
@@ -242,8 +240,8 @@ class Pres extends EventMixin {
       true,
       handleCLone
     ) as HTMLElement;
-    viewEls._sliderTooltipSticks.push(stick);
-    viewEls._sliderHandles.push(handleCLone);
+    viewEls._tooltipsSticks.push(stick);
+    viewEls._handles.push(handleCLone);
     if (this._model._settings.built) {
       this._view.rangeInterval(this._model._settings.orientation);
       this.showValue(handleCLone);
@@ -266,14 +264,14 @@ class Pres extends EventMixin {
     this._model._settings.type = 'single';
     const orient = this._model._settings.orientation;
     if (orient === 'horizontal') {
-      viewEls._sliderRange.style.left = '0px';
+      viewEls._range.style.left = '0px';
     } else if (orient === 'vertical') {
-      viewEls._sliderRange.style.top = '0px';
+      viewEls._range.style.top = '0px';
     }
 
-    viewEls._sliderHandles[0].before(viewEls._sliderRange);
-    viewEls._sliderHandles[1].remove();
-    viewEls._sliderHandles = viewEls._sliderHandles.slice(0, 1);
+    viewEls._handles[0].before(viewEls._range);
+    viewEls._handles[1].remove();
+    viewEls._handles = viewEls._handles.slice(0, 1);
     if (this._model._settings.built) {
       this._view.rangeInterval(this._model._settings.orientation);
     }
@@ -308,14 +306,6 @@ class Pres extends EventMixin {
       valuesForMarkers.push(value);
     }
     const margin = (valuesForMarkers[0] / diff) * widthOrHeight;
-    // console.log(
-    //   '🚀 ~ Pres ~ calcPins ~ margin',
-    //   margin,
-    //   valuesForMarkers[0],
-    //   diff,
-    //   widthOrHeight
-    // );
-
     return { valuesForMarkers, majorMarkers, altDrag, margin };
   }
 
@@ -388,7 +378,7 @@ class Pres extends EventMixin {
   }
 
   public onMouseDown(): void {
-    const handles = this._view._elements._sliderHandles;
+    const handles = this._view._elements._handles;
 
     const container = this._view._elements._sliderContainer;
     const slider = this._view._elements._slider;
@@ -474,10 +464,10 @@ class Pres extends EventMixin {
     const viewEls = this._view._elements;
     let handle: HTMLElement;
     if (target == 1) {
-      handle = viewEls._sliderHandles[0];
+      handle = viewEls._handles[0];
     } else if (target == 2) {
       if (this._model._settings.type == 'double') {
-        handle = viewEls._sliderHandles[1];
+        handle = viewEls._handles[1];
       } else {
         throw new ReferenceError('Can not reference absent handle');
       }

@@ -5,14 +5,14 @@ import { Type, Ori } from './model';
 type Elements<T> = {
   _slider: T;
   _sliderMain: T;
-  _sliderScale: T;
-  _sliderRange: T;
-  _sliderTooltipContainers: T[];
-  _sliderHandles: T[];
+  _scale: T;
+  _range: T;
+  _tooltipContainers: T[];
+  _handles: T[];
   _sliderContainer: T;
-  _sliderTooltip: T[];
-  _sliderTooltipSticks: T[];
-  _sliderPins: T[];
+  _tooltips: T[];
+  _tooltipsSticks: T[];
+  _pins: T[];
 };
 type Fetch = {
   (className: string, single: true, item?): HTMLElement;
@@ -31,14 +31,14 @@ class View extends EventMixin {
   public _elements: Elements<HTMLElement> = {
     _slider: null,
     _sliderMain: null,
-    _sliderScale: null,
-    _sliderRange: null,
-    _sliderTooltipContainers: [],
-    _sliderHandles: [],
     _sliderContainer: null,
-    _sliderTooltip: [],
-    _sliderTooltipSticks: [],
-    _sliderPins: [],
+    _scale: null,
+    _range: null,
+    _tooltipContainers: [],
+    _handles: [],
+    _tooltips: [],
+    _tooltipsSticks: [],
+    _pins: [],
   };
 
   constructor(pres, options, item) {
@@ -46,17 +46,15 @@ class View extends EventMixin {
     this._pres = pres;
     this._item = item;
   }
-
   public implementStyles(options, pos) {
     this.initiateOptions(options);
     this.orientation = pos;
-
-    if (this._elements._sliderTooltip[0].getBoundingClientRect().left < 0) {
+    if (this._elements._tooltips[0].getBoundingClientRect().left < 0) {
       this._elements._sliderContainer.style.justifyContent = 'space-between';
       this._elements._sliderContainer.style.flexDirection = 'row-reverse';
       const min = this.fetchHTMLEl('slider-min--vertical', true) as HTMLElement;
       min.style.left = '10px';
-      this._elements._sliderTooltipContainers.forEach((item) => {
+      this._elements._tooltipContainers.forEach((item) => {
         item.style.flexDirection = 'row';
         item.style.right = 'auto';
 
@@ -73,8 +71,8 @@ class View extends EventMixin {
 
     return {
       slider: this._elements._slider,
-      range: this._elements._sliderRange,
-      handles: this._elements._sliderHandles,
+      range: this._elements._range,
+      handles: this._elements._handles,
       wrapper: this._elements._sliderMain,
     };
   }
@@ -114,16 +112,15 @@ class View extends EventMixin {
       defClassName,
       true
     ) as HTMLElement;
-    this._elements._sliderRange = this.fetchHTMLEl(
+    this._elements._range = this.fetchHTMLEl(
       `${defClassName}-range`,
       true
     ) as HTMLElement;
-    this._elements._sliderHandles = this.fetchHTMLEl(
+    this._elements._handles = this.fetchHTMLEl(
       `${defClassName}-handle--${orientation}`,
       false
     ) as HTMLElement[];
-    // console.log(this._elements._sliderHandles, 'fetch divs');
-    this._elements._sliderTooltip = this.fetchHTMLEl(
+    this._elements._tooltips = this.fetchHTMLEl(
       `tooltip`,
       false
     ) as HTMLElement[];
@@ -131,15 +128,15 @@ class View extends EventMixin {
       `${defClassName}-container`,
       true
     ) as HTMLElement;
-    this._elements._sliderScale = this.fetchHTMLEl(
+    this._elements._scale = this.fetchHTMLEl(
       `${defClassName}-marker`,
       true
     ) as HTMLElement;
-    this._elements._sliderTooltipContainers = this.fetchHTMLEl(
+    this._elements._tooltipContainers = this.fetchHTMLEl(
       'tooltipContainer',
       false
     ) as HTMLElement[];
-    this._elements._sliderPins = this.fetchHTMLEl(
+    this._elements._pins = this.fetchHTMLEl(
       'jsSlider-clickable',
       false
     ) as HTMLElement[];
@@ -182,15 +179,15 @@ class View extends EventMixin {
           if (option.toString().includes('slider')) {
             this._elements._slider.style[i] = j;
           } else if (option.toString().includes('progressBar')) {
-            this._elements._sliderRange.style[i] = j;
+            this._elements._range.style[i] = j;
           } else if (option.toString().includes('markUp')) {
             this._elements._slider.style[i] = j;
           } else if (option.toString().includes('handle')) {
-            for (const handle of this._elements._sliderHandles) {
+            for (const handle of this._elements._handles) {
               handle.style[i] = j;
             }
           } else if (option.toString().includes('tool')) {
-            for (const tool of this._elements._sliderTooltip) {
+            for (const tool of this._elements._tooltips) {
               tool.style[i] = j;
             }
           }
@@ -216,11 +213,11 @@ class View extends EventMixin {
       widthOrHeight = 'width';
     }
     if (type == 'single') {
-      handle = this._elements._sliderHandles[0];
+      handle = this._elements._handles[0];
     } else if (type == 'double') {
       handle = data.target;
     }
-    const range = this._elements._sliderRange;
+    const range = this._elements._range;
     const toolTip = this.fetchHTMLEl(`tooltip`, true, handle) as HTMLDivElement;
     const newCoords = Object.assign(data, {
       shiftX: shiftX,
@@ -282,8 +279,8 @@ class View extends EventMixin {
     const handle = data.target;
     const handleWidth = handle.offsetWidth;
     const handleHeight = handle.offsetHeight;
-    const range = this._elements._sliderRange;
-    const toolTip = this._elements._sliderTooltip;
+    const range = this._elements._range;
+    const toolTip = this._elements._tooltips;
 
     if (data.value == 0) {
       range.style[widthOrHeight] = '0';
@@ -294,9 +291,6 @@ class View extends EventMixin {
     } else {
       newLeft += handle.offsetWidth / 2;
     }
-    // if (handle == this._elements._sliderHandles[1]) {
-    //   console.log(newLeft, 'from view MUHAHAHHA');
-    // }
     return {
       newLeft,
       value,
@@ -308,7 +302,7 @@ class View extends EventMixin {
     let newLeft;
     let margin: number;
     let value: number;
-    const handleHeight = this._elements._sliderHandles[0].offsetWidth;
+    const handleHeight = this._elements._handles[0].offsetWidth;
     if (ori == 'horizontal') {
       direction = 'left';
       widthOrHeight = data.width;
@@ -337,7 +331,7 @@ class View extends EventMixin {
     if (type == 'double') {
       return false;
     }
-    const handle = this._elements._sliderHandles[0];
+    const handle = this._elements._handles[0];
     const handleWidth = handle.offsetWidth;
     const pin = data.target.parentElement;
     const pinPointsValues = this.valueDivsArray;
@@ -348,8 +342,8 @@ class View extends EventMixin {
     newLeft =
       pin.getBoundingClientRect()[direction] - data[margin] - handleWidth / 2;
     handle.style[direction] = newLeft + 'px';
-    this._elements._sliderRange.style[widthOrHeight] = newLeft + 'px';
-    this._elements._sliderTooltip[0].textContent = data.value;
+    this._elements._range.style[widthOrHeight] = newLeft + 'px';
+    this._elements._tooltips[0].textContent = data.value;
 
     if (pinPointsValues.includes(data.value)) {
       for (const i of this.valueDivs) {
@@ -381,13 +375,11 @@ class View extends EventMixin {
       direction = 'top';
     }
 
-    const minOffset = parseFloat(
-      this._elements._sliderHandles[0].style[direction]
-    );
+    const minOffset = parseFloat(this._elements._handles[0].style[direction]);
     let maxOffset;
-    if (this._elements._sliderHandles[1]) {
+    if (this._elements._handles[1]) {
       maxOffset =
-        parseFloat(this._elements._sliderHandles[1].style[direction]) || null; //only works if style.left is in pxs
+        parseFloat(this._elements._handles[1].style[direction]) || null; //only works if style.left is in pxs
     } else {
       maxOffset = null;
     }
@@ -395,9 +387,9 @@ class View extends EventMixin {
     const length = Math.abs(minOffset - maxOffset);
     const handleOffset = Math.min(minOffset, maxOffset);
 
-    this._elements._sliderRange.style[direction] = handleOffset + 'px';
-    this._elements._sliderRange.style[widthOrHeight] =
-      length + this._elements._sliderHandles[0].offsetWidth / 2 + 'px';
+    this._elements._range.style[direction] = handleOffset + 'px';
+    this._elements._range.style[widthOrHeight] =
+      length + this._elements._handles[0].offsetWidth / 2 + 'px';
   }
 
   public showValue(target, value) {

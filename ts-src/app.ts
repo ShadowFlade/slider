@@ -28,25 +28,25 @@ class App {
   }
   public scale(option: boolean) {
     if (!option) {
-      this._view._elements._sliderScale.style.display = 'none';
+      this._view._elements._scale.style.display = 'none';
     } else {
-      this._view._elements._sliderScale.style.display = '';
+      this._view._elements._scale.style.display = '';
     }
   }
   public bar(option: boolean) {
     if (!option) {
-      this._view._elements._sliderRange.style.display = 'none';
+      this._view._elements._range.style.display = 'none';
     } else {
-      this._view._elements._sliderRange.style.display = '';
+      this._view._elements._range.style.display = '';
     }
   }
   public tip(option: boolean) {
     if (!option) {
-      this._view._elements._sliderTooltipContainers.forEach((item) => {
+      this._view._elements._tooltipContainers.forEach((item) => {
         item.style.display = 'none';
       });
     } else {
-      this._view._elements._sliderTooltipContainers.forEach((item) => {
+      this._view._elements._tooltipContainers.forEach((item) => {
         item.style.display = '';
       });
     }
@@ -104,9 +104,8 @@ class App {
   public getValue(numbOfHandle: 1 | 2) {
     let direction;
     let margin;
-    console.log(numbOfHandle);
 
-    const handle = this._view._elements._sliderHandles[numbOfHandle - 1];
+    const handle = this._view._elements._handles[numbOfHandle - 1];
     if (this._model._settings.orientation == 'horizontal') {
       direction = 'left';
       margin = 'marginLeft';

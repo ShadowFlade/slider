@@ -233,12 +233,12 @@ describe('Pres:changing the elements', () => {
   });
   test('should remove one handle=>1 remains', () => {
     pres.removeHandle();
-    expect(view._elements._sliderHandles.length).toBeLessThan(2);
+    expect(view._elements._handles.length).toBeLessThan(2);
   });
   test('pres.showValue should trigger view.showValue and model.calcValue', () => {
     const mockCalcValue = jest.spyOn(model, 'calcValue');
     const mockShowValue = jest.spyOn(view, 'showValue');
-    pres.showValue(view._elements._sliderHandles[0]);
+    pres.showValue(view._elements._handles[0]);
     expect(mockCalcValue).toBeCalled();
     expect(mockShowValue).toBeCalled();
   });
@@ -306,7 +306,7 @@ describe('interacting with dom', () => {
     view.implementStyles(options, position);
   });
   test('callback are called when listeners are attached', () => {
-    const handle = view._elements._sliderHandles[0];
+    const handle = view._elements._handles[0];
     pres.onMouseDown();
     var evt = document.createEvent('MouseEvents');
     evt.initMouseEvent(
@@ -341,7 +341,7 @@ describe('interacting with dom', () => {
       marginLeft: 0,
       clicked: false,
       marginTop: 0,
-      target: view._elements._sliderHandles[0],
+      target: view._elements._handles[0],
     };
     document.addEventListener('mousemove', () => {
       model.renew(data, 'horizontal', 'double');

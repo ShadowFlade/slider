@@ -56,7 +56,7 @@ type ICoords = {
 class Model extends EventMixin {
   private _slider: Element;
 
-  private _sliderRange: Element;
+  private _range: Element;
 
   private _sliderHandle: Element;
 
@@ -125,17 +125,16 @@ class Model extends EventMixin {
   }
 
   public initOptions(options: { [key: string]: string | number }) {
-    if (options) {
-      Object.keys(options).forEach((key: string): void => {
-        if (this._settings.styles.hasOwnProperty(key)) {
-          this._settings.styles[key] = options[key];
-        } else if (this.temp.hasOwnProperty(key)) {
-          this.temp[key] = options[key];
-        } else {
-          this._settings[key] = options[key];
-        }
-      });
-    }
+    Object.keys(options).forEach((key: string): void => {
+      if (this._settings.styles.hasOwnProperty(key)) {
+        this._settings.styles[key] = options[key];
+      } else if (this.temp.hasOwnProperty(key)) {
+        this.temp[key] = options[key];
+      } else {
+        this._settings[key] = options[key];
+      }
+    });
+
     this.correctOptions();
   }
   private correctOptions() {
@@ -266,7 +265,6 @@ class Model extends EventMixin {
     this.coords.main = main;
     this.coords.value = nValue;
     this.coords.target = target;
-    // console.log(this.coords, 'COORDS');
     if (this.validate(this.coords)) {
       this.trigger(
         'coords changed',
