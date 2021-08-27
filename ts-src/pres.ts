@@ -49,7 +49,6 @@ class Pres extends EventMixin {
     if (orientation == 'horizontal') {
       widthOrHeight = this._model.getStyle('sliderWidth');
     } else if (orientation == 'vertical') {
-      console.log('fetching for vertical');
       widthOrHeight = this._model.getStyle('sliderHeight');
     }
 
@@ -483,7 +482,6 @@ class Pres extends EventMixin {
         throw new ReferenceError('Can not reference absent handle');
       }
     }
-
     this._model.calcMain(value, handle);
   }
 

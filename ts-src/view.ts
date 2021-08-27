@@ -248,6 +248,7 @@ class View extends EventMixin {
         value = v;
       }
     }
+
     handle.style[direction] = newLeft + 'px';
 
     if (type == 'double') {
@@ -255,8 +256,9 @@ class View extends EventMixin {
     } else {
       range.style[widthOrHeight] = newLeft + handle.offsetWidth / 2 + 'px';
     }
-    value = numberOfDigits(value);
+
     handle.dataset.value = value;
+    value = numberOfDigits(value);
     toolTip.textContent = value;
     return;
   }
@@ -292,7 +294,9 @@ class View extends EventMixin {
     } else {
       newLeft += handle.offsetWidth / 2;
     }
-
+    // if (handle == this._elements._sliderHandles[1]) {
+    //   console.log(newLeft, 'from view MUHAHAHHA');
+    // }
     return {
       newLeft,
       value,

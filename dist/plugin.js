@@ -96,7 +96,6 @@ class App {
     setLimits(min, max) {
         this._model._settings.maxValue = max;
         this._model._settings.minValue = min;
-        // this._model.initOptions({});
         this._pres.init();
         this._pres.onMouseDown();
     }
@@ -129,6 +128,22 @@ class App {
                 .concat(classes.slice(start + length));
             item.className = newClasses;
         }
+    }
+    getValue(numbOfHandle) {
+        let direction;
+        let margin;
+        console.log(numbOfHandle);
+        const handle = this._view._elements._sliderHandles[numbOfHandle - 1];
+        if (this._model._settings.orientation == 'horizontal') {
+            direction = 'left';
+            margin = 'marginLeft';
+        }
+        else {
+            direction = 'top';
+            margin = 'marginTop';
+        }
+        const value = handle.dataset.value;
+        return value;
     }
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (App);
@@ -269,10 +284,10 @@ class Model extends _eventemitter__WEBPACK_IMPORTED_MODULE_0__.default {
     initOptions(options) {
         if (options) {
             Object.keys(options).forEach((key) => {
-                if (key in this._settings.styles) {
+                if (this._settings.styles.hasOwnProperty(key)) {
                     this._settings.styles[key] = options[key];
                 }
-                else if (key in this.temp) {
+                else if (this.temp.hasOwnProperty(key)) {
                     this.temp[key] = options[key];
                 }
                 else {
@@ -323,20 +338,15 @@ class Model extends _eventemitter__WEBPACK_IMPORTED_MODULE_0__.default {
         const min = this._settings.mainMin;
         const maxValue = this._settings.maxValue;
         const minValue = this._settings.minValue;
-        if (validatedData.main != max) {
-            if (validatedData.main >= max) {
-                validatedData.main = max;
-                validatedData.value = maxValue; // TODO figure out why we need this workaround,main mean does not work
-            }
-            else if (validatedData.main <= min) {
-                validatedData.main = min;
-                validatedData.value = minValue;
-            }
-            return validatedData;
+        if (validatedData.main >= max) {
+            validatedData.main = max;
+            validatedData.value = maxValue; // TODO figure out why we need this workaround,main mean does not work
         }
-        else {
-            return false;
+        else if (validatedData.main <= min) {
+            validatedData.main = min;
+            validatedData.value = minValue;
         }
+        return validatedData;
     }
     renew(data, ori, type) {
         const valuePerPx = this._settings.valuePerPx;
@@ -401,6 +411,7 @@ class Model extends _eventemitter__WEBPACK_IMPORTED_MODULE_0__.default {
         this.coords.main = main;
         this.coords.value = nValue;
         this.coords.target = target;
+        // console.log(this.coords, 'COORDS');
         if (this.validate(this.coords)) {
             this.trigger('coords changed', this.coords, this._settings.orientation, this._settings.type);
             return;
@@ -482,7 +493,6 @@ class Pres extends _eventemitter__WEBPACK_IMPORTED_MODULE_0__.default {
             widthOrHeight = this._model.getStyle('sliderWidth');
         }
         else if (orientation == 'vertical') {
-            console.log('fetching for vertical');
             widthOrHeight = this._model.getStyle('sliderHeight');
         }
         const options = this.convertOptions(this._model.getStyles());
@@ -1090,8 +1100,8 @@ class View extends _eventemitter__WEBPACK_IMPORTED_MODULE_0__.default {
         else {
             range.style[widthOrHeight] = newLeft + handle.offsetWidth / 2 + 'px';
         }
-        value = numberOfDigits(value);
         handle.dataset.value = value;
+        value = numberOfDigits(value);
         toolTip.textContent = value;
         return;
     }
@@ -1125,6 +1135,9 @@ class View extends _eventemitter__WEBPACK_IMPORTED_MODULE_0__.default {
         else {
             newLeft += handle.offsetWidth / 2;
         }
+        // if (handle == this._elements._sliderHandles[1]) {
+        //   console.log(newLeft, 'from view MUHAHAHHA');
+        // }
         return {
             newLeft,
             value,
@@ -1377,8 +1390,9 @@ $.fn.slider = function (options) {
     return this.each(function () {
         const app = new _app__WEBPACK_IMPORTED_MODULE_0__.default(this, options);
         $.fn.slider.tilt = () => {
-            $(this).html('');
+            $(this).slider.destroy();
             app.tilt();
+            $(this).slider.restore();
             return this;
         };
         $.fn.slider.scale = (option) => {
@@ -1402,22 +1416,43 @@ $.fn.slider = function (options) {
             return this;
         };
         $.fn.slider.setLimits = (min, max) => {
-            $(this).html('');
+            $(this).slider.destroy();
             app.setLimits(min, max);
+            $(this).slider.restore();
             return this;
         };
         $.fn.slider.isRange = () => {
-            app.isRange();
-            return this;
+            return app.isRange();
         };
         $.fn.slider.setStep = (value) => {
-            $(this).html('');
+            $(this).slider.destroy();
             app.setStep(value);
             return this;
         };
         $.fn.slider.noStick = (option) => {
             app.noStick(option);
             return this;
+        };
+        $.fn.slider.destroy = () => {
+            $(this).html('');
+            $(this).data('handle1', app.getValue(1));
+            console.log(app._model._settings.type);
+            if ($(this).slider.isRange()) {
+                console.log('im range');
+                $(this).data('handle2', app.getValue(2));
+            }
+        };
+        $.fn.slider.restore = () => {
+            if (Object.keys($(this).data()).length == 0) {
+                return $(this);
+            }
+            else {
+                $(this).slider.setValue($(this).data('handle1'), 1);
+                if ($(this).slider.isRange()) {
+                    console.log(app._model._settings.type);
+                    $(this).slider.setValue($(this).data('handle2'), 2);
+                }
+            }
         };
     });
 };

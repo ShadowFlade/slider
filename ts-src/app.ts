@@ -69,8 +69,6 @@ class App {
   public setLimits(min: number, max: number) {
     this._model._settings.maxValue = max;
     this._model._settings.minValue = min;
-
-    // this._model.initOptions({});
     this._pres.init();
     this._pres.onMouseDown();
   }
@@ -102,6 +100,22 @@ class App {
         .concat(classes.slice(start + length));
       item.className = newClasses;
     }
+  }
+  public getValue(numbOfHandle: 1 | 2) {
+    let direction;
+    let margin;
+    console.log(numbOfHandle);
+
+    const handle = this._view._elements._sliderHandles[numbOfHandle - 1];
+    if (this._model._settings.orientation == 'horizontal') {
+      direction = 'left';
+      margin = 'marginLeft';
+    } else {
+      direction = 'top';
+      margin = 'marginTop';
+    }
+    const value = handle.dataset.value;
+    return value;
   }
 
   _model: Model;

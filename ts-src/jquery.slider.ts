@@ -4,9 +4,11 @@ declare let $: any;
 $.fn.slider = function (this: JQuery, options?: object): JQuery {
   return this.each(function () {
     const app = new App(this, options);
+
     $.fn.slider.tilt = () => {
-      $(this).html('');
+      $(this).slider.destroy();
       app.tilt();
+      $(this).slider.restore();
       return this;
     };
     $.fn.slider.scale = (option: boolean) => {
@@ -30,22 +32,44 @@ $.fn.slider = function (this: JQuery, options?: object): JQuery {
       return this;
     };
     $.fn.slider.setLimits = (min: number, max: number) => {
-      $(this).html('');
+      $(this).slider.destroy();
       app.setLimits(min, max);
+      $(this).slider.restore();
+
       return this;
     };
     $.fn.slider.isRange = () => {
-      app.isRange();
-      return this;
+      return app.isRange();
     };
     $.fn.slider.setStep = (value) => {
-      $(this).html('');
+      $(this).slider.destroy();
       app.setStep(value);
       return this;
     };
     $.fn.slider.noStick = (option: boolean) => {
       app.noStick(option);
       return this;
+    };
+    $.fn.slider.destroy = () => {
+      $(this).html('');
+      $(this).data('handle1', app.getValue(1));
+      console.log(app._model._settings.type);
+
+      if ($(this).slider.isRange()) {
+        console.log('im range');
+        $(this).data('handle2', app.getValue(2));
+      }
+    };
+    $.fn.slider.restore = () => {
+      if (Object.keys($(this).data()).length == 0) {
+        return $(this);
+      } else {
+        $(this).slider.setValue($(this).data('handle1'), 1);
+        if ($(this).slider.isRange()) {
+          console.log(app._model._settings.type);
+          $(this).slider.setValue($(this).data('handle2'), 2);
+        }
+      }
     };
   });
 };

@@ -34,8 +34,8 @@ const data={
   mainMin: 0,
   toolTip: true,
   marker: true,
-    sliderWidth: 5,
-  sliderHeight: 200,
+  sliderWidth: 200,
+  sliderHeight: 5,
   //not recommended for use
   progressBarColor: 'brown',
   sliderColor: 'red',
@@ -48,6 +48,8 @@ const data={
 ```
 
 > Content inside `div` element with `id='slider'` will be deleted
+
+### Settings
 
 **className** is name of the class,which will be used for the body of the slider,therefore is should not be used anywhere else on the page. **Default** option is **slider**.
 
@@ -71,3 +73,36 @@ const data={
 **sliderColor** will set the color of the background of the slider (_when not overlayed by the progress bar_). **Default** option is //TODO
 
 **toolTextColor** will set the color of text in the tooltip circle above the handle. **Default** option is () //TODO insdert a pic of tooltip
+
+> Options might be corrected afterwards. E.g. if the orientation was set to **horizontal** and ` sliderWidth: 5 sliderHeight:200` , `sliderWidth` and `sliderHeight` will be swapped,so it will be `sliderWidth:200` and `sliderHeight:5`.
+
+### API
+
+There are a few plugin methods you can use.
+
+`$('#slider').slider.tilt()`
+Is used to change orientation. Look up `orientation` in **settings**.
+
+`$('#slider').slider.scale(option)` Option is of type `boolean`. Determines whether or not scale will be displayed.
+
+`$('#slider').slider.bar(option)` Option is of type `boolean`. Determines whether or not progress bar will be displayed.
+
+`$('#slider').slider.tip(option)` Option is of type `boolean`. Determines whether or not tooltip will be displayed. Look up `tooltip` in **settings**.
+
+`$('#slider').slider.range(option)` Option is of type `boolean`. Determines the `type` of slider. Look up `type` in **settings**.
+
+`$('#slider').slider.setValue(value,numberOfHandle)` **value** argument is the number you want to assign to the desired handle. **numberOfHandle** argument determines which of the 2 handles you want to move (\*therefore **numberOfHandle** argument can be either **1** or **2**).
+
+`$('#slider').slider.setLimits(min,max)` Rebuilds the slider with desired limits. Both aruments must be integers.
+
+`$('#slider').slider.isRange()` Returns `boolean`, `ture` if the `type` of slider is **double**, `false` if `type` of slider is **single**.
+
+`$('#slider').slider.setStep(value)` Rebuilds the slider with the `stepsize` setting set to `value`.
+
+`$('#slider').slider.noStick(option)` Removes stick element if option is `false`.
+
+> All those methods return `this` (_plugin itself_) dictated by **JQuery** best practices.
+
+## Demo page
+
+You can find demo page in `ts-src/demoPage/` . You can play around with it to find the setup that suits you best. //TODO insdert a pic of demopage.

@@ -127,9 +127,9 @@ class Model extends EventMixin {
   public initOptions(options: { [key: string]: string | number }) {
     if (options) {
       Object.keys(options).forEach((key: string): void => {
-        if (key in this._settings.styles) {
+        if (this._settings.styles.hasOwnProperty(key)) {
           this._settings.styles[key] = options[key];
-        } else if (key in this.temp) {
+        } else if (this.temp.hasOwnProperty(key)) {
           this.temp[key] = options[key];
         } else {
           this._settings[key] = options[key];
@@ -185,18 +185,14 @@ class Model extends EventMixin {
     const min = this._settings.mainMin;
     const maxValue = this._settings.maxValue;
     const minValue = this._settings.minValue;
-    if (validatedData.main != max) {
-      if (validatedData.main >= max) {
-        validatedData.main = max;
-        validatedData.value = maxValue; // TODO figure out why we need this workaround,main mean does not work
-      } else if (validatedData.main <= min) {
-        validatedData.main = min;
-        validatedData.value = minValue;
-      }
-      return validatedData;
-    } else {
-      return false;
+    if (validatedData.main >= max) {
+      validatedData.main = max;
+      validatedData.value = maxValue; // TODO figure out why we need this workaround,main mean does not work
+    } else if (validatedData.main <= min) {
+      validatedData.main = min;
+      validatedData.value = minValue;
     }
+    return validatedData;
   }
 
   public renew(data: { [key: string]: number }, ori, type): ICoords {
@@ -270,6 +266,7 @@ class Model extends EventMixin {
     this.coords.main = main;
     this.coords.value = nValue;
     this.coords.target = target;
+    // console.log(this.coords, 'COORDS');
     if (this.validate(this.coords)) {
       this.trigger(
         'coords changed',
