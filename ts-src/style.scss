@@ -79,6 +79,9 @@ $shadow: 2px -2px 2px #7e7e7e;
   justify-content: flex-start;
   position: absolute;
 }
+.values--corrected {
+  justify-content: flex-end;
+}
 .slider-container {
   width: auto;
   display: flex;
@@ -86,12 +89,15 @@ $shadow: 2px -2px 2px #7e7e7e;
 }
 .slider-container--horizontal {
   align-items: center;
-
   flex-direction: column;
 }
 /* .slider-container--vertical {
 
 } */
+.slider-container--vertical--corrected {
+  justify-content: space-between;
+  flex-direction: row-reverse;
+}
 .slider-main--vertical {
   display: inline-block;
   position: relative;
@@ -199,4 +205,9 @@ $shadow: 2px -2px 2px #7e7e7e;
   flex-direction: row-reverse;
   transform: translate(0, -37%);
   right: 100%;
+}
+.tooltipContainer--vertical--corrected {
+  flex-direction: row;
+  right: auto;
+  left: 100%;
 }

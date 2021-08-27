@@ -70,8 +70,8 @@ describe('View', () => {
   //       }
   //     }
   //   });
-  //   // view.valueDivs = divs;
-  //   // console.log(view.valueDivs[0].offsetLeft);
+  //   // view.divsContainingValues = divs;
+  //   // console.log(view.divsContainingValues[0].offsetLeft);
   //   const mainsForCheck = [0, 1, 9, 10, 99, 100, 101, 157, 199, 200, 201];
   //   for (let i of mainsForCheck) {
   //     const pin = view.matchHandleAndPin(i, 'horizontal');
