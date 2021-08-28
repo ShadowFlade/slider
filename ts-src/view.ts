@@ -289,7 +289,7 @@ class View extends EventMixin {
     const toolTip = this._elements._tooltips[0];
     let newLeft: number;
     const { offset, widthOrHeight, direction, margin } =
-      this.convertValues('horizontal');
+      this.convertValues(ori);
     const pinCoords = pin.getBoundingClientRect()[direction];
     newLeft = pinCoords - data[margin] - handleWidth / 2;
     handle.style[direction] = newLeft + 'px';
