@@ -204,7 +204,7 @@ class Model extends EventMixin {
 
     if (this._settings.orientation == 'vertical') {
       axis = data.y;
-      margin = this._settings.marginTop;
+      margin = data.marginTop; //if it was mode.settings.marginTop it would be wrong
     } else if (this._settings.orientation == 'horizontal') {
       axis = data.x;
       margin = this._settings.marginLeft;
@@ -222,7 +222,7 @@ class Model extends EventMixin {
         return validatedCoords;
       }
     }
-
+    console.log(margin, 'MARGINTOP from model');
     this.coords.main = axis - margin;
     this.coords.value =
       divisionFloor(this.coords.main, pxPerValue) * this._settings.stepSize;

@@ -222,6 +222,7 @@ class View extends EventMixin {
       }
     }
     handle.style[direction] = newLeft + 'px';
+    console.log('🚀 ~ View ~ refreshCoords ~ newLeft', newLeft);
     if (type == 'double') {
       this.rangeInterval(ori);
     } else {
@@ -243,9 +244,14 @@ class View extends EventMixin {
       range.style[widthOrHeight] = '0';
     }
     const isNormallyDragged = data.altDrag;
+
     if (isNormallyDragged) {
       newLeft = data.main - data.shiftX;
+      // console.log(data.marginTop, 'MARGIN top');
+      // console.log(data.main, data.shiftX);
     } else {
+      console.log('im here SLDKJFLSDKJF');
+
       newLeft += handle.offsetWidth / 2;
     }
     return {
@@ -356,24 +362,26 @@ class View extends EventMixin {
     });
     return pin;
   }
-  private convertValues(orientation: string) {
+  public convertValues(orientation: string) {
     let offset: string;
     let widthOrHeight: string;
     let direction: string;
     let margin: string;
+    let client: string;
     if (orientation == 'horizontal') {
       offset = 'offsetLeft';
       widthOrHeight = 'width';
       direction = 'left';
       margin = 'marginLeft';
+      client = 'clientX';
     } else if (orientation == 'vertical') {
       offset = 'offsetTop';
       widthOrHeight = 'height';
       direction = 'top';
       margin = 'marginTop';
+      client = 'clientY';
     }
-
-    return { offset, widthOrHeight, direction, margin };
+    return { offset, widthOrHeight, direction, margin, client };
   }
 }
 

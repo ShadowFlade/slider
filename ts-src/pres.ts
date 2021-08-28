@@ -63,7 +63,7 @@ class Pres extends EventMixin {
     let mainMin: number;
     mainMax = offsetWidth - handles[0].offsetWidth / 2;
     mainMin = handles[0].offsetWidth / 2;
-
+    console.log(marginTop, 'margin from pres');
     this._model.setOptions({
       mainMax,
       marginLeft,
@@ -385,6 +385,7 @@ class Pres extends EventMixin {
     const model = this._model;
     const marginLeft = slider.getBoundingClientRect().left; //TODO should take from model?
     const marginTop = slider.getBoundingClientRect().top;
+    let shiftX: number;
     model.on('coords changed', this.transferData.bind(this));
     for (const handle of handles) {
       handle.ondragstart = function () {
@@ -395,31 +396,36 @@ class Pres extends EventMixin {
         const ori = this._model._settings.orientation;
         const type = this._model._settings.type;
         const target = event.target as HTMLDivElement;
-        if (target == handle) {
-          const shiftX = event.clientX - handle.getBoundingClientRect().left;
-
-          const mouseMove = (e) => {
-            this.transferData(
-              {
-                y: e.clientY,
-                x: e.clientX,
-                shiftX: shiftX,
-                marginLeft: marginLeft,
-                clicked: false,
-                marginTop: marginTop,
-                target: event.target,
-              },
-              ori,
-              type
-            );
-          };
-          const onMouseUp = (e) => {
-            document.removeEventListener('pointermove', mouseMove);
-            document.removeEventListener('pointerup', onMouseUp);
-          };
-          document.addEventListener('pointermove', mouseMove);
-          document.addEventListener('pointerup', onMouseUp);
-        }
+        const { direction, client } = this._view.convertValues(ori);
+        shiftX = event[client] - target.getBoundingClientRect()[direction];
+        console.log(marginTop, 'margin TOp');
+        console.log(
+          event.clientY -
+            (event.clientY - target.getBoundingClientRect().top) -
+            marginTop,
+          'newleft from pres'
+        );
+        const mouseMove = (e) => {
+          this.transferData(
+            {
+              y: e.clientY,
+              x: e.clientX,
+              shiftX: shiftX,
+              marginLeft: marginLeft,
+              clicked: false,
+              marginTop: marginTop,
+              target: event.target,
+            },
+            ori,
+            type
+          );
+        };
+        const onMouseUp = (e) => {
+          document.removeEventListener('pointermove', mouseMove);
+          document.removeEventListener('pointerup', onMouseUp);
+        };
+        document.addEventListener('pointermove', mouseMove);
+        document.addEventListener('pointerup', onMouseUp);
       });
     }
 
@@ -451,8 +457,8 @@ class Pres extends EventMixin {
   private transferData(data, ori?: Ori, type?: Type) {
     const dataForTransfer = Object.assign({}, data);
     if (dataForTransfer.caller == 'model') {
-      dataForTransfer.marginLeft = this._model._settings.marginLeft;
-      dataForTransfer.marginTop = this._model._settings.marginTop;
+      // dataForTransfer.marginLeft = this._model._settings.marginLeft;
+      // dataForTransfer.marginTop = this._model._settings.marginTop;
       this._view.refreshCoords(dataForTransfer, ori, type);
       return;
     }
