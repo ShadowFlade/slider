@@ -75,14 +75,23 @@ class View extends EventMixin {
 
   public showSlider(sliderMain: Node, ori: Ori) {
     const main = this._item.appendChild(sliderMain as Node) as HTMLElement;
-    const marginLeft = main.getBoundingClientRect().left;
-    const marginTop = main.getBoundingClientRect().top;
-    const offsetWidth = main.offsetWidth;
-    const offsetHeight = main.offsetHeight;
-    const handles = this.fetchHTMLEl('slider-handle', false);
-    return { marginLeft, marginTop, handles, offsetWidth, offsetHeight };
   }
-
+  public getVisuals(ori: Ori) {
+    const { offsetLength } = this.convertValues(ori);
+    const mainMax =
+      this._elements._sliderMain[offsetLength] -
+      this._elements._handles[0][offsetLength] / 2;
+    console.log(mainMax, 'mainMax');
+    const mainMin = this._elements._handles[0][offsetLength] / 2;
+    const marginTop = this._elements._slider.getBoundingClientRect().top;
+    const marginLeft = this._elements._slider.getBoundingClientRect().left;
+    return {
+      mainMax,
+      mainMin,
+      marginTop,
+      marginLeft,
+    };
+  }
   public fetchHTMLEl(
     className: string,
     single: boolean,
@@ -222,7 +231,6 @@ class View extends EventMixin {
       }
     }
     handle.style[direction] = newLeft + 'px';
-    console.log('🚀 ~ View ~ refreshCoords ~ newLeft', newLeft);
     if (type == 'double') {
       this.rangeInterval(ori);
     } else {
@@ -247,11 +255,7 @@ class View extends EventMixin {
 
     if (isNormallyDragged) {
       newLeft = data.main - data.shiftX;
-      // console.log(data.marginTop, 'MARGIN top');
-      // console.log(data.main, data.shiftX);
     } else {
-      console.log('im here SLDKJFLSDKJF');
-
       newLeft += handle.offsetWidth / 2;
     }
     return {
@@ -368,20 +372,23 @@ class View extends EventMixin {
     let direction: string;
     let margin: string;
     let client: string;
+    let offsetLength: string;
     if (orientation == 'horizontal') {
       offset = 'offsetLeft';
       widthOrHeight = 'width';
       direction = 'left';
       margin = 'marginLeft';
       client = 'clientX';
+      offsetLength = 'offsetWidth';
     } else if (orientation == 'vertical') {
       offset = 'offsetTop';
       widthOrHeight = 'height';
       direction = 'top';
       margin = 'marginTop';
       client = 'clientY';
+      offsetLength = 'offsetHeight';
     }
-    return { offset, widthOrHeight, direction, margin, client };
+    return { offset, offsetLength, widthOrHeight, direction, margin, client };
   }
 }
 

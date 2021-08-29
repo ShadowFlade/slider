@@ -56,26 +56,17 @@ class Pres extends EventMixin {
     const behavior = this._model.getSettings();
 
     const { main: sliderMain, container, slider } = this.makeSlider(behavior);
-    const { marginLeft, marginTop, handles, offsetWidth, offsetHeight } =
-      this._view.showSlider(sliderMain as Node, orientation as Ori);
+    this._view.showSlider(sliderMain as Node, orientation as Ori);
 
-    let mainMax: number;
-    let mainMin: number;
-    mainMax = offsetWidth - handles[0].offsetWidth / 2;
-    mainMin = handles[0].offsetWidth / 2;
-    console.log(marginTop, 'margin from pres');
-    this._model.setOptions({
-      mainMax,
-      marginLeft,
-      marginTop,
-      mainMin,
-    });
     if (behavior.marker) {
       const marker = this.makeMarker(behavior, widthOrHeight);
       container.appendChild(marker);
     }
     this.fetchDivs();
+
     this._view.implementStyles(options, this._model._settings.orientation);
+    this._model.setOptions(this._view.getVisuals(orientation));
+
     this._model._settings.built = true;
   }
 
@@ -398,13 +389,7 @@ class Pres extends EventMixin {
         const target = event.target as HTMLDivElement;
         const { direction, client } = this._view.convertValues(ori);
         shiftX = event[client] - target.getBoundingClientRect()[direction];
-        console.log(marginTop, 'margin TOp');
-        console.log(
-          event.clientY -
-            (event.clientY - target.getBoundingClientRect().top) -
-            marginTop,
-          'newleft from pres'
-        );
+
         const mouseMove = (e) => {
           this.transferData(
             {

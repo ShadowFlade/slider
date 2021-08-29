@@ -222,7 +222,6 @@ class Model extends EventMixin {
         return validatedCoords;
       }
     }
-    console.log(margin, 'MARGINTOP from model');
     this.coords.main = axis - margin;
     this.coords.value =
       divisionFloor(this.coords.main, pxPerValue) * this._settings.stepSize;
@@ -280,6 +279,7 @@ class Model extends EventMixin {
   public setOptions(options: { [key: string]: string | number }) {
     this.initOptions(options);
     this.correctOptions();
+    console.log(this._settings);
   }
 
   public getStyles() {
