@@ -55,6 +55,7 @@ $.fn.slider = function (this: JQuery, options?: object): JQuery {
         $(this).data('handle2', app.getValue(2));
       }
       $(this).html('');
+      console.log($(this).data(), 'from destory');
     };
     $.fn.slider.restore = () => {
       if (Object.keys($(this).data()).length == 0) {

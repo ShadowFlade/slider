@@ -340,6 +340,7 @@ class View extends EventMixin {
 
   public showValue(target, value) {
     const tool = target.getElementsByClassName('tooltip')[0];
+    target.dataset.value = Math.abs(value);
     tool.textContent = Math.abs(value);
   }
 
