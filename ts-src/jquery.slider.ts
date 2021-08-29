@@ -35,7 +35,6 @@ $.fn.slider = function (this: JQuery, options?: object): JQuery {
       $(this).slider.destroy();
       app.setLimits(min, max);
       $(this).slider.restore();
-
       return this;
     };
     $.fn.slider.isRange = () => {
@@ -51,12 +50,11 @@ $.fn.slider = function (this: JQuery, options?: object): JQuery {
       return this;
     };
     $.fn.slider.destroy = () => {
-      $(this).html('');
       $(this).data('handle1', app.getValue(1));
-
       if ($(this).slider.isRange()) {
         $(this).data('handle2', app.getValue(2));
       }
+      $(this).html('');
     };
     $.fn.slider.restore = () => {
       if (Object.keys($(this).data()).length == 0) {

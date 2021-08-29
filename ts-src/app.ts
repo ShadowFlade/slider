@@ -102,8 +102,8 @@ class App {
     }
   }
   public getValue(numbOfHandle: 1 | 2) {
-    let direction;
-    let margin;
+    let direction: string;
+    let margin: string;
 
     const handle = this._view._elements._handles[numbOfHandle - 1];
     if (this._model._settings.orientation == 'horizontal') {

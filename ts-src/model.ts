@@ -33,6 +33,8 @@ type Settings = {
   _maxPins: number;
   mainMax: number;
   mainMin: number;
+  startPos1: number;
+  startPos2: number;
   valueWidth: number;
   toolTip: boolean;
   altDrag: boolean;
@@ -81,7 +83,7 @@ class Model extends EventMixin {
     prevValue: 0,
     caller: '',
     clicked: false,
-    altDrag: false,
+    altDrag: true,
     target: null,
     mainMax: 0,
   };
@@ -104,6 +106,8 @@ class Model extends EventMixin {
     _maxPins: 5, // optimal maximum number of pins
     mainMax: 200,
     mainMin: 0,
+    startPos1: 0,
+    startPos2: 100,
     valueWidth: 0,
     toolTip: true,
     marker: true,
@@ -179,19 +183,19 @@ class Model extends EventMixin {
   }
 
   private validate(data: ICoords) {
-    const validatedData = Object.assign({}, data);
+    // const validatedData = Object.assign({}, data);
     const max = this._settings.mainMax;
     const min = this._settings.mainMin;
     const maxValue = this._settings.maxValue;
     const minValue = this._settings.minValue;
-    if (validatedData.main >= max) {
-      validatedData.main = max;
-      validatedData.value = maxValue; // TODO figure out why we need this workaround,main mean does not work
-    } else if (validatedData.main <= min) {
-      validatedData.main = min;
-      validatedData.value = minValue;
+    if (data.main >= max) {
+      data.main = max;
+      data.value = maxValue; // TODO figure out why we need this workaround,main mean does not work
+    } else if (data.main <= min) {
+      data.main = min;
+      data.value = minValue;
     }
-    return validatedData;
+    return data;
   }
 
   public renew(data: { [key: string]: number }, ori, type): ICoords {
@@ -279,7 +283,6 @@ class Model extends EventMixin {
   public setOptions(options: { [key: string]: string | number }) {
     this.initOptions(options);
     this.correctOptions();
-    console.log(this._settings);
   }
 
   public getStyles() {

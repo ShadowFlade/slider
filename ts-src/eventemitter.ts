@@ -35,10 +35,8 @@ class EventMixin implements eventmixin {
     if (!this._eventHandlers || !this._eventHandlers[eventName]) {
       return;
     }
-
     this._eventHandlers[eventName].forEach((handler) => {
       const result = handler.call(this, ...args);
-
       x = result;
       return result;
     });

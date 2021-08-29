@@ -45,29 +45,45 @@ class Pres extends EventMixin {
   public init(): void {
     this._model.validateOptions();
     const orientation = this._model.getSetting('orientation');
+    const type = this._model.getSetting('type');
     let widthOrHeight;
+    let direction;
     if (orientation == 'horizontal') {
+      direction = 'left';
       widthOrHeight = this._model.getStyle('sliderWidth');
     } else if (orientation == 'vertical') {
+      direction = 'top';
       widthOrHeight = this._model.getStyle('sliderHeight');
     }
-
     const options = this.convertOptions(this._model.getStyles());
     const behavior = this._model.getSettings();
-
     const { main: sliderMain, container, slider } = this.makeSlider(behavior);
     this._view.showSlider(sliderMain as Node, orientation as Ori);
-
     if (behavior.marker) {
       const marker = this.makeMarker(behavior, widthOrHeight);
       container.appendChild(marker);
     }
     this.fetchDivs();
-
     this._view.implementStyles(options, this._model._settings.orientation);
     this._model.setOptions(this._view.getVisuals(orientation));
-
     this._model._settings.built = true;
+    this._view.rangeInterval(orientation);
+    let start1 = this._model._settings.startPos1;
+    let start2 = this._model._settings.startPos2;
+    let start = start1 | start2;
+    const coords = this._model.coords;
+    coords.caller = 'model';
+    this._view._elements._handles.forEach((item) => {
+      //дело в Хэндлах??
+      coords.target = item;
+      coords.main = start;
+      coords.value = this._model.calcValue(
+        item,
+        item.getBoundingClientRect()[direction]
+      ).value;
+      this.transferData(coords, orientation, type); //почему если здесь поставить this._view.refreshCoord, то будет ошибка maximum call stack exceeded
+      start1 = undefined;
+    });
   }
 
   public makeSlider(behavior: Settings): {
@@ -205,7 +221,6 @@ class Pres extends EventMixin {
 
     if (!handl) {
       handle = viewEls._handles[0];
-
       range = viewEls._range;
     } else {
       handle = handl;

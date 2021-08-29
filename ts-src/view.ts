@@ -81,7 +81,6 @@ class View extends EventMixin {
     const mainMax =
       this._elements._sliderMain[offsetLength] -
       this._elements._handles[0][offsetLength] / 2;
-    console.log(mainMax, 'mainMax');
     const mainMin = this._elements._handles[0][offsetLength] / 2;
     const marginTop = this._elements._slider.getBoundingClientRect().top;
     const marginLeft = this._elements._slider.getBoundingClientRect().left;
