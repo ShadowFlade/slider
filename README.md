@@ -107,3 +107,7 @@ Is used to change orientation. Look up `orientation` in **settings**.
 ## Demo page
 
 You can find demo page in `ts-src/demoPage/` . You can play around with it to find the setup that suits you best. //TODO insdert a pic of demopage.
+
+## P.S.
+
+First test initialization can take about 20-25 seconds.

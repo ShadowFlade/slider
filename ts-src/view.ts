@@ -57,6 +57,7 @@ class View extends EventMixin {
 
   public implementStyles(options, pos) {
     this.initiateOptions(options);
+
     this._temp.orientation = pos;
     const tooltipLeft =
       this._elements._tooltips[0].getBoundingClientRect().left;
@@ -236,6 +237,7 @@ class View extends EventMixin {
       newLeft = nl;
       value = v;
     }
+    // console.log(newLeft);
     handle.style[direction] = newLeft + 'px';
     if (type == 'double') {
       this.rangeInterval(ori);
@@ -332,6 +334,7 @@ class View extends EventMixin {
     const handle2 = this._elements._handles[1];
     const { offset, widthOrHeight, direction } =
       this.convertValues(orientation);
+    console.log(widthOrHeight, 'width or height');
     const minOffset = parseFloat(handle1.style[direction]);
     let maxOffset: number | null;
     if (handle2) {
@@ -340,10 +343,17 @@ class View extends EventMixin {
       maxOffset = null;
     }
     const length = Math.abs(minOffset - maxOffset);
+    console.log('🚀 ~ View ~ rangeInterval ~ length', length);
     const handleOffset = Math.min(minOffset, maxOffset);
     this._elements._range.style[direction] = handleOffset + 'px';
+
     this._elements._range.style[widthOrHeight] =
       length + handle1.offsetWidth / 2 + 'px';
+    console.log(
+      this._elements._range.style[widthOrHeight],
+      handle1.offsetWidth / 2,
+      'range width'
+    );
   }
 
   public showValue(target, value) {

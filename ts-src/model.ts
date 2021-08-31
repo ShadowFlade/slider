@@ -117,8 +117,8 @@ class Model extends EventMixin {
       progressBarColor: 'green',
       sliderColor: 'red',
       handleColor: '',
-      sliderWidth: 5,
-      sliderHeight: 200,
+      sliderWidth: 200,
+      sliderHeight: 5,
       toolTextColor: 'green',
     },
   };
@@ -128,7 +128,7 @@ class Model extends EventMixin {
     this.initOptions(options);
   }
 
-  public initOptions(options: { [key: string]: string | number }) {
+  public initOptions(options: { [key: string]: string | number } = {}) {
     Object.keys(options).forEach((key: string): void => {
       if (this._settings.styles.hasOwnProperty(key)) {
         this._settings.styles[key] = options[key];

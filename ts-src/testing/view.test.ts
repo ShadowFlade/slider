@@ -99,7 +99,6 @@ describe('View implement styles:', () => {
       'slider',
       'slider-main',
       'slider-range',
-
       'slider-container',
       'slider-marker',
       'tooltipContainer',
@@ -129,6 +128,9 @@ describe('View implement styles:', () => {
     js2.classList.add('jsSlider-clickable');
     js1.textContent = '19';
     js2.textContent = '20';
+    const min = document.createElement('div');
+    min.classList.add('slider-min--vertical');
+    item.append(min);
     const position = 'horizontal';
     const options = {
       slider: {
@@ -146,7 +148,10 @@ describe('View implement styles:', () => {
     const min = document.createElement('div');
     min.classList.add('slider-min--vertical');
     item.appendChild(min);
-    const styles = view._elements._sliderContainer.style.cssText;
+    const styles = view.fetchHTMLEl('slider-min--vertical', true, item).style
+      .cssText;
+    console.log('🚀 ~ test ~ styles', styles);
+
     view._elements._tooltips[0].getBoundingClientRect = jest.fn(() => {
       return {
         top: 0,
@@ -161,7 +166,9 @@ describe('View implement styles:', () => {
       };
     });
     view.implementStyles({}, 'horizontal');
-    expect(styles).not.toEqual(view._elements._sliderContainer.style.cssText);
+    expect(styles).not.toEqual(
+      view.fetchHTMLEl('slider-min--vertical', true, item).style.cssText
+    );
   });
 });
 
@@ -242,7 +249,6 @@ describe('View:refresh coordinates new', () => {
       target: null,
       shiftX: 0,
     };
-    view._elements._range.style.width = '0px';
     const rangeWidth = view._elements._range.style.width;
     const handleLeft1 = view._elements._handles[0].style.left;
     const handleLeft2 = view._elements._handles[1].style.left;
@@ -255,6 +261,8 @@ describe('View:refresh coordinates new', () => {
           data.main = i;
           data.value = j;
           view.refreshCoords(data, ori, type);
+          console.log(view._elements._range.style.width, 'range from test');
+
           let handleReceiver;
           let numOfHandle;
           if (handle == view._elements._handles[0]) {
@@ -264,7 +272,6 @@ describe('View:refresh coordinates new', () => {
             handleReceiver = handleLeft2;
             numOfHandle = 1;
           }
-
           expect(rangeWidth).not.toEqual(view._elements._range.style.width);
           expect(handleReceiver).not.toEqual(handle.style.left);
           expect(toolTipiValue).not.toEqual(
@@ -279,13 +286,14 @@ describe('View:refresh coordinates new', () => {
   });
 
   test('should refresh coordinates on drag,horizontal,double', () => {
+    view._elements._range.style.width = '0px';
     deepCheck(data, view._elements._handles[0], 'horizontal', 'double');
   });
   test('should refresh coordinates on drag,horizontal,double,second handle', () => {
     view._elements._handles[0].style.left = '2px'; //so that 2 handles do not occupy the same position
     deepCheck(data, view._elements._handles[1], 'horizontal', 'double');
   });
-  test('should refresh coordinates on drag when pinnerDrag is used', () => {
+  test('should refresh coordinates on drag when pinnedDrag is used', () => {
     const d = {
       main: 20,
       prevMain: 0,
@@ -339,9 +347,9 @@ describe('View:refresh coordinates new', () => {
       });
       offsets.push({ div: div, value: div.textContent, offset: i });
     }
-    view.offsets = offsets;
+    view.pinsCoordinatesItems = offsets;
     const nums = offsets.map((item) => item.offset);
-    view.offsetsNums = nums;
+    view.pinsCoordinates = nums;
 
     deepCheck(d, view._elements._handles[0], 'horizontal', 'single');
   });

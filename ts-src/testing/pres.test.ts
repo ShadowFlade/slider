@@ -8,7 +8,7 @@ import { test, describe, jest } from '@jest/globals';
 import Pres from '../pres';
 import App from '../app';
 import dom from './setup';
-import { FileWatcherEventKind } from 'typescript';
+import { createLanguageService, FileWatcherEventKind } from 'typescript';
 
 describe('Pres: independent methods', () => {
   let item;
@@ -55,7 +55,7 @@ describe('Pres: independent methods', () => {
       styles: {
         progressBarColor: 'green',
         sliderColor: 'red',
-        handleColor: 'black',
+        handleColor: '',
         sliderWidth: 5,
         sliderHeight: 200,
       },
@@ -83,6 +83,10 @@ describe('Pres: independent methods', () => {
   });
 
   test('should return a div element with children and class slider-marker', () => {
+    const div1 = document.createElement('div');
+    const div2 = document.createElement('div');
+    view._elements._handles.push(div1);
+    view._elements._handles.push(div2);
     for (let ori of oriVars) {
       for (let type of typeVars) {
         for (let marker of markerVars) {
@@ -113,7 +117,7 @@ describe('Pres: independent methods', () => {
         'background-color': 'green',
       },
       handle: {
-        'background-color': 'black',
+        'background-color': '',
       },
       tool: {
         color: 'green',
@@ -326,9 +330,9 @@ describe('interacting with dom', () => {
       0,
       null
     );
-    const transferData = jest.spyOn(model, 'renew').mockImplementation(() => {
-      console.log('coords renewed');
-    });
+    const transferData = jest
+      .spyOn(model, 'renew')
+      .mockImplementation(() => {});
     const event = document.createEvent('MouseEvent');
     event.initEvent('mousedown', true, true);
     const event2 = document.createEvent('MouseEvent');

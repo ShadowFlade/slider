@@ -106,7 +106,6 @@ class App {
     let margin: string;
 
     const handle = this._view._elements._handles[numbOfHandle - 1];
-    console.log('🚀 ~ App ~ getValue ~ handle', handle);
     if (this._model._settings.orientation == 'horizontal') {
       direction = 'left';
       margin = 'marginLeft';
@@ -115,7 +114,6 @@ class App {
       margin = 'marginTop';
     }
     const value = handle.dataset.value;
-    console.log('🚀 ~ App ~ getValue ~ value', value);
     return value;
   }
 

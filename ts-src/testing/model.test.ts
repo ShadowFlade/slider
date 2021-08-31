@@ -18,11 +18,13 @@ describe('Model with default settings:', () => {
       marginTop: 0,
       maxValue: 1360,
       minValue: 0,
-      maxMinDifference: maxMinDifference,
+      maxMinDifference: 0,
       betweenMarkers: 40,
       _maxPins: 5, // optimal maximum number of pins
       mainMax: 200,
       mainMin: 0,
+      startPos1: 0,
+      startPos2: 100,
       valueWidth: 0,
       toolTip: true,
       marker: true,
@@ -31,7 +33,7 @@ describe('Model with default settings:', () => {
       styles: {
         progressBarColor: 'green',
         sliderColor: 'red',
-        handleColor: 'black',
+        handleColor: '',
         sliderWidth: 200,
         sliderHeight: 5,
         toolTextColor: 'green',
@@ -58,10 +60,6 @@ describe('Model with default settings:', () => {
     expect(settings).toEqual(model._settings);
   });
   test('should return default settings', () => {
-    model.setOptions(undefined);
-    expect(settings).toEqual(model._settings);
-    model.setOptions(null);
-    expect(settings).toEqual(model._settings);
     model.setOptions(false);
     expect(settings).toEqual(model._settings);
   });
@@ -81,7 +79,7 @@ describe('Model with default settings:', () => {
       expect(settings.styles[i]).toBe(model.getStyle(i));
     }
   });
-  test('should return default settings', () => {
+  test('should return default settings2', () => {
     expect(settings).toEqual(model.getSettings());
   });
 
