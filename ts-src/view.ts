@@ -1,4 +1,3 @@
-import Model, { ICoords } from './model';
 import EventMixin from './eventemitter';
 import Pres from './pres';
 import { Type, Ori } from './model';
@@ -14,20 +13,29 @@ type Elements<T> = {
   _tooltipsSticks: T[];
   _pins: T[];
 };
-type Fetch = {
-  (className: string, single: true, item?): HTMLElement;
-  (className: string, single: false, item?): HTMLElement[];
-};
+// type Fetch = {
+//   (className: string, single: true, item?): HTMLElement;
+//   (className: string, single: false, item?): HTMLElement[];
+// };
 class View extends EventMixin {
-  divsContainingValues: Object[];
+  divsContainingValues: { div: HTMLElement; value: number }[];
+
   valuesFromDivs: number[];
+
   offsetArray: number[];
+
   pinsCoordinatesItems: { div: HTMLElement; offset: number }[];
+
   pinsCoordinates: number[];
+
   _temp: { [key: string]: string | number };
+
   _pres: Pres;
+
   _item: HTMLElement;
+
   orientation: string;
+
   public _elements: Elements<HTMLElement> = {
     _slider: null,
     _sliderMain: null,
@@ -46,6 +54,7 @@ class View extends EventMixin {
     this._pres = pres;
     this._item = item;
   }
+
   public implementStyles(options, pos) {
     this.initiateOptions(options);
     this._temp.orientation = pos;
@@ -73,10 +82,11 @@ class View extends EventMixin {
     };
   }
 
-  public showSlider(sliderMain: Node, ori: Ori) {
+  public showSlider(sliderMain: Node, ori: Ori): void {
     const main = this._item.appendChild(sliderMain as Node) as HTMLElement;
   }
-  public getVisuals(ori: Ori) {
+
+  public getVisuals(ori: Ori): Record<string, number> {
     const { offsetLength } = this.convertValues(ori);
     const mainMax =
       this._elements._sliderMain[offsetLength] -
@@ -91,20 +101,19 @@ class View extends EventMixin {
       marginLeft,
     };
   }
+
   public fetchHTMLEl(
     className: string,
     single: boolean,
     elem: HTMLElement = this._item
   ): HTMLElement | HTMLElement[] {
-    const item = Array.from(
-      elem.getElementsByClassName(className) as HTMLCollectionOf<HTMLElement>
-    );
+    const items = elem.querySelectorAll(`.${className}`);
+    const nodes = [...items];
 
     if (single) {
-      return item[0] as HTMLElement;
-    } else {
-      return item as HTMLElement[];
+      return nodes[0] as HTMLElement;
     }
+    return nodes as HTMLElement[];
   }
 
   public fetchDivs(orientation: Ori, defClassName: string) {
@@ -218,16 +227,14 @@ class View extends EventMixin {
       coordsForUse = this.reactOnClick(newCoords, ori, type);
       newLeft = coordsForUse.newLeft;
       pin = coordsForUse.pin;
+    } else if (isNormallyDragged) {
+      coordsForUse = this.reactOnDrag(newCoords, ori, type);
+      newLeft = coordsForUse.newLeft;
+      pin = coordsForUse.pin;
     } else {
-      if (isNormallyDragged) {
-        coordsForUse = this.reactOnDrag(newCoords, ori, type);
-        newLeft = coordsForUse.newLeft;
-        pin = coordsForUse.pin;
-      } else {
-        let { newLeft: nl, value: v } = this.pinnedDrag(newCoords, ori, type);
-        newLeft = nl;
-        value = v;
-      }
+      const { newLeft: nl, value: v } = this.pinnedDrag(newCoords, ori, type);
+      newLeft = nl;
+      value = v;
     }
     handle.style[direction] = newLeft + 'px';
     if (type == 'double') {
@@ -238,7 +245,6 @@ class View extends EventMixin {
     handle.dataset.value = value;
     value = shortenValue(value);
     toolTip.textContent = value;
-    return;
   }
 
   private reactOnDrag(data, ori: Ori, type: string) {
@@ -262,6 +268,7 @@ class View extends EventMixin {
       value,
     };
   }
+
   private pinnedDrag(data, ori: Ori, type: Type) {
     let direction = '0';
     let newLeft: number;
@@ -277,7 +284,7 @@ class View extends EventMixin {
     }
     const pin = this.matchHandleAndPin(data.main, ori);
     value = pin.dataset.value;
-    let pinCoords = pin.getBoundingClientRect()[direction];
+    const pinCoords = pin.getBoundingClientRect()[direction];
     newLeft = pinCoords - margin - handleWidth / 2;
     if (pin.className.includes('slider-min')) {
       newLeft = 0;
@@ -287,6 +294,7 @@ class View extends EventMixin {
 
     return { newLeft, value };
   }
+
   private reactOnClick(data, ori: Ori, type: Type) {
     if (type == 'double') {
       return false;
@@ -327,7 +335,7 @@ class View extends EventMixin {
     const minOffset = parseFloat(handle1.style[direction]);
     let maxOffset: number | null;
     if (handle2) {
-      maxOffset = parseFloat(handle2.style[direction]); //only works if style.left is in pxs
+      maxOffset = parseFloat(handle2.style[direction]); // only works if style.left is in pxs
     } else {
       maxOffset = null;
     }
@@ -366,6 +374,7 @@ class View extends EventMixin {
     });
     return pin;
   }
+
   public convertValues(orientation: string) {
     let offset: string;
     let widthOrHeight: string;
@@ -392,7 +401,7 @@ class View extends EventMixin {
   }
 }
 
-//shortens value to format  e.g.'1.3k'
+// shortens value to format  e.g.'1.3k'
 function shortenValue(x) {
   let value: string;
   if (x.toString().length > 3) {
