@@ -208,6 +208,8 @@ class View extends EventMixin {
   }
 
   public refreshCoords(data, ori: Ori, type: Type) {
+    console.log(data);
+
     const isClickedOnPin = data.clicked;
     const isNormallyDragged = data.altDrag;
     let newLeft: number;
@@ -237,7 +239,7 @@ class View extends EventMixin {
       newLeft = nl;
       value = v;
     }
-    // console.log(newLeft);
+    console.log(newLeft, handle);
     handle.style[direction] = newLeft + 'px';
     if (type == 'double') {
       this.rangeInterval(ori);
@@ -251,6 +253,7 @@ class View extends EventMixin {
 
   private reactOnDrag(data, ori: Ori, type: string) {
     let newLeft = data.newLeft;
+    const shift = data.shiftX | 0; //TODO its a hack, change it
     let value: number;
     const { widthOrHeight } = this.convertValues(ori);
     const handle = data.target;
@@ -259,9 +262,10 @@ class View extends EventMixin {
       range.style[widthOrHeight] = '0';
     }
     const isNormallyDragged = data.altDrag;
+    console.log('reacting');
 
     if (isNormallyDragged) {
-      newLeft = data.main - data.shiftX;
+      newLeft = data.main - shift;
     } else {
       newLeft += handle.offsetWidth / 2;
     }
@@ -334,7 +338,6 @@ class View extends EventMixin {
     const handle2 = this._elements._handles[1];
     const { offset, widthOrHeight, direction } =
       this.convertValues(orientation);
-    console.log(widthOrHeight, 'width or height');
     const minOffset = parseFloat(handle1.style[direction]);
     let maxOffset: number | null;
     if (handle2) {
@@ -343,17 +346,11 @@ class View extends EventMixin {
       maxOffset = null;
     }
     const length = Math.abs(minOffset - maxOffset);
-    console.log('🚀 ~ View ~ rangeInterval ~ length', length);
     const handleOffset = Math.min(minOffset, maxOffset);
     this._elements._range.style[direction] = handleOffset + 'px';
 
     this._elements._range.style[widthOrHeight] =
       length + handle1.offsetWidth / 2 + 'px';
-    console.log(
-      this._elements._range.style[widthOrHeight],
-      handle1.offsetWidth / 2,
-      'range width'
-    );
   }
 
   public showValue(target, value) {

@@ -68,20 +68,33 @@ class Pres extends EventMixin {
     this._model.setOptions(this._view.getVisuals(orientation));
     this._model._settings.built = true;
     this._view.rangeInterval(orientation);
+  }
+
+  public firstRefresh(ori: Ori, type: Type) {
+    const { direction } = this._view.convertValues(ori);
     let start1 = this._model._settings.startPos1;
     let start2 = this._model._settings.startPos2;
+    let startValue1 = this._model._settings.startValue1;
+    let startValue2 = this._model._settings.startValue2;
+    const handle1 = this._view._elements._handles[0];
+    const handle2 = this._view._elements._handles[1];
+    if (startValue1 != 0 || startValue2 != 0) {
+      this.setValue(startValue1, 1);
+      this.setValue(startValue2, 2);
+
+      return;
+    }
     let start = start1 | start2;
     const coords = this._model.coords;
     coords.caller = 'model';
     this._view._elements._handles.forEach((item) => {
-      //дело в Хэндлах??
       coords.target = item;
       coords.main = start;
       coords.value = this._model.calcValue(
         item,
         item.getBoundingClientRect()[direction]
       ).value;
-      this.transferData(coords, orientation, type); //почему если здесь поставить this._view.refreshCoord, то будет ошибка maximum call stack exceeded
+      this.transferData(coords, ori, type); //почему если здесь поставить this._view.refreshCoord, то будет ошибка maximum call stack exceeded
       start1 = undefined;
     });
   }
@@ -385,22 +398,23 @@ class Pres extends EventMixin {
 
   public onMouseDown(): void {
     const handles = this._view._elements._handles;
-
     const container = this._view._elements._sliderContainer;
     const slider = this._view._elements._slider;
     const model = this._model;
     const marginLeft = slider.getBoundingClientRect().left; //TODO should take from model?
     const marginTop = slider.getBoundingClientRect().top;
+    const ori = this._model._settings.orientation;
+    const type = this._model._settings.type;
     let shiftX: number;
-    model.on('coords changed', this.transferData.bind(this));
+    // model.on('read', this.firstRefresh.bind(this));
+    this._model.on('coords changed', this.transferData.bind(this));
     for (const handle of handles) {
       handle.ondragstart = function () {
         return false;
       };
       handle.addEventListener('pointerdown', (event) => {
         event.preventDefault();
-        const ori = this._model._settings.orientation;
-        const type = this._model._settings.type;
+
         const target = event.target as HTMLDivElement;
         const { direction, client } = this._view.convertValues(ori);
         shiftX = event[client] - target.getBoundingClientRect()[direction];
@@ -431,8 +445,8 @@ class Pres extends EventMixin {
 
     container.addEventListener('click', (event) => {
       const target = event.target as HTMLElement;
-      const ori = this._model._settings.orientation;
-      const type = this._model._settings.type;
+      // const ori = this._model._settings.orientation;
+      // const type = this._model._settings.type;
       if (target.className.includes('jsSlider-clickable')) {
         const value =
           (target.getElementsByClassName('marker-value')[0] as HTMLElement) ||
@@ -452,6 +466,7 @@ class Pres extends EventMixin {
         );
       }
     });
+    this.firstRefresh(ori, type);
   }
 
   private transferData(data, ori?: Ori, type?: Type) {
@@ -460,6 +475,8 @@ class Pres extends EventMixin {
       // dataForTransfer.marginLeft = this._model._settings.marginLeft;
       // dataForTransfer.marginTop = this._model._settings.marginTop;
       this._view.refreshCoords(dataForTransfer, ori, type);
+      console.log('im in the pres transfer data');
+
       return;
     }
 
@@ -478,6 +495,8 @@ class Pres extends EventMixin {
         throw new ReferenceError('Can not reference absent handle');
       }
     }
+    console.log(value);
+
     this._model.calcMain(value, handle);
   }
 

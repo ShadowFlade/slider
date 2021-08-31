@@ -35,6 +35,8 @@ type Settings = {
   mainMin: number;
   startPos1: number;
   startPos2: number;
+  startValue1: number;
+  startValue2: number;
   valueWidth: number;
   toolTip: boolean;
   altDrag: boolean;
@@ -108,6 +110,8 @@ class Model extends EventMixin {
     mainMin: 0,
     startPos1: 0,
     startPos2: 100,
+    startValue1: 810,
+    startValue2: 0,
     valueWidth: 0,
     toolTip: true,
     marker: true,
@@ -268,7 +272,10 @@ class Model extends EventMixin {
     this.coords.main = main;
     this.coords.value = nValue;
     this.coords.target = target;
+    this.coords.caller = 'model';
+    // this.renew(this.coords,this._settings.orientation,this._settings.type)
     if (this.validate(this.coords)) {
+      //it should not do that(single responsability principle)
       this.trigger(
         'coords changed',
         this.coords,

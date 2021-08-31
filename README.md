@@ -63,6 +63,16 @@ const data={
 
 **minValue**. **Default** option is //TODO.
 
+**startPos1** determines start position of the first handle in pixels.
+
+**startPos2** determines start position of the second handle in pixels.
+
+**startValue1** determines start position of the first handle infered from the handed value.
+
+**startValue2** determines start position of the second handle infered from the handed value.
+
+> Note: **startValue** settings will overwrite **startPos** settings. Do not use them together to avoid confusion.
+
 **toolTip**. Determines whether value is displayed or not. Option type is **boolean**.
 
 **marker**. Determines whether scale will be created or not (does not depend on tooltip option). Option type is **boolean**.
