@@ -1,5 +1,6 @@
 import EventMixin from './eventemitter';
 import Pres from './pres';
+import { shortenValue } from './utils';
 import { Type, Ori } from './model';
 type Elements<T> = {
   _slider: T;
@@ -13,10 +14,7 @@ type Elements<T> = {
   _tooltipsSticks: T[];
   _pins: T[];
 };
-// type Fetch = {
-//   (className: string, single: true, item?): HTMLElement;
-//   (className: string, single: false, item?): HTMLElement[];
-// };
+
 class View extends EventMixin {
   divsContainingValues: { div: HTMLElement; value: number }[];
 
@@ -28,7 +26,7 @@ class View extends EventMixin {
 
   pinsCoordinates: number[];
 
-  _temp: { [key: string]: string | number };
+  temp: { [key: string]: string | number };
 
   _pres: Pres;
 
@@ -58,7 +56,7 @@ class View extends EventMixin {
   public implementStyles(options, pos) {
     this.initiateOptions(options);
 
-    this._temp.orientation = pos;
+    this.temp.orientation = pos;
     const tooltipLeft =
       this._elements._tooltips[0].getBoundingClientRect().left;
     if (tooltipLeft < 0) {
@@ -88,7 +86,7 @@ class View extends EventMixin {
   }
 
   public getVisuals(ori: Ori): Record<string, number> {
-    const { offsetLength } = this.convertValues(ori);
+    const { offsetLength } = this.temp;
     const mainMax =
       this._elements._sliderMain[offsetLength] -
       this._elements._handles[0][offsetLength] / 2;
@@ -169,7 +167,7 @@ class View extends EventMixin {
     this.valuesFromDivs = divsContainingValues.map((item) => {
       return item.value;
     });
-    const { offset } = this.convertValues(orientation);
+    const { offset } = this.temp;
     const pinsCoordinatesItems = Array.from(
       this._item.getElementsByClassName('jsOffset')
     ).map((item: HTMLElement) => {
@@ -208,15 +206,13 @@ class View extends EventMixin {
   }
 
   public refreshCoords(data, ori: Ori, type: Type) {
-    console.log(data);
-
     const isClickedOnPin = data.clicked;
     const isNormallyDragged = data.altDrag;
     let newLeft: number;
     let coordsForUse;
     let handle: HTMLElement;
     let value = data.value;
-    const { widthOrHeight, direction } = this.convertValues(ori);
+    const { widthOrHeight, direction } = this.temp;
     if (type == 'single') {
       handle = this._elements._handles[0];
     } else if (type == 'double') {
@@ -239,7 +235,6 @@ class View extends EventMixin {
       newLeft = nl;
       value = v;
     }
-    console.log(newLeft, handle);
     handle.style[direction] = newLeft + 'px';
     if (type == 'double') {
       this.rangeInterval(ori);
@@ -255,15 +250,13 @@ class View extends EventMixin {
     let newLeft = data.newLeft;
     const shift = data.shiftX | 0; //TODO its a hack, change it
     let value: number;
-    const { widthOrHeight } = this.convertValues(ori);
+    const { widthOrHeight } = this.temp;
     const handle = data.target;
     const range = this._elements._range;
     if (data.value == 0) {
       range.style[widthOrHeight] = '0';
     }
     const isNormallyDragged = data.altDrag;
-    console.log('reacting');
-
     if (isNormallyDragged) {
       newLeft = data.main - shift;
     } else {
@@ -311,8 +304,7 @@ class View extends EventMixin {
     const pinPointsValues = this.valuesFromDivs;
     const toolTip = this._elements._tooltips[0];
     let newLeft: number;
-    const { offset, widthOrHeight, direction, margin } =
-      this.convertValues(ori);
+    const { offset, widthOrHeight, direction, margin } = this.temp;
     const pinCoords = pin.getBoundingClientRect()[direction];
     newLeft = pinCoords - data[margin] - handleWidth / 2;
     handle.style[direction] = newLeft + 'px';
@@ -326,7 +318,7 @@ class View extends EventMixin {
             const item = i as { div: HTMLElement; value: number };
             item.div.style.color = '';
           });
-          item.div.style.color = String(this._temp.pinTextColor);
+          item.div.style.color = String(this.temp.pinTextColor);
         }
       });
     }
@@ -336,8 +328,7 @@ class View extends EventMixin {
   public rangeInterval(orientation) {
     const handle1 = this._elements._handles[0];
     const handle2 = this._elements._handles[1];
-    const { offset, widthOrHeight, direction } =
-      this.convertValues(orientation);
+    const { offset, widthOrHeight, direction } = this.temp;
     const minOffset = parseFloat(handle1.style[direction]);
     let maxOffset: number | null;
     if (handle2) {
@@ -381,42 +372,7 @@ class View extends EventMixin {
     });
     return pin;
   }
-
-  public convertValues(orientation: string) {
-    let offset: string;
-    let widthOrHeight: string;
-    let direction: string;
-    let margin: string;
-    let client: string;
-    let offsetLength: string;
-    if (orientation == 'horizontal') {
-      offset = 'offsetLeft';
-      widthOrHeight = 'width';
-      direction = 'left';
-      margin = 'marginLeft';
-      client = 'clientX';
-      offsetLength = 'offsetWidth';
-    } else if (orientation == 'vertical') {
-      offset = 'offsetTop';
-      widthOrHeight = 'height';
-      direction = 'top';
-      margin = 'marginTop';
-      client = 'clientY';
-      offsetLength = 'offsetHeight';
-    }
-    return { offset, offsetLength, widthOrHeight, direction, margin, client };
-  }
 }
 
-// shortens value to format  e.g.'1.3k'
-function shortenValue(x) {
-  let value: string;
-  if (x.toString().length > 3) {
-    value = (x / 1000).toFixed(1) + 'k';
-  } else {
-    value = x;
-  }
-  return value;
-}
 export { Ori };
 export default View;

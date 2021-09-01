@@ -1,4 +1,5 @@
 import EventMixin from './eventemitter';
+import { Temp } from './pres';
 
 function divisionFloor(x: number, y: number): number {
   const result = Math.trunc(x / y);
@@ -89,9 +90,7 @@ class Model extends EventMixin {
     target: null,
     mainMax: 0,
   };
-  public temp = {
-    pinTextColor: '',
-  };
+  public temp: Partial<Temp> = {};
   public _settings: Settings = {
     className: 'slider',
     orientation: 'horizontal',

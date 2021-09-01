@@ -2,30 +2,27 @@ import EventMixin from './eventemitter';
 import Model, { Settings } from './model';
 import View from './view';
 import { Ori, Type } from './model';
-function elemsDiff(arr: number[]) {
-  let res = [];
-  for (let i = 0; i < arr.length - 1; i += 1) {
-    const result = +arr[i + 1] - +arr[i];
-    res.push(result);
-  }
+import { checkForZero } from './utils';
 
-  return res;
-}
-function checkForZero(number: number) {
-  if (number > 0) {
-    return number;
-  } else {
-    throw new Error('can not operate with non-positive numbers');
-  }
-}
 type HandleNum = 1 | 2;
 
+type Temp = {
+  offset: string;
+  offsetLength: string;
+  widthOrHeight: string;
+  direction: string;
+  margin: string;
+  client: string;
+  pinTextColor?: string;
+};
 class Pres extends EventMixin {
   _item: Element;
 
   _model: Model;
 
   _view: View;
+
+  temp: Temp;
 
   pxOptions: Array<string> = ['height', 'width'];
 
@@ -38,13 +35,17 @@ class Pres extends EventMixin {
 
   public getView(view: View): void {
     this._view = view;
-    this._view._temp = this._model.temp;
     view.on('settingsRequired', this.getSettings.bind(this));
   }
 
   public init(): void {
     this._model.validateOptions();
+
     const orientation = this._model.getSetting('orientation');
+    this.temp = this.convertValues(orientation);
+
+    this._model.temp = this.temp;
+    this._view.temp = this.temp;
     const type = this._model.getSetting('type');
     let widthOrHeight;
     let direction;
@@ -71,7 +72,7 @@ class Pres extends EventMixin {
   }
 
   public firstRefresh(ori: Ori, type: Type) {
-    const { direction } = this._view.convertValues(ori);
+    const { direction } = this.temp;
     let start1 = this._model._settings.startPos1;
     let start2 = this._model._settings.startPos2;
     let startValue1 = this._model._settings.startValue1;
@@ -406,7 +407,6 @@ class Pres extends EventMixin {
     const ori = this._model._settings.orientation;
     const type = this._model._settings.type;
     let shiftX: number;
-    // model.on('read', this.firstRefresh.bind(this));
     this._model.on('coords changed', this.transferData.bind(this));
     for (const handle of handles) {
       handle.ondragstart = function () {
@@ -416,7 +416,7 @@ class Pres extends EventMixin {
         event.preventDefault();
 
         const target = event.target as HTMLDivElement;
-        const { direction, client } = this._view.convertValues(ori);
+        const { direction, client } = this.temp;
         shiftX = event[client] - target.getBoundingClientRect()[direction];
 
         const mouseMove = (e) => {
@@ -445,8 +445,6 @@ class Pres extends EventMixin {
 
     container.addEventListener('click', (event) => {
       const target = event.target as HTMLElement;
-      // const ori = this._model._settings.orientation;
-      // const type = this._model._settings.type;
       if (target.className.includes('jsSlider-clickable')) {
         const value =
           (target.getElementsByClassName('marker-value')[0] as HTMLElement) ||
@@ -472,14 +470,9 @@ class Pres extends EventMixin {
   private transferData(data, ori?: Ori, type?: Type) {
     const dataForTransfer = Object.assign({}, data);
     if (dataForTransfer.caller == 'model') {
-      // dataForTransfer.marginLeft = this._model._settings.marginLeft;
-      // dataForTransfer.marginTop = this._model._settings.marginTop;
       this._view.refreshCoords(dataForTransfer, ori, type);
-      console.log('im in the pres transfer data');
-
       return;
     }
-
     this._model.renew(dataForTransfer, ori, type);
   }
 
@@ -495,14 +488,37 @@ class Pres extends EventMixin {
         throw new ReferenceError('Can not reference absent handle');
       }
     }
-    console.log(value);
-
     this._model.calcMain(value, handle);
+  }
+
+  private convertValues(orientation: string) {
+    let offset: string;
+    let widthOrHeight: string;
+    let direction: string;
+    let margin: string;
+    let client: string;
+    let offsetLength: string;
+    if (orientation == 'horizontal') {
+      offset = 'offsetLeft';
+      widthOrHeight = 'width';
+      direction = 'left';
+      margin = 'marginLeft';
+      client = 'clientX';
+      offsetLength = 'offsetWidth';
+    } else if (orientation == 'vertical') {
+      offset = 'offsetTop';
+      widthOrHeight = 'height';
+      direction = 'top';
+      margin = 'marginTop';
+      client = 'clientY';
+      offsetLength = 'offsetHeight';
+    }
+    return { offset, offsetLength, widthOrHeight, direction, margin, client };
   }
 
   public getSettings() {
     return this._model.getSettings();
   }
 }
-
+export { Temp };
 export default Pres;
