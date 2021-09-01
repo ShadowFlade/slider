@@ -66,7 +66,7 @@ class Pres extends EventMixin {
     }
     this.fetchDivs();
     this._view.implementStyles(options, this._model._settings.orientation);
-    this._model.setOptions(this._view.getVisuals(orientation));
+    this._model.setOptions(this._view.getOffsetsAndLimits(orientation));
     this._model._settings.built = true;
     this._view.rangeInterval(orientation);
   }
@@ -292,6 +292,7 @@ class Pres extends EventMixin {
     viewEls._handles[0].before(viewEls._range);
     viewEls._handles[1].remove();
     viewEls._handles = viewEls._handles.slice(0, 1);
+
     if (this._model._settings.built) {
       this._view.rangeInterval(this._model._settings.orientation);
     }
@@ -404,27 +405,29 @@ class Pres extends EventMixin {
     const model = this._model;
     const marginLeft = slider.getBoundingClientRect().left; //TODO should take from model?
     const marginTop = slider.getBoundingClientRect().top;
-    const ori = this._model._settings.orientation;
-    const type = this._model._settings.type;
-    let shiftX: number;
+    let ori: Ori;
+    let type: Type;
+    let shift: number;
     this._model.on('coords changed', this.transferData.bind(this));
     for (const handle of handles) {
       handle.ondragstart = function () {
         return false;
       };
       handle.addEventListener('pointerdown', (event) => {
+        ori = this._model._settings.orientation;
+        type = this._model._settings.type;
         event.preventDefault();
 
         const target = event.target as HTMLDivElement;
         const { direction, client } = this.temp;
-        shiftX = event[client] - target.getBoundingClientRect()[direction];
+        shift = event[client] - target.getBoundingClientRect()[direction];
 
         const mouseMove = (e) => {
           this.transferData(
             {
               y: e.clientY,
               x: e.clientX,
-              shiftX: shiftX,
+              shift: shift,
               marginLeft: marginLeft,
               clicked: false,
               marginTop: marginTop,
@@ -444,6 +447,8 @@ class Pres extends EventMixin {
     }
 
     container.addEventListener('click', (event) => {
+      ori = this._model._settings.orientation;
+      type = this._model._settings.type;
       const target = event.target as HTMLElement;
       if (target.className.includes('jsSlider-clickable')) {
         const value =

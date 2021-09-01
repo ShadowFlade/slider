@@ -247,7 +247,7 @@ describe('View:refresh coordinates new', () => {
       clicked: false,
       altDrag: true,
       target: null,
-      shiftX: 0,
+      shift: 0,
     };
     const rangeWidth = view._elements._range.style.width;
     const handleLeft1 = view._elements._handles[0].style.left;
@@ -303,7 +303,7 @@ describe('View:refresh coordinates new', () => {
       clicked: false,
       altDrag: false,
       target: null,
-      shiftX: 0,
+      shift: 0,
       marginLeft: 0,
       marginTop: 0,
     };
@@ -433,7 +433,7 @@ describe('refresh coords when clicked', () => {
       clicked: false,
       altDrag: true,
       target: null,
-      shiftX: 0,
+      shift: 0,
     };
     view._elements._range.style.width = '0px';
     const rangeWidth = view._elements._range.style.width;
@@ -473,7 +473,7 @@ describe('refresh coords when clicked', () => {
       clicked: true,
       altDrag: false,
       target: null,
-      shiftX: 0,
+      shift: 0,
       marginLeft: 5,
       marginTop: 10,
     };

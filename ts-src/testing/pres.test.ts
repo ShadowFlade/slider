@@ -210,7 +210,7 @@ describe('Pres:changing the elements', () => {
     const data = {
       y: 10,
       x: 5,
-      shiftX: 2,
+      shift: 2,
       marginLeft: 2,
       clicked: false,
       marginTop: 2,
@@ -341,7 +341,7 @@ describe('interacting with dom', () => {
     const data = {
       y: 50,
       x: 50,
-      shiftX: 0,
+      shift: 0,
       marginLeft: 0,
       clicked: false,
       marginTop: 0,
