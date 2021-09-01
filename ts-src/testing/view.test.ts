@@ -23,6 +23,9 @@ describe('View', () => {
     model = new Model({}, item);
     pres = new Pres(model, item);
     view = new View(pres, {}, item);
+    pres.temp = pres.convertValues('horizontal');
+    view.temp = pres.temp;
+    model.temp = pres.temp;
     pres.getView(view);
 
     pres.fetchDivs();
@@ -93,6 +96,9 @@ describe('View implement styles:', () => {
     model = new Model({}, item);
     pres = new Pres(model, item);
     view = new View(pres, {}, item);
+    pres.temp = pres.convertValues('horizontal');
+    view.temp = pres.temp;
+    model.temp = pres.temp;
     pres.getView(view);
 
     const classes = [
@@ -150,7 +156,6 @@ describe('View implement styles:', () => {
     item.appendChild(min);
     const styles = view.fetchHTMLEl('slider-min--vertical', true, item).style
       .cssText;
-    console.log('🚀 ~ test ~ styles', styles);
 
     view._elements._tooltips[0].getBoundingClientRect = jest.fn(() => {
       return {
@@ -186,6 +191,9 @@ describe('View:refresh coordinates new', () => {
     model = new Model({}, item);
     pres = new Pres(model, item);
     view = new View(pres, {}, item);
+    pres.temp = pres.convertValues('horizontal');
+    view.temp = pres.temp;
+    model.temp = pres.temp;
     pres.getView(view);
     const classes = [
       'slider',
@@ -252,7 +260,6 @@ describe('View:refresh coordinates new', () => {
     const rangeWidth = view._elements._range.style.width;
     const handleLeft1 = view._elements._handles[0].style.left;
     const handleLeft2 = view._elements._handles[1].style.left;
-
     const toolTipiValue = view._elements._tooltips.textContent;
     deepCheck = function (data, handle, ori, type) {
       data.target = handle;
@@ -261,7 +268,6 @@ describe('View:refresh coordinates new', () => {
           data.main = i;
           data.value = j;
           view.refreshCoords(data, ori, type);
-          console.log(view._elements._range.style.width, 'range from test');
 
           let handleReceiver;
           let numOfHandle;
@@ -306,6 +312,7 @@ describe('View:refresh coordinates new', () => {
       shift: 0,
       marginLeft: 0,
       marginTop: 0,
+      mainMax: 200,
     };
     const mains = [50, 100, 150, 200];
     const offsets = [];
@@ -371,6 +378,9 @@ describe('refresh coords when clicked', () => {
     model = new Model({}, item);
     pres = new Pres(model, item);
     view = new View(pres, {}, item);
+    pres.temp = pres.convertValues('horizontal');
+    view.temp = pres.temp;
+    model.temp = pres.temp;
     pres.getView(view);
     const classes = [
       'slider',

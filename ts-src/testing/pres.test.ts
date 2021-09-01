@@ -26,6 +26,9 @@ describe('Pres: independent methods', () => {
     model = new Model({}, item);
     pres = new Pres(model, item);
     view = new View(pres, {}, item);
+    pres.temp = pres.convertValues('horizontal');
+    view.temp = pres.temp;
+    model.temp = pres.temp;
     pres.getView(view);
     pres.fetchDivs();
     oriVars = ['horizontal', 'vertical'];
@@ -156,6 +159,9 @@ describe('Pres:changing the elements', () => {
     model = new Model({}, item);
     pres = new Pres(model, item);
     view = new View(pres, {}, item);
+    pres.temp = pres.convertValues('horizontal');
+    view.temp = pres.temp;
+    model.temp = pres.temp;
     pres.getView(view);
 
     const classes = [
@@ -248,7 +254,7 @@ describe('Pres:changing the elements', () => {
   });
 });
 
-describe('interacting with dom', () => {
+describe('Pres:interacting with dom', () => {
   let item;
   let model;
   let view;
@@ -260,7 +266,11 @@ describe('interacting with dom', () => {
     document.body.appendChild(item);
     model = new Model({}, item);
     pres = new Pres(model, item);
+
     view = new View(pres, {}, item);
+    pres.temp = pres.convertValues('horizontal');
+    view.temp = pres.temp;
+    model.temp = pres.temp;
     pres.getView(view);
 
     const classes = [
@@ -306,11 +316,17 @@ describe('interacting with dom', () => {
         'background-color': 'green',
       },
     };
-    pres.fetchDivs();
+    pres.fetchDivs('horizontal', 'slider');
     view.implementStyles(options, position);
   });
   test('callback are called when listeners are attached', () => {
     const handle = view._elements._handles[0];
+    // model.renew = jest.fn(() => {
+    //   return;
+    // });
+    pres.firstRefresh = jest.fn(() => {
+      return;
+    });
     pres.onMouseDown();
     var evt = document.createEvent('MouseEvents');
     evt.initMouseEvent(
@@ -330,9 +346,10 @@ describe('interacting with dom', () => {
       0,
       null
     );
-    const transferData = jest
-      .spyOn(model, 'renew')
-      .mockImplementation(() => {});
+    const transferData = jest.spyOn(model, 'renew').mockImplementation(() => {
+      return;
+    });
+
     const event = document.createEvent('MouseEvent');
     event.initEvent('mousedown', true, true);
     const event2 = document.createEvent('MouseEvent');
@@ -344,14 +361,17 @@ describe('interacting with dom', () => {
       shift: 0,
       marginLeft: 0,
       clicked: false,
+      atlDrag: true,
       marginTop: 0,
       target: view._elements._handles[0],
     };
+
     document.addEventListener('mousemove', () => {
       model.renew(data, 'horizontal', 'double');
     });
     handle.dispatchEvent(event);
     handle.dispatchEvent(event2);
+    console.log(model.renew);
     expect(transferData).toBeCalled();
   });
 });

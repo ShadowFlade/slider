@@ -25,6 +25,8 @@ describe('Model with default settings:', () => {
       mainMin: 0,
       startPos1: 0,
       startPos2: 100,
+      startValue1: 810,
+      startValue2: 0,
       valueWidth: 0,
       toolTip: true,
       marker: true,
@@ -74,6 +76,7 @@ describe('Model with default settings:', () => {
       'handleColor',
       'sliderWidth',
       'sliderHeight',
+      'toolTextColor',
     ];
     for (let i of styles) {
       expect(settings.styles[i]).toBe(model.getStyle(i));

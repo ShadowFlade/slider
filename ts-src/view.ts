@@ -55,7 +55,7 @@ class View extends EventMixin {
 
   public implementStyles(options, pos) {
     this.initiateOptions(options);
-    this.temp.orientation = pos;
+    // this.temp.orientation = pos;
     const tooltipLeftOffset =
       this._elements._tooltips[0].getBoundingClientRect().left;
     if (tooltipLeftOffset < 0) {
@@ -164,6 +164,8 @@ class View extends EventMixin {
 
     this.divsContainingValues = divsContainingValues;
     this.valuesFromDivs = divsContainingValues.map((item) => item.value);
+    // console.log(this.temp);
+
     const { offset } = this.temp;
     const pinsCoordinatesItems = Array.from(
       //TODO Array.from
@@ -273,7 +275,7 @@ class View extends EventMixin {
     let value: string;
     const handleWidth = this._elements._handles[0].offsetWidth;
     let { direction, margin } = this.temp;
-    margin = Number(margin);
+    margin = data[margin] as number;
     const pin = this.matchHandleAndPin(data.main, ori);
     value = pin.dataset.value;
     const pinCoords = pin.getBoundingClientRect()[direction];
@@ -319,7 +321,7 @@ class View extends EventMixin {
     return { newLeft, pin };
   }
 
-  public rangeInterval(orientation) {
+  public rangeInterval(orientation: Ori) {
     const handle1 = this._elements._handles[0];
     const handle2 = this._elements._handles[1];
     const { offset, widthOrHeight, direction } = this.temp;
