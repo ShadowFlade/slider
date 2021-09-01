@@ -14,6 +14,8 @@ type Temp = {
   margin: string;
   client: string;
   pinTextColor?: string;
+  ori?: Ori;
+  type?: Type;
 };
 class Pres extends EventMixin {
   _item: Element;
@@ -40,10 +42,10 @@ class Pres extends EventMixin {
 
   public init(): void {
     this._model.validateOptions();
-
     const orientation = this._model.getSetting('orientation');
     this.temp = this.convertValues(orientation);
-
+    this.temp.ori = this._model._settings.orientation;
+    this.temp.type = this._model._settings.type;
     this._model.temp = this.temp;
     this._view.temp = this.temp;
     const type = this._model.getSetting('type');
@@ -71,8 +73,8 @@ class Pres extends EventMixin {
     this._view.rangeInterval(orientation);
   }
 
-  public firstRefresh(ori: Ori, type: Type) {
-    const { direction } = this.temp;
+  public firstRefresh() {
+    const { direction, ori, type } = this.temp;
     let start1 = this._model._settings.startPos1;
     let start2 = this._model._settings.startPos2;
     let startValue1 = this._model._settings.startValue1;
@@ -82,7 +84,6 @@ class Pres extends EventMixin {
     if (startValue1 != 0 || startValue2 != 0) {
       this.setValue(startValue1, 1);
       this.setValue(startValue2, 2);
-
       return;
     }
     let start = start1 | start2;
@@ -469,7 +470,6 @@ class Pres extends EventMixin {
         );
       }
     });
-    this.firstRefresh(ori, type);
   }
 
   private transferData(data, ori?: Ori, type?: Type) {

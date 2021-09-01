@@ -186,7 +186,6 @@ class Model extends EventMixin {
   }
 
   private validate(data: ICoords) {
-    // const validatedData = Object.assign({}, data);
     const max = this._settings.mainMax;
     const min = this._settings.mainMin;
     const maxValue = this._settings.maxValue;

@@ -16,6 +16,7 @@ class App {
     this._pres.init();
 
     this._pres.onMouseDown();
+    this._pres.firstRefresh();
   }
   public tilt() {
     if (this._model.getSettings().orientation == 'vertical') {

@@ -371,7 +371,6 @@ describe('Pres:interacting with dom', () => {
     });
     handle.dispatchEvent(event);
     handle.dispatchEvent(event2);
-    console.log(model.renew);
     expect(transferData).toBeCalled();
   });
 });
