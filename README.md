@@ -84,7 +84,7 @@ const data={
 
 **toolTextColor** will set the color of text in the tooltip circle above the handle. **Default** option is () //TODO insdert a pic of tooltip
 
-> Options might be corrected afterwards. E.g. if the orientation was set to **horizontal** and ` sliderWidth: 5 sliderHeight:200` , `sliderWidth` and `sliderHeight` will be swapped,so it will be `sliderWidth:200` and `sliderHeight:5`.
+> Options might be corrected afterwards. E.g. if the orientation was set to **horizontal** and **sliderWidth: 5 sliderHeight:200** , **sliderWidth** and **sliderHeight** will be swapped,so it will be **sliderWidth:200** and **sliderHeight:5**.
 
 ### API
 

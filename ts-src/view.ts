@@ -80,8 +80,8 @@ class View extends EventMixin {
     };
   }
 
-  public showSlider(sliderMain: Node, ori: Ori): void {
-    const main = this._item.appendChild(sliderMain as Node) as HTMLElement;
+  public renderElement(element: Node, where: HTMLElement = this._item): void {
+    where.appendChild(element);
   }
 
   public getOffsetsAndLimits(ori: Ori): Record<string, number> {

@@ -1,6 +1,8 @@
 import EventMixin from './eventemitter';
 import { Temp } from './pres';
 
+const has = Object.prototype.hasOwnProperty;
+
 function divisionFloor(x: number, y: number): number {
   const result = Math.trunc(x / y);
   return result;
@@ -31,7 +33,7 @@ type Settings = {
   minValue: number;
   maxMinDifference: number;
   betweenMarkers: number;
-  _maxPins: number;
+  _minPins: number;
   mainMax: number;
   mainMin: number;
   startPos1: number;
@@ -104,7 +106,7 @@ class Model extends EventMixin {
     minValue: 0,
     maxMinDifference: 0,
     betweenMarkers: 40,
-    _maxPins: 5, // optimal maximum number of pins
+    _minPins: 5, // optimal maximum number of pins
     mainMax: 200,
     mainMin: 0,
     startPos1: 0,
@@ -131,7 +133,9 @@ class Model extends EventMixin {
     this.initOptions(options);
   }
 
-  public initOptions(options: { [key: string]: string | number } = {}) {
+  public initOptions(
+    options: { [key: string]: string | number | boolean } = {}
+  ) {
     Object.keys(options).forEach((key: string): void => {
       if (this._settings.styles.hasOwnProperty(key)) {
         this._settings.styles[key] = options[key];
@@ -285,7 +289,13 @@ class Model extends EventMixin {
     return;
   }
 
-  public setOptions(options: { [key: string]: string | number }) {
+  public setOption(key: string, value: string) {
+    if (has.call(this._settings, key)) {
+      this._settings[key] = value;
+      this.trigger('settings changed');
+    }
+  }
+  public setOptions(options: { [key: string]: string | number | boolean }) {
     this.initOptions(options);
     this.correctOptions();
   }
@@ -326,5 +336,5 @@ class Model extends EventMixin {
   // }
 }
 
-export { ICoords, Settings, Type, Ori };
+export { ICoords, Settings, Type, Ori, has };
 export default Model;

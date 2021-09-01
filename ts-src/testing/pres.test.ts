@@ -26,7 +26,7 @@ describe('Pres: independent methods', () => {
     model = new Model({}, item);
     pres = new Pres(model, item);
     view = new View(pres, {}, item);
-    pres.temp = pres.convertValues('horizontal');
+    pres.temp = pres.determineMetrics('horizontal');
     view.temp = pres.temp;
     model.temp = pres.temp;
     pres.getView(view);
@@ -47,7 +47,7 @@ describe('Pres: independent methods', () => {
       minValue: 0,
       maxMinDifference: 0,
       betweenMarkers: 40,
-      _maxPins: 5, // optimal maximum number of pins
+      _minPins: 5, // optimal maximum number of pins
       mainMax: 200,
       mainMin: 0,
       valueWidth: 0,
@@ -159,7 +159,7 @@ describe('Pres:changing the elements', () => {
     model = new Model({}, item);
     pres = new Pres(model, item);
     view = new View(pres, {}, item);
-    pres.temp = pres.convertValues('horizontal');
+    pres.temp = pres.determineMetrics('horizontal');
     view.temp = pres.temp;
     model.temp = pres.temp;
     pres.getView(view);
@@ -268,7 +268,7 @@ describe('Pres:interacting with dom', () => {
     pres = new Pres(model, item);
 
     view = new View(pres, {}, item);
-    pres.temp = pres.convertValues('horizontal');
+    pres.temp = pres.determineMetrics('horizontal');
     view.temp = pres.temp;
     model.temp = pres.temp;
     pres.getView(view);

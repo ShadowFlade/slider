@@ -20,7 +20,7 @@ describe('Model with default settings:', () => {
       minValue: 0,
       maxMinDifference: 0,
       betweenMarkers: 40,
-      _maxPins: 5, // optimal maximum number of pins
+      _minPins: 5, // optimal maximum number of pins
       mainMax: 200,
       mainMin: 0,
       startPos1: 0,

@@ -23,7 +23,7 @@ describe('View', () => {
     model = new Model({}, item);
     pres = new Pres(model, item);
     view = new View(pres, {}, item);
-    pres.temp = pres.convertValues('horizontal');
+    pres.temp = pres.determineMetrics('horizontal');
     view.temp = pres.temp;
     model.temp = pres.temp;
     pres.getView(view);
@@ -37,7 +37,7 @@ describe('View', () => {
     el2.classList.add('slider-handle');
     document.body.appendChild(el2);
     const handle = document.getElementsByClassName('slider-handle');
-    view.showSlider(el2, 'horizontal');
+    view.renderElement(el2);
     expect(item.children.length).toBeGreaterThan(0);
     expect(handle).toBeDefined();
   });
@@ -96,7 +96,7 @@ describe('View implement styles:', () => {
     model = new Model({}, item);
     pres = new Pres(model, item);
     view = new View(pres, {}, item);
-    pres.temp = pres.convertValues('horizontal');
+    pres.temp = pres.determineMetrics('horizontal');
     view.temp = pres.temp;
     model.temp = pres.temp;
     pres.getView(view);
@@ -191,7 +191,7 @@ describe('View:refresh coordinates new', () => {
     model = new Model({}, item);
     pres = new Pres(model, item);
     view = new View(pres, {}, item);
-    pres.temp = pres.convertValues('horizontal');
+    pres.temp = pres.determineMetrics('horizontal');
     view.temp = pres.temp;
     model.temp = pres.temp;
     pres.getView(view);
@@ -378,7 +378,7 @@ describe('refresh coords when clicked', () => {
     model = new Model({}, item);
     pres = new Pres(model, item);
     view = new View(pres, {}, item);
-    pres.temp = pres.convertValues('horizontal');
+    pres.temp = pres.determineMetrics('horizontal');
     view.temp = pres.temp;
     model.temp = pres.temp;
     pres.getView(view);

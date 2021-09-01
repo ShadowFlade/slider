@@ -1,8 +1,9 @@
 import EventMixin from './eventemitter';
-import Model, { Settings } from './model';
+import Model, { Settings, has } from './model';
 import View from './view';
 import { Ori, Type } from './model';
 import { checkForZero } from './utils';
+import { hasData } from 'jquery';
 
 type HandleNum = 1 | 2;
 
@@ -15,7 +16,7 @@ type Temp = {
   client: string;
   pinTextColor?: string;
   ori?: Ori;
-  type?: Type;
+  type?: Type; //TODO how to tell ts that there will be those paramteters later?
 };
 class Pres extends EventMixin {
   _item: Element;
@@ -32,36 +33,30 @@ class Pres extends EventMixin {
     super();
     this._model = model;
     this._item = item;
-    this._model.on('settings changed', this.init.bind(this));
   }
 
   public getView(view: View): void {
     this._view = view;
-    view.on('settingsRequired', this.getSettings.bind(this));
   }
 
   public init(): void {
     this._model.validateOptions();
     const orientation = this._model.getSetting('orientation');
-    this.temp = this.convertValues(orientation);
+    this.temp = this.determineMetrics(orientation);
     this.temp.ori = this._model._settings.orientation;
     this.temp.type = this._model._settings.type;
     this._model.temp = this.temp;
     this._view.temp = this.temp;
-    const type = this._model.getSetting('type');
-    let widthOrHeight;
-    let direction;
+    let widthOrHeight: number;
     if (orientation == 'horizontal') {
-      direction = 'left';
       widthOrHeight = this._model.getStyle('sliderWidth');
     } else if (orientation == 'vertical') {
-      direction = 'top';
       widthOrHeight = this._model.getStyle('sliderHeight');
     }
     const options = this.convertOptions(this._model.getStyles());
     const behavior = this._model.getSettings();
-    const { main: sliderMain, container, slider } = this.makeSlider(behavior);
-    this._view.showSlider(sliderMain as Node, orientation as Ori);
+    const { main, container, slider } = this.makeSlider(behavior);
+    this._view.renderElement(main);
     if (behavior.marker) {
       const marker = this.makeMarker(behavior, widthOrHeight);
       container.appendChild(marker);
@@ -79,8 +74,6 @@ class Pres extends EventMixin {
     let start2 = this._model._settings.startPos2;
     let startValue1 = this._model._settings.startValue1;
     let startValue2 = this._model._settings.startValue2;
-    const handle1 = this._view._elements._handles[0];
-    const handle2 = this._view._elements._handles[1];
     if (startValue1 != 0 || startValue2 != 0) {
       this.setValue(startValue1, 1);
       this.setValue(startValue2, 2);
@@ -107,41 +100,34 @@ class Pres extends EventMixin {
     slider: Node;
   } {
     const viewEls = this._view._elements;
-    let direction: string;
-    let orientation: string;
+    const { ori, direction } = this.temp;
     let widthOrHeight: number;
-    if (behavior.orientation === 'horizontal') {
+    if (ori === 'horizontal') {
       widthOrHeight = this._model.getStyle('sliderWidth');
-      orientation = 'horizontal';
-      direction = 'left';
     } else {
-      orientation = 'vertical';
       widthOrHeight = this._model.getStyle('sliderHeight');
-      direction = 'top';
     }
-    let marker: HTMLDivElement;
     const main = document.createElement('div');
     main.classList.add('slider-main');
     const container = document.createElement('div');
-    // this._sliderContainer = container;
     const slider = document.createElement('div');
     slider.classList.add('slider');
     const range = document.createElement('div');
     range.classList.add('slider-range');
 
     const handle = document.createElement('div');
-    if (orientation === 'horizontal') {
+    if (ori === 'horizontal') {
       range.style.width = '0px';
       handle.style[direction] = '0px';
-    } else if (orientation === 'vertical') {
+    } else if (ori === 'vertical') {
       range.style.height = '0px';
       handle.style[direction] = '0px';
     }
     const tool = document.createElement('div');
     const tooltipContainer = document.createElement('div');
-    tooltipContainer.className = `tooltipContainer tooltipContainer--${orientation}`;
+    tooltipContainer.className = `tooltipContainer tooltipContainer--${ori}`;
     const tooltipStick = document.createElement('div');
-    tooltipStick.className = `tooltipStick tooltipStick--${orientation}`;
+    tooltipStick.className = `tooltipStick tooltipStick--${ori}`;
     tooltipContainer.append(tooltipStick);
     this._view._elements._tooltipsSticks.push(tooltipStick);
     tooltipContainer.append(tool);
@@ -155,13 +141,11 @@ class Pres extends EventMixin {
     main.append(container);
     main.append(max);
     slider.appendChild(range);
-    // this._range = range;
     slider.appendChild(handle);
-    handle.className = `slider-handle slider-handle--${orientation}`;
-    // this._view._elements._handles = [];
+    handle.className = `slider-handle slider-handle--${ori}`;
     viewEls._handles.push(handle);
-    container.className = `slider-container slider-container--${orientation}`;
-    tool.className = `tooltip tooltip--${orientation}`;
+    container.className = `slider-container slider-container--${ori}`;
+    tool.className = `tooltip tooltip--${ori}`;
 
     if (behavior.type !== 'single') {
       this.addHandle(handle, range, direction);
@@ -170,23 +154,19 @@ class Pres extends EventMixin {
     min.dataset.value = min.textContent;
     max.textContent = String(behavior.maxValue);
     max.dataset.value = max.textContent;
-    min.classList.add(`slider-min--${orientation}`);
-    max.classList.add(`slider-max--${orientation}`);
-    main.classList.add(`slider-main--${orientation}`);
+    min.classList.add(`slider-min--${ori}`);
+    max.classList.add(`slider-max--${ori}`);
+    main.classList.add(`slider-main--${ori}`);
 
     return { main: main as Node, container, slider };
   }
 
   private makeMarker(behavior: Settings, widthOrHeight: number): HTMLElement {
-    const orientation = this._model.getSetting('orientation');
-    let marginCss: string;
-    if (orientation === 'horizontal') {
-      marginCss = 'marginLeft';
-    } else if (orientation === 'vertical') {
-      marginCss = 'marginTop';
-    }
+    const orientation = this.temp.ori;
+    const handle1 = this._view._elements._handles[0];
+    const { margin: marginCss } = this.temp;
     const markerDiv = document.createElement('div');
-    const { valuesForMarkers, majorMarkers, altDrag, margin } = this.calcPins(
+    const { valuesForMarkers, altDrag, margin } = this.calcPins(
       behavior,
       widthOrHeight
     );
@@ -201,8 +181,7 @@ class Pres extends EventMixin {
       markerDiv.classList.add(`slider-marker--${orientation}`);
       majorMarker.className = `jsOffset marker--major marker--major--${orientation}`;
       if (i == 0) {
-        majorMarker.style[marginCss] =
-          margin - this._view._elements._handles[0].offsetWidth / 2 + 'px';
+        majorMarker.style[marginCss] = margin - handle1.offsetWidth / 2 + 'px';
       } else {
         majorMarker.style[marginCss] = margin + 'px';
       }
@@ -227,10 +206,10 @@ class Pres extends EventMixin {
     return markerDiv;
   }
 
-  public addHandle(handl?, rang?, directio?) {
-    let handle;
-    let range;
-    let direction;
+  public addHandle(handl?: HTMLElement, rang?: HTMLElement, directio?: string) {
+    let handle: HTMLElement;
+    let range: HTMLElement;
+    let direction: string;
     const viewEls = this._view._elements;
     this._model._settings.type = 'double';
 
@@ -269,21 +248,15 @@ class Pres extends EventMixin {
     }
   }
   private showValue(handle) {
-    let direction;
-    if (this._model._settings.orientation == 'horizontal') {
-      direction = 'left';
-    } else if (this._model._settings.orientation == 'vertical') {
-      direction = 'top';
-    }
+    const { direction } = this.temp;
     const offset = handle.getBoundingClientRect()[direction];
-
     const { value, target } = this._model.calcValue(handle, offset);
     this._view.showValue(target, value);
   }
   public removeHandle() {
     const viewEls = this._view._elements;
-    this._model._settings.type = 'single';
-    const orient = this._model._settings.orientation;
+    this._model.setOption('type', 'single');
+    const orient = this.temp.ori;
     if (orient === 'horizontal') {
       viewEls._range.style.left = '0px';
     } else if (orient === 'vertical') {
@@ -304,7 +277,7 @@ class Pres extends EventMixin {
     this._view.fetchDivs(ori, className);
   }
   private calcPins(behavior, widthOrHeight) {
-    let altDrag;
+    let altDrag: boolean;
     let majorMarkers = Math.trunc(
       (behavior.maxValue - behavior.minValue) / behavior.stepSize
     );
@@ -312,14 +285,13 @@ class Pres extends EventMixin {
     if (widthOrHeight / majorMarkers < 40) {
       altDrag = true;
       this._model.setOptions({
-        altDrag,
+        altDrag: altDrag,
       });
-      majorMarkers = this._model._settings._maxPins;
+      majorMarkers = this._model._settings._minPins;
     }
 
     const diff = this._model._settings.maxMinDifference;
     const ss = this._model._settings.stepSize;
-    const maxPins = this._model._settings._maxPins;
     const n = checkForZero(Math.trunc(diff / (ss * majorMarkers))); //каждый n-ый элемент из возможныъ value будет помещен на scale
 
     const valuesForMarkers = [];
@@ -410,6 +382,8 @@ class Pres extends EventMixin {
     let type: Type;
     let shift: number;
     this._model.on('coords changed', this.transferData.bind(this));
+    this._model.on('settings changed', this.renewTemp.bind(this));
+
     for (const handle of handles) {
       handle.ondragstart = function () {
         return false;
@@ -473,7 +447,7 @@ class Pres extends EventMixin {
   }
 
   private transferData(data, ori?: Ori, type?: Type) {
-    const dataForTransfer = Object.assign({}, data);
+    const dataForTransfer = { ...data };
     if (dataForTransfer.caller == 'model') {
       this._view.refreshCoords(dataForTransfer, ori, type);
       return;
@@ -487,7 +461,7 @@ class Pres extends EventMixin {
     if (target == 1) {
       handle = viewEls._handles[0];
     } else if (target == 2) {
-      if (this._model._settings.type == 'double') {
+      if ((this.temp.type = 'double')) {
         handle = viewEls._handles[1];
       } else {
         throw new ReferenceError('Can not reference absent handle');
@@ -496,7 +470,7 @@ class Pres extends EventMixin {
     this._model.calcMain(value, handle);
   }
 
-  private convertValues(orientation: string) {
+  private determineMetrics(orientation: string) {
     let offset: string;
     let widthOrHeight: string;
     let direction: string;
@@ -523,6 +497,14 @@ class Pres extends EventMixin {
 
   public getSettings() {
     return this._model.getSettings();
+  }
+
+  private renewTemp() {
+    Object.keys(this.temp).forEach((key) => {
+      if (has.call(this._model._settings, key)) {
+        this.temp[key] = this._model._settings[key];
+      }
+    });
   }
 }
 export { Temp };
