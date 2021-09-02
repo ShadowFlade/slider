@@ -289,7 +289,7 @@ class Model extends EventMixin {
     return;
   }
 
-  public setOption(key: string, value: string) {
+  public setOption(key: string, value: string | number | boolean) {
     if (has.call(this._settings, key)) {
       this._settings[key] = value;
       this.trigger('settings changed');
@@ -298,6 +298,7 @@ class Model extends EventMixin {
   public setOptions(options: { [key: string]: string | number | boolean }) {
     this.initOptions(options);
     this.correctOptions();
+    this.trigger('settings changed');
   }
 
   public getStyles() {

@@ -20,9 +20,9 @@ class App {
   }
   public tilt() {
     if (this._model.getSettings().orientation == 'vertical') {
-      this._model._settings.orientation = 'horizontal';
+      this._model.setOption('orientation', 'horizontal');
     } else if (this._model.getSettings().orientation == 'horizontal') {
-      this._model._settings.orientation = 'vertical';
+      this._model.setOption('orientation', 'vertical');
     }
     this._pres.init();
     this._pres.onMouseDown();
@@ -55,12 +55,12 @@ class App {
   public range(option: boolean) {
     if (option) {
       if (this._model._settings.type != 'double') {
-        this._model._settings.type = 'double';
+        this._model.setOption('type', 'double');
         this._pres.addHandle();
         this._pres.onMouseDown();
       }
     } else {
-      this._model._settings.type = 'single';
+      this._model.setOption('type', 'single');
       this._pres.removeHandle();
     }
   }
@@ -68,8 +68,10 @@ class App {
     this._pres.setValue(value, target);
   }
   public setLimits(min: number, max: number) {
-    this._model._settings.maxValue = max;
-    this._model._settings.minValue = min;
+    this._model.setOptions({
+      maxValue: max,
+      minValue: min,
+    });
     this._pres.init();
     this._pres.onMouseDown();
   }
@@ -81,7 +83,7 @@ class App {
     }
   }
   public setStep(step) {
-    this._model._settings.stepSize = Number(step);
+    this._model.setOption('stepSize', Number(step));
     this._pres.init();
     this._pres.onMouseDown();
   }

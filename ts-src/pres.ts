@@ -64,7 +64,7 @@ class Pres extends EventMixin {
     this.fetchDivs();
     this._view.implementStyles(options, this._model._settings.orientation);
     this._model.setOptions(this._view.getOffsetsAndLimits(orientation));
-    this._model._settings.built = true;
+    this._model.setOption('built', true);
     this._view.rangeInterval(orientation);
   }
 
@@ -211,7 +211,7 @@ class Pres extends EventMixin {
     let range: HTMLElement;
     let direction: string;
     const viewEls = this._view._elements;
-    this._model._settings.type = 'double';
+    this._model.setOption('type', 'double');
 
     if (!handl) {
       handle = viewEls._handles[0];
