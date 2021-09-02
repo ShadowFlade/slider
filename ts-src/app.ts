@@ -1,20 +1,26 @@
 // import * as $ from 'jquery'
-import Model from './model';
+import { Model } from './model';
 import View from './view';
-import Pres from './pres';
-
+import { Pres } from './pres';
+import PresBuilder from './presBuilder';
 class App {
   _item: HTMLElement;
   constructor(item: HTMLElement, options: object) {
     this._item = item;
+
     this._model = new Model(options, item);
 
     this._pres = new Pres(this._model, this._model.getItem());
     this._view = new View(this._pres, options, item);
-
+    this._pres.builder = new PresBuilder({
+      view: this._view,
+      settings: this._model.getSettings(),
+      model: this._model,
+      pres: this._pres,
+    });
     this._pres.getView(this._view);
-    this._pres.init();
 
+    this._pres.init();
     this._pres.onMouseDown();
     this._pres.firstRefresh();
   }
@@ -56,12 +62,12 @@ class App {
     if (option) {
       if (this._model._settings.type != 'double') {
         this._model.setOption('type', 'double');
-        this._pres.addHandle();
+        this._pres.builder.addHandle();
         this._pres.onMouseDown();
       }
     } else {
       this._model.setOption('type', 'single');
-      this._pres.removeHandle();
+      this._pres.builder.removeHandle();
     }
   }
   public setValue(value: number, target: 1 | 2) {

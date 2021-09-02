@@ -304,6 +304,7 @@ class Model extends EventMixin {
   public getStyles() {
     return this._settings.styles;
   }
+
   public getStyle(option: string) {
     return this._settings.styles[option];
   }
@@ -336,6 +337,4 @@ class Model extends EventMixin {
   //   };
   // }
 }
-
-export { ICoords, Settings, Type, Ori, has };
-export default Model;
+export { Model, ICoords, Settings, Type, Ori, has };
