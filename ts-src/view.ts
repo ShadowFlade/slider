@@ -224,6 +224,7 @@ class View extends EventMixin {
     if (isClickedOnPin) {
       coordsForUse = this.reactOnClick(newCoords, ori, type);
       newLeft = coordsForUse.newLeft;
+      console.log('🚀 ~ View ~ refreshCoords ~ newLeft', newLeft);
     } else if (isNormallyDragged) {
       coordsForUse = this.reactOnDrag(newCoords);
       newLeft = coordsForUse.newLeft;
@@ -292,6 +293,7 @@ class View extends EventMixin {
     }
 
     const handle = this._elements._handles[0];
+    console.log('🚀 ~ View ~ reactOnClick ~ handle', handle.className);
     const handleWidth = handle.offsetWidth;
     const pin = data.target.parentElement;
     const pinPointsValues = this.valuesFromDivs;
@@ -299,6 +301,7 @@ class View extends EventMixin {
     const { widthOrHeight, direction, margin } = this.temp;
     const pinCoords = pin.getBoundingClientRect()[direction];
     const newLeft = pinCoords - data[margin] - handleWidth / 2;
+    console.log('🚀 ~ View ~ reactOnClick ~ newLeft', newLeft);
     handle.style[direction] = newLeft + 'px';
     this._elements._range.style[widthOrHeight] = newLeft + 'px';
     toolTip.textContent = data.value;

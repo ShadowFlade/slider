@@ -1,5 +1,6 @@
 import { test, describe } from '@jest/globals';
-import Model from '../model';
+import { Model } from '../model';
+import View from '../view';
 
 describe('Model with default settings:', () => {
   let settings;
@@ -102,7 +103,7 @@ describe('Model with default settings:', () => {
 describe('Model coords main', () => {
   let testMain;
   let testCoords;
-  const item = 'item';
+  const item = document.createElement('div');
   let model;
   beforeEach(() => {
     testMain = [-1, 0, 10, 99, 100, 200, 201];
@@ -118,58 +119,46 @@ describe('Model coords main', () => {
   });
   test('renew method should return valid coords,testing main with horizontal,double', () => {
     for (const i of testMain) {
+      const handlewidth = 10;
+
       testCoords.x = i;
       model.renew(testCoords, 'horizontal', 'double');
       expect(Number(model.coords.main)).toBeLessThanOrEqual(
-        Number(model._settings.mainMax)
+        Number(model._settings.mainMax) + handlewidth / 2
       );
     }
   });
   test('renew method should return valid coords,testing main with horizontal,single', () => {
     for (const i of testMain) {
+      const handlewidth = 10;
       testCoords.y = i;
       model.renew(testCoords, 'horizontal', 'single');
       expect(Number(model.coords.main)).toBeLessThanOrEqual(
-        Number(model._settings.mainMax)
+        Number(model._settings.mainMax) + handlewidth / 2
       );
     }
   });
   test('renew method should return valid coords,testing main with vertical,double', () => {
     for (const i of testMain) {
+      const handlewidth = 10;
+
       testCoords.y = i;
       model.renew(testCoords, 'vertical', 'double');
       expect(Number(model.coords.main)).toBeLessThanOrEqual(
-        Number(model._settings.mainMax)
+        Number(model._settings.mainMax) + handlewidth / 2
       );
     }
   });
   test('renew method should return valid coords,testing main with vertical,single', () => {
     for (const i of testMain) {
+      const handlewidth = 10;
+
       testCoords.y = i;
       model.renew(testCoords, 'vertical', 'single');
       expect(Number(model.coords.main)).toBeLessThanOrEqual(
-        Number(model._settings.mainMax)
+        Number(model._settings.mainMax) + handlewidth / 2
       );
     }
-  });
-});
-
-describe('Model coords value', () => {
-  let testMain;
-  let testCoords;
-  const item = 'item';
-  let model;
-  beforeEach(() => {
-    testMain = [-1, 0, 10, 99, 100, 200, 201];
-    testCoords = {
-      y: 0,
-      x: 0,
-      marginLeft: 0,
-      clicked: false,
-      marginTop: 0,
-      target: 'target1',
-    };
-    model = new Model({}, item);
   });
 
   test('should return valid value,horizontal double', () => {
@@ -197,23 +186,26 @@ describe('Model coords value', () => {
       -1, 0, 1, 10, 99, 100, 101, 999, 1000, 1001, 1360, 1361,
     ];
     for (const i of testValues) {
+      const handlewidth = 10;
       model.calcMain(i, 'target');
-      expect(model.coords.main).toBeLessThanOrEqual(model._settings.mainMax);
-      expect(model.coords.main).toBeGreaterThanOrEqual(model._settings.mainMin);
+      expect(model.coords.main).toBeLessThanOrEqual(
+        model._settings.mainMax + handlewidth / 2
+      );
+      expect(model.coords.main).toBeGreaterThanOrEqual(
+        model._settings.mainMin - handlewidth / 2
+      );
     }
   });
-});
 
-describe('Model calcValue:', () => {
   test('should return valid value', () => {
-    const item = document.createElement('div');
     const testMain = [-1, 0, 10, 99, 100, 200, 201];
     const model = new Model({}, item);
     for (const i of testMain) {
-      expect(model.calcValue('target', i).value).toBeGreaterThanOrEqual(
+      const target = document.createElement('div');
+      expect(model.calcValue(target, i).value).toBeGreaterThanOrEqual(
         model._settings.minValue
       );
-      expect(model.calcValue('target', i).value).toBeLessThanOrEqual(
+      expect(model.calcValue(target, i).value).toBeLessThanOrEqual(
         model._settings.maxValue
       );
     }

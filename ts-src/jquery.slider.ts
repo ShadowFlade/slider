@@ -47,6 +47,8 @@ $.fn.slider = function slider(
     $.fn.slider.setStep = (value) => {
       $(this).slider.destroy();
       app.setStep(value);
+      $(this).slider.restore();
+
       return this;
     };
     $.fn.slider.stick = (option: boolean) => {

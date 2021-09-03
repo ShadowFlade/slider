@@ -1,14 +1,12 @@
 /**
  * @jest-environment jsdom
  */
-import EventMixin from '../eventemitter';
-import Model, { Settings, Ori, Type } from '../model';
+import { Model, Settings, Ori, Type } from '../model';
 import View from '../view';
 import { test, describe, jest } from '@jest/globals';
-import Pres from '../pres';
-import App from '../app';
+import { Pres } from '../pres';
+import PresBuilder from '../presBuilder';
 import dom from './setup';
-import { createLanguageService, FileWatcherEventKind } from 'typescript';
 
 describe('Pres: independent methods', () => {
   let item;
@@ -30,6 +28,12 @@ describe('Pres: independent methods', () => {
     view.temp = pres.temp;
     model.temp = pres.temp;
     pres.getView(view);
+    pres.builder = new PresBuilder({
+      view: view,
+      model: model,
+      settings: model.getSettings(),
+      pres,
+    });
     pres.fetchDivs();
     oriVars = ['horizontal', 'vertical'];
     typeVars = ['double', 'single'];
@@ -75,7 +79,7 @@ describe('Pres: independent methods', () => {
           settings.orientation = ori;
           settings.type = type;
           settings.marker = marker;
-          const { main } = pres.makeSlider(settings);
+          const { main } = pres.builder.makeSlider(settings);
 
           expect(main.tagName).toBe('DIV');
           expect(main.children.length).toBeGreaterThan(0);
@@ -96,7 +100,7 @@ describe('Pres: independent methods', () => {
           settings.orientation = ori;
           settings.type = type;
           settings.marker = marker;
-          const markerDiv = pres.makeMarker(
+          const markerDiv = pres.builder.makeMarker(
             settings,
             model.getStyle('sliderWidth')
           );
@@ -162,13 +166,18 @@ describe('Pres:changing the elements', () => {
     pres.temp = pres.determineMetrics('horizontal');
     view.temp = pres.temp;
     model.temp = pres.temp;
+    pres.builder = new PresBuilder({
+      view: view,
+      model: model,
+      settings: model.getSettings(),
+      pres,
+    });
     pres.getView(view);
 
     const classes = [
       'slider',
       'slider-main',
       'slider-range',
-
       'slider-container',
       'slider-marker',
       'tooltipContainer',
@@ -242,7 +251,7 @@ describe('Pres:changing the elements', () => {
     expect(mock).toBeCalled();
   });
   test('should remove one handle=>1 remains', () => {
-    pres.removeHandle();
+    pres.builder.removeHandle();
     expect(view._elements._handles.length).toBeLessThan(2);
   });
   test('pres.showValue should trigger view.showValue and model.calcValue', () => {
@@ -252,78 +261,9 @@ describe('Pres:changing the elements', () => {
     expect(mockCalcValue).toBeCalled();
     expect(mockShowValue).toBeCalled();
   });
-});
 
-describe('Pres:interacting with dom', () => {
-  let item;
-  let model;
-  let view;
-  let pres;
-  let document;
-  beforeEach(() => {
-    document = dom.window.document;
-    item = document.createElement('div');
-    document.body.appendChild(item);
-    model = new Model({}, item);
-    pres = new Pres(model, item);
-
-    view = new View(pres, {}, item);
-    pres.temp = pres.determineMetrics('horizontal');
-    view.temp = pres.temp;
-    model.temp = pres.temp;
-    pres.getView(view);
-
-    const classes = [
-      'slider',
-      'slider-main',
-      'slider-range',
-      'slider-container',
-      'slider-marker',
-      'tooltipContainer',
-    ];
-    for (const i of classes) {
-      const div = document.createElement('div');
-      div.className = String(i);
-      item.appendChild(div);
-    }
-    const handle1 = document.createElement('div');
-    handle1.className = 'slider-handle--horizontal';
-    item.appendChild(handle1);
-    const tool1 = document.createElement('div');
-    tool1.classList.add('tooltip');
-    handle1.appendChild(tool1);
-
-    const handle2 = document.createElement('div');
-    handle2.className = 'slider-handle--horizontal';
-    item.appendChild(handle2);
-    const tool2 = document.createElement('div');
-    tool2.classList.add('tooltip');
-    handle2.appendChild(tool2);
-    const js1 = document.createElement('div');
-    const js2 = document.createElement('div');
-    js1.classList.add('jsSlider-clickable');
-    js2.classList.add('jsSlider-clickable');
-    js1.textContent = '19';
-    js2.textContent = '20';
-    const position = 'horizontal';
-    const options = {
-      slider: {
-        color: 'black',
-        'background-color': 'black',
-      },
-      progressBar: {
-        color: 'green',
-        'background-color': 'green',
-      },
-    };
-    pres.fetchDivs('horizontal', 'slider');
-    view.implementStyles(options, position);
-  });
   test('callback are called when listeners are attached', () => {
     const handle = view._elements._handles[0];
-    // model.renew = jest.fn(() => {
-    //   return;
-    // });
     pres.firstRefresh = jest.fn(() => {});
     pres.onMouseDown();
     const evt = document.createEvent('MouseEvents');

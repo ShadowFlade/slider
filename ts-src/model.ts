@@ -192,6 +192,7 @@ class Model extends EventMixin {
       dataFroValidation.main = min;
       dataFroValidation.value = minValue;
     }
+
     return dataFroValidation;
   }
 
@@ -272,7 +273,6 @@ class Model extends EventMixin {
     this.coords.value = nValue;
     this.coords.target = target;
     this.coords.caller = 'model';
-    // this.renew(this.coords,this._settings.orientation,this._settings.type)
     if (this.validate(this.coords)) {
       // it should not do that(single responsability principle)
       this.trigger(
