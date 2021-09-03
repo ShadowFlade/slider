@@ -311,4 +311,29 @@ describe('Pres:changing the elements', () => {
     handle.dispatchEvent(event2);
     expect(transferData).toBeCalled();
   });
+  test('inits properly', () => {
+    pres.init();
+    expect(pres.temp).toBeDefined();
+  });
+
+  // test('determine metrics works with orientation vertical', () => {
+
+  //   pres.builder = new PresBuilder({
+  //     view: view,
+  //     model: model,
+  //     settings: model.getSettings(),
+  //     pres: pres,
+  //   });
+
+  //   pres.init();
+  //   const verticalOptions = {
+  //     offset: 'offsetTop',
+  //     widthOrHeight: 'height',
+  //     direction: 'top',
+  //     margin: 'marginTop',
+  //     client: 'clientY',
+  //     offsetLength: 'offsetHeight',
+  //   };
+  //   expect(verticalOptions).toEqual(pres.temp);
+  // });
 });

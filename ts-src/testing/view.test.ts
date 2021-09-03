@@ -205,7 +205,6 @@ describe('View:refresh coordinates new', () => {
     const toolTipiValue = view._elements._tooltips.textContent;
     deepCheck = function (data, handle, ori, type, targetFocClick?) {
       data.target = !!targetFocClick ? targetFocClick : handle;
-      console.log('🚀 ~ beforeEach ~ target', data.target.className);
       for (const i of xs) {
         for (const j of values) {
           data.main = i;

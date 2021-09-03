@@ -47,6 +47,8 @@ $.fn.slider = function slider(
     $.fn.slider.setStep = (value) => {
       $(this).slider.destroy();
       app.setStep(value);
+      console.log($(this).data());
+
       $(this).slider.restore();
 
       return this;

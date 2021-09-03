@@ -42,7 +42,6 @@ class Pres extends EventMixin {
 
   public init(): void {
     this._model.validateOptions();
-
     const orientation = this._model.getSetting('orientation');
     this.temp = this.determineMetrics(orientation as Ori);
     this.temp.ori = this._model._settings.orientation;

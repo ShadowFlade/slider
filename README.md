@@ -91,15 +91,15 @@ const data={
 There are a few plugin methods you can use.
 
 `$('#slider').slider.tilt()`
-Is used to change orientation. Look up `orientation` in **settings**.
+Is used to change orientation. Look up [`orientation`](###settings) in **settings**.
 
 `$('#slider').slider.scale(option)` Option is of type `boolean`. Determines whether or not scale will be displayed.
 
 `$('#slider').slider.bar(option)` Option is of type `boolean`. Determines whether or not progress bar will be displayed.
 
-`$('#slider').slider.tip(option)` Option is of type `boolean`. Determines whether or not tooltip will be displayed. Look up `tooltip` in **settings**.
+`$('#slider').slider.tip(option)` Option is of type `boolean`. Determines whether or not tooltip will be displayed. Look up [`tooltip`](###settings) in **settings**.
 
-`$('#slider').slider.range(option)` Option is of type `boolean`. Determines the `type` of slider. Look up `type` in **settings**.
+`$('#slider').slider.range(option)` Option is of type `boolean`. Determines the `type` of slider. Look up [`type`](###settings) in **settings**.
 
 `$('#slider').slider.setValue(value,numberOfHandle)` **value** argument is the number you want to assign to the desired handle. **numberOfHandle** argument determines which of the 2 handles you want to move (\*therefore **numberOfHandle** argument can be either **1** or **2**).
 
