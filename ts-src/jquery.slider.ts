@@ -1,7 +1,11 @@
 import App from './app';
 import './style.scss';
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare let $: any;
-$.fn.slider = function (this: JQuery, options?: object): JQuery {
+$.fn.slider = function slider(
+  this: JQuery,
+  options?: Record<string, unknown>
+): JQuery {
   return this.each(function () {
     const app = new App(this, options);
 
@@ -45,10 +49,10 @@ $.fn.slider = function (this: JQuery, options?: object): JQuery {
       app.setStep(value);
       return this;
     };
-    $.fn.slider.noStick = (option: boolean) => {
-      app.noStick(option);
-      return this;
-    };
+    // $.fn.slider.noStick = (option: boolean) => {
+    //   app.noStick(option);
+    //   return this;
+    // };
     $.fn.slider.destroy = () => {
       $(this).data('handle1', app.getValue(1));
       if ($(this).slider.isRange()) {
@@ -57,13 +61,14 @@ $.fn.slider = function (this: JQuery, options?: object): JQuery {
       $(this).html('');
     };
     $.fn.slider.restore = () => {
-      if (Object.keys($(this).data()).length == 0) {
+      if (Object.keys($(this).data()).length === 0) {
         return $(this);
       }
       $(this).slider.setValue($(this).data('handle1'), 1);
       if ($(this).slider.isRange()) {
         $(this).slider.setValue($(this).data('handle2'), 2);
       }
+      return false;
     };
   });
 };

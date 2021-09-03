@@ -69,9 +69,9 @@ describe('Pres: independent methods', () => {
     expect(pres._view).toEqual(view);
   });
   test('should return a div element with children and class slider-main', () => {
-    for (let ori of oriVars) {
-      for (let type of typeVars) {
-        for (let marker of markerVars) {
+    for (const ori of oriVars) {
+      for (const type of typeVars) {
+        for (const marker of markerVars) {
           settings.orientation = ori;
           settings.type = type;
           settings.marker = marker;
@@ -90,9 +90,9 @@ describe('Pres: independent methods', () => {
     const div2 = document.createElement('div');
     view._elements._handles.push(div1);
     view._elements._handles.push(div2);
-    for (let ori of oriVars) {
-      for (let type of typeVars) {
-        for (let marker of markerVars) {
+    for (const ori of oriVars) {
+      for (const type of typeVars) {
+        for (const marker of markerVars) {
           settings.orientation = ori;
           settings.type = type;
           settings.marker = marker;
@@ -130,9 +130,9 @@ describe('Pres: independent methods', () => {
   });
   test('should return valid settings', () => {
     const mockSettings = model.getSettings();
-    for (let ori of oriVars) {
-      for (let type of typeVars) {
-        for (let marker of markerVars) {
+    for (const ori of oriVars) {
+      for (const type of typeVars) {
+        for (const marker of markerVars) {
           model._settings.orientation = ori;
           model._settings.type = type;
           model._settings.marker = marker;
@@ -173,7 +173,7 @@ describe('Pres:changing the elements', () => {
       'slider-marker',
       'tooltipContainer',
     ];
-    for (let i of classes) {
+    for (const i of classes) {
       const div = document.createElement('div');
       div.className = String(i);
       item.appendChild(div);
@@ -281,7 +281,7 @@ describe('Pres:interacting with dom', () => {
       'slider-marker',
       'tooltipContainer',
     ];
-    for (let i of classes) {
+    for (const i of classes) {
       const div = document.createElement('div');
       div.className = String(i);
       item.appendChild(div);
@@ -324,11 +324,9 @@ describe('Pres:interacting with dom', () => {
     // model.renew = jest.fn(() => {
     //   return;
     // });
-    pres.firstRefresh = jest.fn(() => {
-      return;
-    });
+    pres.firstRefresh = jest.fn(() => {});
     pres.onMouseDown();
-    var evt = document.createEvent('MouseEvents');
+    const evt = document.createEvent('MouseEvents');
     evt.initMouseEvent(
       'mousedown',
       true,
@@ -346,9 +344,9 @@ describe('Pres:interacting with dom', () => {
       0,
       null
     );
-    const transferData = jest.spyOn(model, 'renew').mockImplementation(() => {
-      return;
-    });
+    const transferData = jest
+      .spyOn(model, 'renew')
+      .mockImplementation(() => {});
 
     const event = document.createEvent('MouseEvent');
     event.initEvent('mousedown', true, true);

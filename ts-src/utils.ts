@@ -1,5 +1,5 @@
 function elemsDiff(arr: number[]) {
-  let res = [];
+  const res = [];
   for (let i = 0; i < arr.length - 1; i += 1) {
     const result = +arr[i + 1] - +arr[i];
     res.push(result);
@@ -10,9 +10,8 @@ function elemsDiff(arr: number[]) {
 function checkForZero(number: number) {
   if (number > 0) {
     return number;
-  } else {
-    throw new Error('can not operate with non-positive numbers');
   }
+  throw new Error('can not operate with non-positive numbers');
 }
 
 // shortens value to format  e.g.'1.3k'

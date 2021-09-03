@@ -103,7 +103,7 @@ class View extends EventMixin {
   public fetchHTMLEl(
     className: string,
     single: boolean,
-    elem: HTMLElement = this._item
+    elem: ParentNode = this._item
   ): HTMLElement | HTMLElement[] {
     const items = elem.querySelectorAll(`.${className}`);
     const nodes = [...items];
@@ -151,7 +151,7 @@ class View extends EventMixin {
       'jsSlider-clickable',
       false
     ) as HTMLElement[];
-    //TODO Array.from
+    // TODO Array.from
     const divsContainingValues: { div: HTMLElement; value: string }[] =
       Array.from(this._item.getElementsByClassName('jsSlider-clickable')).map(
         (item: HTMLElement) => {
@@ -168,7 +168,7 @@ class View extends EventMixin {
 
     const { offset } = this.temp;
     const pinsCoordinatesItems = Array.from(
-      //TODO Array.from
+      // TODO Array.from
       this._item.getElementsByClassName('jsOffset')
     ).map((item: HTMLElement) => {
       return { div: item, offset: item[offset] };
@@ -184,7 +184,7 @@ class View extends EventMixin {
   private initiateOptions(options) {
     Object.keys(options).forEach((option) => {
       if (typeof options[option] === 'object') {
-        for (const [i, j] of Object.entries(options[option])) {
+        Object.entries(options[option]).forEach(([i, j]) => {
           if (option.toString().includes('slider')) {
             this._elements._slider.style[i] = j;
           } else if (option.toString().includes('progressBar')) {
@@ -200,12 +200,12 @@ class View extends EventMixin {
               tool.style[i] = j;
             });
           }
-        }
+        });
       }
     });
   }
 
-  public refreshCoords(data, ori: Ori, type: Type) {
+  public refreshCoords(data, ori: Ori, type: Type): void {
     const isClickedOnPin = data.clicked;
     const isNormallyDragged = data.altDrag;
     let newLeft: number;
@@ -213,31 +213,28 @@ class View extends EventMixin {
     let handle: HTMLElement;
     let value = data.value;
     const { widthOrHeight, direction } = this.temp;
-    if (type == 'single') {
+    if (type === 'single') {
       handle = this._elements._handles[0];
-    } else if (type == 'double') {
+    } else if (type === 'double') {
       handle = data.target;
     }
     const range = this._elements._range;
     const toolTip = this.fetchHTMLEl(`tooltip`, true, handle) as HTMLDivElement;
     const newCoords = { ...data };
-    let pin: HTMLElement;
     if (isClickedOnPin) {
       coordsForUse = this.reactOnClick(newCoords, ori, type);
       newLeft = coordsForUse.newLeft;
-      pin = coordsForUse.pin;
     } else if (isNormallyDragged) {
-      coordsForUse = this.reactOnDrag(newCoords, ori, type);
+      coordsForUse = this.reactOnDrag(newCoords);
       newLeft = coordsForUse.newLeft;
-      pin = coordsForUse.pin;
     } else {
-      const { newLeft: nl, value: v } = this.pinnedDrag(newCoords, ori, type);
+      const { newLeft: nl, value: v } = this.pinnedDrag(newCoords);
       newLeft = nl;
       value = v;
     }
     handle.style[direction] = newLeft + 'px';
-    if (type == 'double') {
-      this.rangeInterval(ori);
+    if (type === 'double') {
+      this.rangeInterval();
     } else {
       range.style[widthOrHeight] = newLeft + handle.offsetWidth / 2 + 'px';
     }
@@ -248,14 +245,14 @@ class View extends EventMixin {
     }
   }
 
-  private reactOnDrag(data, ori: Ori, type: string) {
+  private reactOnDrag(data) {
     let newLeft: number;
-    const shift = data.shift | 0;
+    const shift = data.shift || 0;
     let value: number;
     const { widthOrHeight } = this.temp;
     const handle = data.target;
     const range = this._elements._range;
-    if (data.value == 0) {
+    if (data.value === 0) {
       range.style[widthOrHeight] = '0';
     }
     const isNormallyDragged = data.altDrag;
@@ -270,14 +267,14 @@ class View extends EventMixin {
     };
   }
 
-  private pinnedDrag(data, ori: Ori, type: Type) {
+  private pinnedDrag(data): { newLeft: number; value: number } {
     let newLeft: number;
-    let value: string;
     const handleWidth = this._elements._handles[0].offsetWidth;
+    // eslint-disable-next-line prefer-const
     let { direction, margin } = this.temp;
     margin = data[margin] as number;
-    const pin = this.matchHandleAndPin(data.main, ori);
-    value = pin.dataset.value;
+    const pin = this.matchHandleAndPin(data.main);
+    const value = Number(pin.dataset.value);
     const pinCoords = pin.getBoundingClientRect()[direction];
     newLeft = pinCoords - margin - handleWidth / 2;
     if (pin.className.includes('slider-min')) {
@@ -290,7 +287,7 @@ class View extends EventMixin {
   }
 
   private reactOnClick(data, ori: Ori, type: Type) {
-    if (type == 'double') {
+    if (type === 'double') {
       return false;
     }
 
@@ -299,20 +296,19 @@ class View extends EventMixin {
     const pin = data.target.parentElement;
     const pinPointsValues = this.valuesFromDivs;
     const toolTip = this._elements._tooltips[0];
-    let newLeft: number;
-    const { offset, widthOrHeight, direction, margin } = this.temp;
+    const { widthOrHeight, direction, margin } = this.temp;
     const pinCoords = pin.getBoundingClientRect()[direction];
-    newLeft = pinCoords - data[margin] - handleWidth / 2;
+    const newLeft = pinCoords - data[margin] - handleWidth / 2;
     handle.style[direction] = newLeft + 'px';
     this._elements._range.style[widthOrHeight] = newLeft + 'px';
     toolTip.textContent = data.value;
     if (pinPointsValues.includes(data.value)) {
       this.divsContainingValues.forEach((i) => {
         const item = i as { div: HTMLElement; value: string };
-        if (item.value == data.value) {
+        if (item.value === data.value) {
           this.divsContainingValues.forEach(() => {
-            const item = i as { div: HTMLElement; value: string };
-            item.div.style.color = '';
+            const item2 = i as { div: HTMLElement; value: string };
+            item2.div.style.color = '';
           });
           item.div.style.color = String(this.temp.pinTextColor);
         }
@@ -321,10 +317,10 @@ class View extends EventMixin {
     return { newLeft, pin };
   }
 
-  public rangeInterval(orientation: Ori) {
+  public rangeInterval(): void {
     const handle1 = this._elements._handles[0];
     const handle2 = this._elements._handles[1];
-    const { offset, widthOrHeight, direction } = this.temp;
+    const { widthOrHeight, direction } = this.temp;
     const minOffset = parseFloat(handle1.style[direction]);
     let maxOffset: number | null;
     if (handle2) {
@@ -340,13 +336,13 @@ class View extends EventMixin {
       length + handle1.offsetWidth / 2 + 'px';
   }
 
-  public showValue(target, value) {
+  public showValue(target: HTMLDivElement, value: number): void {
     const tool = target.getElementsByClassName('tooltip')[0];
-    target.dataset.value = Math.abs(value);
-    tool.textContent = Math.abs(value);
+    target.dataset.value = String(Math.abs(value));
+    tool.textContent = String(Math.abs(value));
   }
 
-  private matchHandleAndPin(main: number, ori: Ori) {
+  private matchHandleAndPin(main: number) {
     const offsets = this.pinsCoordinatesItems;
     const offsetsNums = this.pinsCoordinates;
     let minDiff = Infinity;
@@ -361,10 +357,11 @@ class View extends EventMixin {
     let pin: HTMLElement;
     offsets.forEach((i) => {
       const item = i;
-      if (pinOffset == item.offset) {
+      if (pinOffset === item.offset) {
         pin = item.div;
         return pin;
       }
+      return false;
     });
     return pin;
   }

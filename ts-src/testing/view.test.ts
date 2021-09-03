@@ -109,7 +109,7 @@ describe('View implement styles:', () => {
       'slider-marker',
       'tooltipContainer',
     ];
-    for (let i of classes) {
+    for (const i of classes) {
       const div = document.createElement('div');
       div.className = String(i);
       item.appendChild(div);
@@ -203,7 +203,7 @@ describe('View:refresh coordinates new', () => {
       'slider-marker',
       'tooltipContainer',
     ];
-    for (let i of classes) {
+    for (const i of classes) {
       const div = document.createElement('div');
       div.className = String(i);
       item.appendChild(div);
@@ -263,8 +263,8 @@ describe('View:refresh coordinates new', () => {
     const toolTipiValue = view._elements._tooltips.textContent;
     deepCheck = function (data, handle, ori, type) {
       data.target = handle;
-      for (let i of xs) {
-        for (let j of values) {
+      for (const i of xs) {
+        for (const j of values) {
           data.main = i;
           data.value = j;
           view.refreshCoords(data, ori, type);
@@ -296,7 +296,7 @@ describe('View:refresh coordinates new', () => {
     deepCheck(data, view._elements._handles[0], 'horizontal', 'double');
   });
   test('should refresh coordinates on drag,horizontal,double,second handle', () => {
-    view._elements._handles[0].style.left = '2px'; //so that 2 handles do not occupy the same position
+    view._elements._handles[0].style.left = '2px'; // so that 2 handles do not occupy the same position
     deepCheck(data, view._elements._handles[1], 'horizontal', 'double');
   });
   test('should refresh coordinates on drag when pinnedDrag is used', () => {
@@ -316,7 +316,7 @@ describe('View:refresh coordinates new', () => {
     };
     const mains = [50, 100, 150, 200];
     const offsets = [];
-    for (let i of mains) {
+    for (const i of mains) {
       const div: HTMLElement = document.createElement('div');
       const div2 = document.createElement('div');
       div2.textContent = String(i * 30);
@@ -390,7 +390,7 @@ describe('refresh coords when clicked', () => {
       'slider-marker',
       'tooltipContainer',
     ];
-    for (let i of classes) {
+    for (const i of classes) {
       const div = document.createElement('div');
       div.className = String(i);
       item.appendChild(div);
@@ -452,8 +452,8 @@ describe('refresh coords when clicked', () => {
     const toolTipiValue = view._elements._tooltips.textContent;
     deepCheck = function (data, handle, ori, type) {
       data.target = handle;
-      for (let i of xs) {
-        for (let j of values) {
+      for (const i of xs) {
+        for (const j of values) {
           data.main = i;
           data.value = j;
           view.refreshCoords(data, ori, type);
@@ -491,7 +491,7 @@ describe('refresh coords when clicked', () => {
   test('should refresh coords properly on click', () => {
     const mains = [50, 100, 150, 200];
 
-    for (let i of mains) {
+    for (const i of mains) {
       const div = document.createElement('div');
       const div2 = document.createElement('div');
       div2.textContent = String(i * 30);

@@ -1,10 +1,8 @@
 import EventMixin from './eventemitter';
-import { Model, Settings, has } from './model';
+import { Model, has, Settings } from './model';
 import View from './view';
 import PresBuilder from './presBuilder';
 import { Ori, Type } from './model';
-import { checkForZero } from './utils';
-import { hasData } from 'jquery';
 
 type HandleNum = 1 | 2;
 
@@ -17,7 +15,7 @@ type Temp = {
   client: string;
   pinTextColor?: string;
   ori?: Ori;
-  type?: Type; //TODO how to tell ts that there will be those paramteters later?
+  type?: Type; // TODO how to tell ts that there will be those paramteters later?
 };
 class Pres extends EventMixin {
   _item: Element;
@@ -46,20 +44,20 @@ class Pres extends EventMixin {
     this._model.validateOptions();
 
     const orientation = this._model.getSetting('orientation');
-    this.temp = this.determineMetrics(orientation);
+    this.temp = this.determineMetrics(orientation as Ori);
     this.temp.ori = this._model._settings.orientation;
     this.temp.type = this._model._settings.type;
     this._model.temp = this.temp;
     this._view.temp = this.temp;
     let widthOrHeight: number;
-    if (orientation == 'horizontal') {
-      widthOrHeight = this._model.getStyle('sliderWidth');
+    if (orientation === 'horizontal') {
+      widthOrHeight = this._model.getStyle('sliderWidth') as number;
     } else if (orientation == 'vertical') {
-      widthOrHeight = this._model.getStyle('sliderHeight');
+      widthOrHeight = this._model.getStyle('sliderHeight') as number;
     }
     const options = this.convertOptions(this._model.getStyles());
     const behavior = this._model.getSettings();
-    const { main, container, slider } = this.builder.makeSlider(behavior);
+    const { main, container } = this.builder.makeSlider(behavior);
     this._view.renderElement(main);
     if (behavior.marker) {
       const marker = this.builder.makeMarker(behavior, widthOrHeight);
@@ -67,33 +65,33 @@ class Pres extends EventMixin {
     }
     this.fetchDivs();
     this._view.implementStyles(options, this._model._settings.orientation);
-    this._model.setOptions(this._view.getOffsetsAndLimits(orientation));
+    this._model.setOptions(this._view.getOffsetsAndLimits(orientation as Ori));
     this._model.setOption('built', true);
-    this._view.rangeInterval(orientation);
+    this._view.rangeInterval();
   }
 
-  public firstRefresh() {
+  public firstRefresh(): void {
     const { direction, ori, type } = this.temp;
     let start1 = this._model._settings.startPos1;
-    let start2 = this._model._settings.startPos2;
-    let startValue1 = this._model._settings.startValue1;
-    let startValue2 = this._model._settings.startValue2;
-    if (startValue1 != 0 || startValue2 != 0) {
+    const start2 = this._model._settings.startPos2;
+    const startValue1 = this._model._settings.startValue1;
+    const startValue2 = this._model._settings.startValue2;
+    if (startValue1 !== 0 || startValue2 !== 0) {
       this.setValue(startValue1, 1);
       this.setValue(startValue2, 2);
       return;
     }
-    let start = start1 | start2;
+    const start = start1 || start2;
     const coords = this._model.coords;
     coords.caller = 'model';
     this._view._elements._handles.forEach((item) => {
-      coords.target = item;
+      coords.target = item as HTMLDivElement;
       coords.main = start;
       coords.value = this._model.calcValue(
-        item,
+        item as HTMLDivElement,
         item.getBoundingClientRect()[direction]
       ).value;
-      this.transferData(coords, ori, type); //почему если здесь поставить this._view.refreshCoord, то будет ошибка maximum call stack exceeded
+      this.transferData(coords, ori, type); // почему если здесь поставить this._view.refreshCoord, то будет ошибка maximum call stack exceeded
       start1 = undefined;
     });
   }
@@ -105,13 +103,13 @@ class Pres extends EventMixin {
     this._view.showValue(target, value);
   }
 
-  public fetchDivs() {
+  public fetchDivs(): void {
     const className = this._model._settings.className;
     const ori: Ori = this._model._settings.orientation;
     this._view.fetchDivs(ori, className);
   }
 
-  private convertOptions(options: object) {
+  private convertOptions(options: Record<string, unknown>) {
     const newOptions = {
       slider: {
         width: 0,
@@ -127,10 +125,10 @@ class Pres extends EventMixin {
         color: '',
       },
     };
-    for (const i in options) {
+    Object.keys(options).forEach((i) => {
       if (i.toString().includes('slider')) {
         let option = i.slice(6).toLowerCase();
-        if (option == 'color') {
+        if (option === 'color') {
           option = 'background-color';
         }
         newOptions.slider[option] = options[i];
@@ -141,7 +139,7 @@ class Pres extends EventMixin {
         }
       } else if (i.toString().includes('progressBar')) {
         let option = i.slice(11).toLowerCase();
-        if (option == 'color') {
+        if (option === 'color') {
           option = 'background-color';
         }
         newOptions.progressBar[option] = options[i];
@@ -152,7 +150,7 @@ class Pres extends EventMixin {
         }
       } else if (i.toString().includes('handle')) {
         let option = i.slice(6).toLowerCase();
-        if (option == 'color') {
+        if (option === 'color') {
           option = 'background-color';
         }
         newOptions.handle[option] = options[i];
@@ -163,9 +161,9 @@ class Pres extends EventMixin {
         }
       } else if (i.toString().includes('tool')) {
         let option = i.slice(4).toLowerCase();
-        if (option == 'color') {
+        if (option === 'color') {
           option = 'background-color';
-        } else if (option == 'textcolor') {
+        } else if (option === 'textcolor') {
           option = 'color';
         }
         newOptions.tool[option] = options[i];
@@ -175,7 +173,7 @@ class Pres extends EventMixin {
           newOptions.tool[option] = options[i];
         }
       }
-    }
+    });
     return newOptions;
   }
 
@@ -183,8 +181,7 @@ class Pres extends EventMixin {
     const handles = this._view._elements._handles;
     const container = this._view._elements._sliderContainer;
     const slider = this._view._elements._slider;
-    const model = this._model;
-    const marginLeft = slider.getBoundingClientRect().left; //TODO should take from model?
+    const marginLeft = slider.getBoundingClientRect().left; // TODO should take from model?
     const marginTop = slider.getBoundingClientRect().top;
     let ori: Ori;
     let type: Type;
@@ -192,8 +189,8 @@ class Pres extends EventMixin {
     this._model.on('coords changed', this.transferData.bind(this));
     this._model.on('settings changed', this.renewTemp.bind(this));
 
-    for (const handle of handles) {
-      handle.ondragstart = function () {
+    handles.forEach((handle) => {
+      handle.ondragstart = () => {
         return false;
       };
       handle.addEventListener('pointerdown', (event) => {
@@ -227,7 +224,7 @@ class Pres extends EventMixin {
         document.addEventListener('pointermove', mouseMove);
         document.addEventListener('pointerup', onMouseUp);
       });
-    }
+    });
 
     container.addEventListener('click', (event) => {
       ori = this._model._settings.orientation;
@@ -254,23 +251,23 @@ class Pres extends EventMixin {
     });
   }
 
-  private transferData(data, ori?: Ori, type?: Type) {
+  private transferData(data, ori?: Ori, type?: Type): void {
     const dataForTransfer = { ...data };
-    if (dataForTransfer.caller == 'model') {
+    if (dataForTransfer.caller === 'model') {
       this._view.refreshCoords(dataForTransfer, ori, type);
       return;
     }
     this._model.renew(dataForTransfer, ori, type);
   }
 
-  public setValue(value: number, target: HandleNum) {
+  public setValue(value: number, target: HandleNum): void {
     const viewEls = this._view._elements;
-    let handle: HTMLElement;
-    if (target == 1) {
-      handle = viewEls._handles[0];
-    } else if (target == 2) {
-      if ((this.temp.type = 'double')) {
-        handle = viewEls._handles[1];
+    let handle: HTMLDivElement;
+    if (target === 1) {
+      handle = viewEls._handles[0] as HTMLDivElement;
+    } else if (target === 2) {
+      if (this.temp.type === 'double') {
+        handle = viewEls._handles[1] as HTMLDivElement;
       } else {
         throw new ReferenceError('Can not reference absent handle');
       }
@@ -278,21 +275,21 @@ class Pres extends EventMixin {
     this._model.calcMain(value, handle);
   }
 
-  private determineMetrics(orientation: string) {
+  private determineMetrics(orientation: Ori) {
     let offset: string;
     let widthOrHeight: string;
     let direction: string;
     let margin: string;
     let client: string;
     let offsetLength: string;
-    if (orientation == 'horizontal') {
+    if (orientation === 'horizontal') {
       offset = 'offsetLeft';
       widthOrHeight = 'width';
       direction = 'left';
       margin = 'marginLeft';
       client = 'clientX';
       offsetLength = 'offsetWidth';
-    } else if (orientation == 'vertical') {
+    } else if (orientation === 'vertical') {
       offset = 'offsetTop';
       widthOrHeight = 'height';
       direction = 'top';
@@ -303,7 +300,7 @@ class Pres extends EventMixin {
     return { offset, offsetLength, widthOrHeight, direction, margin, client };
   }
 
-  public getSettings() {
+  public getSettings(): Settings {
     return this._model.getSettings();
   }
 

@@ -1,25 +1,24 @@
-import jsdom from 'jsdom'
+import jsdom from 'jsdom';
 const { JSDOM } = jsdom;
 
 const virtualConsole = new jsdom.VirtualConsole();
-virtualConsole.on("error", () => { virtualConsole.log(err) });
-virtualConsole.on("warn", () => { virtualConsole.log(err) });
-virtualConsole.on("info", () => { virtualConsole.log(err) });
-virtualConsole.on("dir", () => { virtualConsole.log(err) });
-const dom=new JSDOM(`<!DOCTYPE html><div class="item"></div>`,{ runScripts: "outside-only",virtualConsole })
-export default dom
-
-
-
-
-
-
-
-
-
-
-
-
+virtualConsole.on('error', () => {
+  virtualConsole.log(err);
+});
+virtualConsole.on('warn', () => {
+  virtualConsole.log(err);
+});
+virtualConsole.on('info', () => {
+  virtualConsole.log(err);
+});
+virtualConsole.on('dir', () => {
+  virtualConsole.log(err);
+});
+const dom = new JSDOM(`<!DOCTYPE html><div class="item"></div>`, {
+  runScripts: 'outside-only',
+  virtualConsole,
+});
+export default dom;
 
 // const DEFAULT_HTML = '<html><body></body></html>';
 

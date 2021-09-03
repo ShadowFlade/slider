@@ -1,5 +1,5 @@
 interface eventmixin {
-  _eventHandlers: {};
+  _eventHandlers: Record<string, unknown>;
   on(eventname: string, handler: Function): void;
   off(eventname: string, handler: Function): void;
   trigger(eventaname: string, args: any, context?): void;

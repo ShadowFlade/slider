@@ -78,7 +78,7 @@ describe('Model with default settings:', () => {
       'sliderHeight',
       'toolTextColor',
     ];
-    for (let i of styles) {
+    for (const i of styles) {
       expect(settings.styles[i]).toBe(model.getStyle(i));
     }
   });
@@ -92,7 +92,7 @@ describe('Model with default settings:', () => {
   });
 
   test('should return the exact setting of default settings', () => {
-    for (let i in settings) {
+    for (const i in settings) {
       const setting = settings[i];
       expect(setting).toEqual(model._settings[i]);
     }
@@ -102,7 +102,7 @@ describe('Model with default settings:', () => {
 describe('Model coords main', () => {
   let testMain;
   let testCoords;
-  let item = 'item';
+  const item = 'item';
   let model;
   beforeEach(() => {
     testMain = [-1, 0, 10, 99, 100, 200, 201];
@@ -117,7 +117,7 @@ describe('Model coords main', () => {
     model = new Model({}, item);
   });
   test('renew method should return valid coords,testing main with horizontal,double', () => {
-    for (let i of testMain) {
+    for (const i of testMain) {
       testCoords.x = i;
       model.renew(testCoords, 'horizontal', 'double');
       expect(Number(model.coords.main)).toBeLessThanOrEqual(
@@ -126,7 +126,7 @@ describe('Model coords main', () => {
     }
   });
   test('renew method should return valid coords,testing main with horizontal,single', () => {
-    for (let i of testMain) {
+    for (const i of testMain) {
       testCoords.y = i;
       model.renew(testCoords, 'horizontal', 'single');
       expect(Number(model.coords.main)).toBeLessThanOrEqual(
@@ -135,7 +135,7 @@ describe('Model coords main', () => {
     }
   });
   test('renew method should return valid coords,testing main with vertical,double', () => {
-    for (let i of testMain) {
+    for (const i of testMain) {
       testCoords.y = i;
       model.renew(testCoords, 'vertical', 'double');
       expect(Number(model.coords.main)).toBeLessThanOrEqual(
@@ -144,7 +144,7 @@ describe('Model coords main', () => {
     }
   });
   test('renew method should return valid coords,testing main with vertical,single', () => {
-    for (let i of testMain) {
+    for (const i of testMain) {
       testCoords.y = i;
       model.renew(testCoords, 'vertical', 'single');
       expect(Number(model.coords.main)).toBeLessThanOrEqual(
@@ -157,7 +157,7 @@ describe('Model coords main', () => {
 describe('Model coords value', () => {
   let testMain;
   let testCoords;
-  let item = 'item';
+  const item = 'item';
   let model;
   beforeEach(() => {
     testMain = [-1, 0, 10, 99, 100, 200, 201];
@@ -173,7 +173,7 @@ describe('Model coords value', () => {
   });
 
   test('should return valid value,horizontal double', () => {
-    for (let i of testMain) {
+    for (const i of testMain) {
       testCoords.x = i;
       model.renew(testCoords, 'horizontal', 'double');
       expect(model.coords.value).toBeLessThanOrEqual(model._settings.maxValue);
@@ -183,7 +183,7 @@ describe('Model coords value', () => {
     }
   });
   test('should return valid value,vertical single', () => {
-    for (let i of testMain) {
+    for (const i of testMain) {
       testCoords.y = i;
       model.renew(testCoords, 'horizontal', 'double');
       expect(model.coords.value).toBeLessThanOrEqual(model._settings.maxValue);
@@ -196,7 +196,7 @@ describe('Model coords value', () => {
     const testValues = [
       -1, 0, 1, 10, 99, 100, 101, 999, 1000, 1001, 1360, 1361,
     ];
-    for (let i of testValues) {
+    for (const i of testValues) {
       model.calcMain(i, 'target');
       expect(model.coords.main).toBeLessThanOrEqual(model._settings.mainMax);
       expect(model.coords.main).toBeGreaterThanOrEqual(model._settings.mainMin);
@@ -209,7 +209,7 @@ describe('Model calcValue:', () => {
     const item = document.createElement('div');
     const testMain = [-1, 0, 10, 99, 100, 200, 201];
     const model = new Model({}, item);
-    for (let i of testMain) {
+    for (const i of testMain) {
       expect(model.calcValue('target', i).value).toBeGreaterThanOrEqual(
         model._settings.minValue
       );

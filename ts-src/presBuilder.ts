@@ -8,17 +8,25 @@ class PresBuilder {
   _view: View;
 
   _pres: Pres;
+
   settings: Settings;
 
   temp: Temp;
 
   _model: Model;
-  constructor(items) {
+
+  constructor(items: {
+    view: View;
+    model: Model;
+    settings: Settings;
+    pres: Pres;
+  }) {
     this._view = items.view;
     this._model = items.model;
     this.settings = items.settings;
     this._pres = items.pres;
   }
+
   public makeSlider(behavior: Settings): {
     main: Node;
     container: Node;
@@ -26,12 +34,6 @@ class PresBuilder {
   } {
     const viewEls = this._view._elements;
     const { ori, direction } = this._pres.temp;
-    let widthOrHeight: number;
-    if (ori === 'horizontal') {
-      widthOrHeight = this.settings.styles.sliderWidth;
-    } else {
-      widthOrHeight = this.settings.styles.sliderHeight;
-    }
     const main = document.createElement('div');
     main.classList.add('slider-main');
     const container = document.createElement('div');
@@ -105,7 +107,7 @@ class PresBuilder {
       markerValue.className = `jsSlider-clickable marker-value marker-value--${orientation}`;
       markerDiv.classList.add(`slider-marker--${orientation}`);
       majorMarker.className = `jsOffset marker--major marker--major--${orientation}`;
-      if (i == 0) {
+      if (i === 0) {
         majorMarker.style[marginCss] = margin - handle1.offsetWidth / 2 + 'px';
       } else {
         majorMarker.style[marginCss] = margin + 'px';
@@ -131,7 +133,11 @@ class PresBuilder {
     return markerDiv;
   }
 
-  public addHandle(handl?: HTMLElement, rang?: HTMLElement, directio?: string) {
+  public addHandle(
+    handl?: HTMLElement,
+    rang?: HTMLElement,
+    directio?: string
+  ): void {
     let handle: HTMLElement;
     let range: HTMLElement;
     let direction: string;
@@ -168,12 +174,12 @@ class PresBuilder {
     viewEls._tooltipsSticks.push(stick);
     viewEls._handles.push(handleCLone);
     if (this._model._settings.built) {
-      this._view.rangeInterval(this._model._settings.orientation);
+      this._view.rangeInterval();
       this._pres.showValue(handleCLone);
     }
   }
 
-  public removeHandle() {
+  public removeHandle(): void {
     const viewEls = this._view._elements;
     this._model.setOption('type', 'single');
     const orient = this._pres.temp.ori;
@@ -188,7 +194,7 @@ class PresBuilder {
     viewEls._handles = viewEls._handles.slice(0, 1);
 
     if (this._model._settings.built) {
-      this._view.rangeInterval(this._model._settings.orientation);
+      this._view.rangeInterval();
     }
   }
 
@@ -208,7 +214,7 @@ class PresBuilder {
 
     const diff = this._model._settings.maxMinDifference;
     const ss = this._model._settings.stepSize;
-    const n = checkForZero(Math.trunc(diff / (ss * majorMarkers))); //каждый n-ый элемент из возможныъ value будет помещен на scale
+    const n = checkForZero(Math.trunc(diff / (ss * majorMarkers))); // каждый n-ый элемент из возможныъ value будет помещен на scale
 
     const valuesForMarkers = [];
     for (let i = n; i < diff / ss; i += n) {

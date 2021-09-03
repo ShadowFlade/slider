@@ -5,7 +5,8 @@ import { Pres } from './pres';
 import PresBuilder from './presBuilder';
 class App {
   _item: HTMLElement;
-  constructor(item: HTMLElement, options: object) {
+
+  constructor(item: HTMLElement, options: Record<string, unknown>) {
     this._item = item;
 
     this._model = new Model(options, item);
@@ -24,43 +25,50 @@ class App {
     this._pres.onMouseDown();
     this._pres.firstRefresh();
   }
-  public tilt() {
-    if (this._model.getSettings().orientation == 'vertical') {
+
+  public tilt(): void {
+    if (this._model.getSettings().orientation === 'vertical') {
       this._model.setOption('orientation', 'horizontal');
-    } else if (this._model.getSettings().orientation == 'horizontal') {
+    } else if (this._model.getSettings().orientation === 'horizontal') {
       this._model.setOption('orientation', 'vertical');
     }
     this._pres.init();
     this._pres.onMouseDown();
   }
-  public scale(option: boolean) {
+
+  public scale(option: boolean): void {
     if (!option) {
       this._view._elements._scale.style.display = 'none';
     } else {
       this._view._elements._scale.style.display = '';
     }
   }
-  public bar(option: boolean) {
+
+  public bar(option: boolean): void {
     if (!option) {
       this._view._elements._range.style.display = 'none';
     } else {
       this._view._elements._range.style.display = '';
     }
   }
-  public tip(option: boolean) {
+
+  public tip(option: boolean): void {
     if (!option) {
       this._view._elements._tooltipContainers.forEach((item) => {
+        // eslint-disable-next-line no-param-reassign
         item.style.display = 'none';
       });
     } else {
       this._view._elements._tooltipContainers.forEach((item) => {
+        // eslint-disable-next-line no-param-reassign
         item.style.display = '';
       });
     }
   }
-  public range(option: boolean) {
+
+  public range(option: boolean): void {
     if (option) {
-      if (this._model._settings.type != 'double') {
+      if (this._model._settings.type !== 'double') {
         this._model.setOption('type', 'double');
         this._pres.builder.addHandle();
         this._pres.onMouseDown();
@@ -70,10 +78,12 @@ class App {
       this._pres.builder.removeHandle();
     }
   }
-  public setValue(value: number, target: 1 | 2) {
+
+  public setValue(value: number, target: 1 | 2): void {
     this._pres.setValue(value, target);
   }
-  public setLimits(min: number, max: number) {
+
+  public setLimits(min: number, max: number): void {
     this._model.setOptions({
       maxValue: max,
       minValue: min,
@@ -81,48 +91,42 @@ class App {
     this._pres.init();
     this._pres.onMouseDown();
   }
-  public isRange() {
-    if (this._model._settings.type == 'double') {
+
+  public isRange(): boolean {
+    if (this._model._settings.type === 'double') {
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
-  public setStep(step) {
+
+  public setStep(step: number): void {
     this._model.setOption('stepSize', Number(step));
     this._pres.init();
     this._pres.onMouseDown();
   }
-  public noStick(option: boolean) {
-    if (!option) {
-    }
-  }
-  private changeStyles(item) {
-    const classes = item.className;
-    let substr = 'vertical';
-    let length = substr.length;
-    let start = classes.indexOf(substr);
-    if (classes.includes(substr)) {
-      const newClasses = classes
-        .slice(0, start)
-        .concat('horizontal')
-        .concat(classes.slice(start + length));
-      item.className = newClasses;
-    }
-  }
-  public getValue(numbOfHandle: 1 | 2) {
-    let direction: string;
-    let margin: string;
 
+  // public noStick(option: boolean):void {
+  //   if (!option) {
+  //   }
+  // }
+
+  // private changeStyles(item:HTMLElement):void {
+  //   const classes = item.className;
+  //   let substr = 'vertical';
+  //   let length = substr.length;
+  //   let start = classes.indexOf(substr);
+  //   if (classes.includes(substr)) {
+  //     const newClasses = classes
+  //       .slice(0, start)
+  //       .concat('horizontal')
+  //       .concat(classes.slice(start + length));
+  //     item.className = newClasses;
+  //   }
+  // }
+
+  public getValue(numbOfHandle: 1 | 2): number {
     const handle = this._view._elements._handles[numbOfHandle - 1];
-    if (this._model._settings.orientation == 'horizontal') {
-      direction = 'left';
-      margin = 'marginLeft';
-    } else {
-      direction = 'top';
-      margin = 'marginTop';
-    }
-    const value = handle.dataset.value;
+    const value = Number(handle.dataset.value);
     return value;
   }
 

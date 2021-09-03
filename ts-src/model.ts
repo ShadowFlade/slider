@@ -9,9 +9,7 @@ function divisionFloor(x: number, y: number): number {
 }
 type Ori = 'horizontal' | 'vertical';
 type Type = 'double' | 'single';
-type Renew = {
-  (data: ICoords): void | ICoords;
-};
+
 type IStyles = {
   progressBarColor: string;
   sliderColor: string;
@@ -57,7 +55,7 @@ type ICoords = {
   caller: string;
   clicked: boolean;
   altDrag: boolean;
-  target: object;
+  target: HTMLDivElement;
 };
 
 class Model extends EventMixin {
@@ -69,18 +67,8 @@ class Model extends EventMixin {
 
   private _item: Element;
 
-  private modifiable_options: Array<string> = [
-    'width',
-    'height',
-    'color',
-    'background-color',
-    'progressBarColor',
-    'sliderColor',
-    'handleColor',
-    'sliderWidth',
-    'sliderHeight',
-  ];
   public interval: Map<HTMLDivElement, number> = new Map();
+
   public coords: ICoords = {
     main: 0,
     prevMain: 0,
@@ -92,7 +80,9 @@ class Model extends EventMixin {
     target: null,
     mainMax: 0,
   };
+
   public temp: Partial<Temp> = {};
+
   public _settings: Settings = {
     className: 'slider',
     orientation: 'horizontal',
@@ -127,15 +117,14 @@ class Model extends EventMixin {
       toolTextColor: 'green',
     },
   };
-  constructor(options, item) {
+
+  constructor(options: Record<string, unknown>, item: HTMLElement) {
     super();
     this._item = item;
     this.initOptions(options);
   }
 
-  public initOptions(
-    options: { [key: string]: string | number | boolean } = {}
-  ) {
+  public initOptions(options: Record<string, unknown> = {}): void {
     Object.keys(options).forEach((key: string): void => {
       if (this._settings.styles.hasOwnProperty(key)) {
         this._settings.styles[key] = options[key];
@@ -148,6 +137,7 @@ class Model extends EventMixin {
 
     this.correctOptions();
   }
+
   private correctOptions() {
     this.coords.altDrag = this._settings.altDrag;
     this.coords.mainMax = this._settings.mainMax;
@@ -155,9 +145,9 @@ class Model extends EventMixin {
       this._settings.maxValue - this._settings.minValue;
     const diff = this._settings.maxMinDifference;
 
-    if (this._settings.orientation == 'horizontal') {
+    if (this._settings.orientation === 'horizontal') {
       this._settings.valuePerPx = diff / this._settings.mainMax;
-    } else if (this._settings.orientation == 'vertical') {
+    } else if (this._settings.orientation === 'vertical') {
       this._settings.valuePerPx = diff / this._settings.styles.sliderHeight;
     }
     this._settings.pxPerValue =
@@ -166,7 +156,7 @@ class Model extends EventMixin {
     this.validateOptions();
   }
 
-  public validateOptions() {
+  public validateOptions(): void {
     // fixing user's mistake in input/contradictions in input
     if (
       this._settings.orientation === 'vertical' &&
@@ -175,7 +165,7 @@ class Model extends EventMixin {
       [this._settings.styles.sliderWidth, this._settings.styles.sliderHeight] =
         [this._settings.styles.sliderHeight, this._settings.styles.sliderWidth];
     } else if (
-      this._settings.orientation == 'horizontal' &&
+      this._settings.orientation === 'horizontal' &&
       this._settings.styles.sliderWidth < this._settings.styles.sliderHeight
     ) {
       [this._settings.styles.sliderWidth, this._settings.styles.sliderHeight] =
@@ -190,39 +180,42 @@ class Model extends EventMixin {
   }
 
   private validate(data: ICoords) {
+    const dataFroValidation = { ...data };
     const max = this._settings.mainMax;
     const min = this._settings.mainMin;
     const maxValue = this._settings.maxValue;
     const minValue = this._settings.minValue;
-    if (data.main >= max) {
-      data.main = max;
-      data.value = maxValue; // TODO figure out why we need this workaround,main mean does not work
-    } else if (data.main <= min) {
-      data.main = min;
-      data.value = minValue;
+    if (dataFroValidation.main >= max) {
+      dataFroValidation.main = max;
+      dataFroValidation.value = maxValue; // TODO figure out why we need this workaround,main mean does not work
+    } else if (dataFroValidation.main <= min) {
+      dataFroValidation.main = min;
+      dataFroValidation.value = minValue;
     }
-    return data;
+    return dataFroValidation;
   }
 
-  public renew(data: { [key: string]: number }, ori, type): ICoords {
-    const valuePerPx = this._settings.valuePerPx;
+  public renew(
+    data: { [key: string]: number },
+    ori: Ori,
+    type: Type
+  ): ICoords | false {
     const pxPerValue = this._settings.pxPerValue;
-    const stepSize = this._settings.stepSize;
 
     let axis = 0;
     let margin = 0;
 
-    if (this._settings.orientation == 'vertical') {
+    if (this._settings.orientation === 'vertical') {
       axis = data.y;
-      margin = data.marginTop; //if it was mode.settings.marginTop it would be wrong
-    } else if (this._settings.orientation == 'horizontal') {
+      margin = data.marginTop; // if it was mode.settings.marginTop it would be wrong
+    } else if (this._settings.orientation === 'horizontal') {
       axis = data.x;
       margin = this._settings.marginLeft;
     }
     this.coords.caller = 'model'; // TODO this shouldnt be here,have to think of a better way
-    for (const i in data) {
+    Object.keys(data).forEach((i) => {
       this.coords[i] = data[i];
-    }
+    });
 
     if (data.clicked) {
       this.coords.main = axis - margin;
@@ -242,13 +235,17 @@ class Model extends EventMixin {
       this.trigger('coords changed', validatedCoords, ori, type);
       return validatedCoords;
     }
+    return false;
   }
 
-  public calcValue(target, offset) {
+  public calcValue(
+    target: HTMLDivElement,
+    offset: number
+  ): { value: number; target: HTMLDivElement } {
     let margin;
-    if (this._settings.orientation == 'horizontal') {
+    if (this._settings.orientation === 'horizontal') {
       margin = 'marginLeft';
-    } else if (this._settings.orientation == 'vertical') {
+    } else if (this._settings.orientation === 'vertical') {
       margin = 'marginTop';
     }
     const value =
@@ -262,9 +259,9 @@ class Model extends EventMixin {
     };
   }
 
-  public calcMain(value, target: HTMLElement) {
+  public calcMain(value: number, target: HTMLDivElement): void {
     let nValue;
-    if (value % this._settings.stepSize == 0) {
+    if (value % this._settings.stepSize === 0) {
       nValue = value;
     } else {
       nValue =
@@ -277,47 +274,48 @@ class Model extends EventMixin {
     this.coords.caller = 'model';
     // this.renew(this.coords,this._settings.orientation,this._settings.type)
     if (this.validate(this.coords)) {
-      //it should not do that(single responsability principle)
+      // it should not do that(single responsability principle)
       this.trigger(
         'coords changed',
         this.coords,
         this._settings.orientation,
         this._settings.type
       );
-      return;
     }
-    return;
   }
 
-  public setOption(key: string, value: string | number | boolean) {
+  public setOption(key: string, value: string | number | boolean): void {
     if (has.call(this._settings, key)) {
       this._settings[key] = value;
       this.trigger('settings changed');
     }
   }
-  public setOptions(options: { [key: string]: string | number | boolean }) {
+
+  public setOptions(options: {
+    [key: string]: string | number | boolean;
+  }): void {
     this.initOptions(options);
     this.correctOptions();
     this.trigger('settings changed');
   }
 
-  public getStyles() {
+  public getStyles(): IStyles {
     return this._settings.styles;
   }
 
-  public getStyle(option: string) {
+  public getStyle(option: string): string | number | boolean {
     return this._settings.styles[option];
   }
 
-  public getSetting(option: string) {
+  public getSetting(option: string): string | number | boolean {
     return this._settings[option];
   }
 
-  public getSettings() {
+  public getSettings(): Settings {
     return this._settings;
   }
 
-  public getItem() {
+  public getItem(): Element {
     return this._item;
   }
   // public calcInterval(data): object {
