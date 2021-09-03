@@ -8,26 +8,53 @@ $.fn.slider = function slider(
 ): JQuery {
   return this.each(function () {
     const app = new App(this, options);
-
     $.fn.slider.tilt = () => {
       $(this).slider.destroy();
       app.tilt();
       $(this).slider.restore();
       return this;
     };
-    $.fn.slider.scale = (option: boolean) => {
+    $.fn.slider.scale = (option: boolean | undefined) => {
+      console.log(option);
+
+      if (option == undefined) {
+        states.scale = !states.scale;
+        app.scale(states.scale);
+        return this;
+      }
+      states.scale = !states.scale;
       app.scale(option);
       return this;
     };
-    $.fn.slider.bar = (option: boolean) => {
+    $.fn.slider.bar = (option: boolean | undefined) => {
+      if (option == undefined) {
+        states.progressBar = !states.progressBar;
+        app.bar(states.progressBar);
+        return this;
+      }
+      states.progressBar = !states.progressBar;
+
       app.bar(option);
       return this;
     };
-    $.fn.slider.tip = (option: boolean) => {
+    $.fn.slider.tip = (option: boolean | undefined) => {
+      if (option == undefined) {
+        states.tip = !states.tip;
+        app.tip(states.tip);
+        return this;
+      }
+      states.tip = !states.tip;
+
       app.tip(option);
       return this;
     };
-    $.fn.slider.range = (option: boolean) => {
+    $.fn.slider.range = (option: boolean | undefined) => {
+      if (option == undefined) {
+        states.range = !states.range;
+        app.range(states.range);
+        return this;
+      }
+      states.range = !states.range;
       app.range(option);
       return this;
     };
@@ -74,6 +101,17 @@ $.fn.slider = function slider(
       }
       return false;
     };
+    const states = {
+      progressBar: app._view._elements._range.style.display !== 'none',
+      range: app.isRange(),
+      orientation: app._model.getSetting('orientation'),
+      scale: app._model.getSetting('marker'),
+      tip: app._model.getSetting('toolTip'),
+      stick: app._view._elements._tooltipsSticks[0].style.display !== 'none',
+    };
+    console.log(states, 'states');
+    // const range = ;
+    // console.log('🚀 ~ range', range);
   });
 };
 const data = {

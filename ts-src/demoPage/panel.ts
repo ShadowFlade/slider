@@ -20,39 +20,30 @@ interface JQuery {
   [x: string]: any;
   slider: JQuery;
 }
+function bindFuncToQwe(elementID, func) {
+  const div = document.getElementById(elementID);
+  div.onchange = func;
+}
 
-const orient = document.getElementById('orientation');
-orient.onchange = function () {
+bindFuncToQwe('orientation', () => {
   $('qwe').slider.tilt();
-};
+});
 
-const range = document.getElementById('range');
-let rangeState = false;
-range.onchange = function () {
-  $('qwe').slider.range(rangeState);
-  rangeState = !rangeState;
-};
+bindFuncToQwe('range', () => {
+  $('qwe').slider.range();
+});
 
-let scaleState = false;
-const scale = document.getElementById('scale');
-scale.onchange = function () {
-  $('qwe').slider.scale(scaleState);
-  scaleState = !scaleState;
-};
+bindFuncToQwe('scale', () => {
+  $('qwe').slider.scale();
+});
 
-let barState = false;
-const bar = document.getElementById('bar');
-bar.onchange = function () {
-  $('qwe').slider.bar(barState);
-  barState = !barState;
-};
+bindFuncToQwe('bar', () => {
+  $('qwe').slider.bar();
+});
 
-let tipState = false;
-const tip = document.getElementById('tip');
-tip.onchange = function () {
-  $('qwe').slider.tip(tipState);
-  tipState = !tipState;
-};
+bindFuncToQwe('tip', () => {
+  $('qwe').slider.tip();
+});
 
 const minItem = document.getElementById('min') as HTMLInputElement;
 const maxItem = document.getElementById('max') as HTMLInputElement;

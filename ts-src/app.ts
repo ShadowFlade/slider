@@ -5,12 +5,16 @@ import { Pres } from './pres';
 import PresBuilder from './presBuilder';
 class App {
   _item: HTMLElement;
-
+  states: {
+    range: boolean;
+    orientation: string;
+    scale: boolean;
+    tip: boolean;
+    stick: boolean;
+  };
   constructor(item: HTMLElement, options: Record<string, unknown>) {
     this._item = item;
-
     this._model = new Model(options, item);
-
     this._pres = new Pres(this._model, this._model.getItem());
     this._view = new View(this._pres, options, item);
     this._pres.builder = new PresBuilder({
@@ -20,7 +24,6 @@ class App {
       pres: this._pres,
     });
     this._pres.getView(this._view);
-
     this._pres.init();
     this._pres.onMouseDown();
     this._pres.firstRefresh();
@@ -29,6 +32,7 @@ class App {
   public tilt(): void {
     if (this._model.getSettings().orientation === 'vertical') {
       this._model.setOption('orientation', 'horizontal');
+      // this.states.ori
     } else if (this._model.getSettings().orientation === 'horizontal') {
       this._model.setOption('orientation', 'vertical');
     }
