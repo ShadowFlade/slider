@@ -49,10 +49,10 @@ $.fn.slider = function slider(
       app.setStep(value);
       return this;
     };
-    // $.fn.slider.noStick = (option: boolean) => {
-    //   app.noStick(option);
-    //   return this;
-    // };
+    $.fn.slider.stick = (option: boolean) => {
+      app.stick(option);
+      return this;
+    };
     $.fn.slider.destroy = () => {
       $(this).data('handle1', app.getValue(1));
       if ($(this).slider.isRange()) {

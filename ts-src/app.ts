@@ -105,24 +105,17 @@ class App {
     this._pres.onMouseDown();
   }
 
-  // public noStick(option: boolean):void {
-  //   if (!option) {
-  //   }
-  // }
-
-  // private changeStyles(item:HTMLElement):void {
-  //   const classes = item.className;
-  //   let substr = 'vertical';
-  //   let length = substr.length;
-  //   let start = classes.indexOf(substr);
-  //   if (classes.includes(substr)) {
-  //     const newClasses = classes
-  //       .slice(0, start)
-  //       .concat('horizontal')
-  //       .concat(classes.slice(start + length));
-  //     item.className = newClasses;
-  //   }
-  // }
+  public stick(option: boolean): void {
+    if (!option) {
+      this._view._elements._tooltipsSticks.forEach((stick) => {
+        stick.classList.add('hide');
+      });
+    } else {
+      this._view._elements._tooltipsSticks.forEach((stick) => {
+        stick.classList.remove('hide');
+      });
+    }
+  }
 
   public getValue(numbOfHandle: 1 | 2): number {
     const handle = this._view._elements._handles[numbOfHandle - 1];

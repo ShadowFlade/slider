@@ -78,7 +78,9 @@ class Pres extends EventMixin {
     const startValue2 = this._model._settings.startValue2;
     if (startValue1 !== 0 || startValue2 !== 0) {
       this.setValue(startValue1, 1);
-      this.setValue(startValue2, 2);
+      if (type === 'double') {
+        this.setValue(startValue2, 2);
+      }
       return;
     }
     const start = start1 || start2;
