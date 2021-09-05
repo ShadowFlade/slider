@@ -192,6 +192,11 @@ class Model extends EventMixin {
       dataFroValidation.main = min;
       dataFroValidation.value = minValue;
     }
+    if (dataFroValidation.value > maxValue) {
+      dataFroValidation.value = maxValue;
+    } else if (dataFroValidation.value < minValue) {
+      dataFroValidation.value = minValue;
+    }
 
     return dataFroValidation;
   }
@@ -263,26 +268,30 @@ class Model extends EventMixin {
 
   public calcMain(value: number, target: HTMLDivElement): void {
     let nValue;
-    if (value % this._settings.stepSize === 0) {
+    if ((value - this._settings.minValue) % this._settings.stepSize === 0) {
       nValue = value;
     } else {
       nValue =
-        this._settings.stepSize * Math.trunc(value / this._settings.stepSize);
+        this._settings.stepSize *
+          Math.round(
+            (value - this._settings.minValue) / this._settings.stepSize
+          ) +
+        this._settings.minValue;
     }
     const main = (value * this._settings.pxPerValue) / this._settings.stepSize;
     this.coords.main = main;
     this.coords.value = nValue;
     this.coords.target = target;
     this.coords.caller = 'model';
-    if (this.validate(this.coords)) {
-      // it should not do that(single responsability principle)
-      this.trigger(
-        'coords changed',
-        this.coords,
-        this._settings.orientation,
-        this._settings.type
-      );
-    }
+    const validatedCoords = this.validate(this.coords);
+
+    // it should not do that(single responsability principle)
+    this.trigger(
+      'coords changed',
+      validatedCoords,
+      this._settings.orientation,
+      this._settings.type
+    );
   }
 
   public setOption(key: string, value: string | number | boolean): void {

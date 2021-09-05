@@ -206,7 +206,6 @@ class PresBuilder {
         altDrag: altDrag,
       });
       majorMarkers = this._model._settings._minPins;
-      console.log('🚀 ~ PresBuilder ~ calcPins ~ majorMarkers', majorMarkers);
     }
 
     const diff = this._model._settings.maxMinDifference;
@@ -220,13 +219,11 @@ class PresBuilder {
     // );
 
     const n = checkForZero(Math.round(diff / (ss * majorMarkers))); // каждый n-ый элемент из возможныъ value будет помещен на scale
-    console.log('🚀 ~ PresBuilder ~ calcPins ~ n', n);
 
     const valuesForMarkers = [];
     for (let i = n; i < diff / ss; i += n) {
       const value = ss * i + behavior.minValue;
       valuesForMarkers.push(value);
-      console.log(i, value);
     }
     const margin = widthOrHeight / valuesForMarkers.length;
     return { valuesForMarkers, majorMarkers, altDrag, margin };
