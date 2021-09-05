@@ -25,4 +25,9 @@ function shortenValue(x: number): string {
   return value;
 }
 
-export { elemsDiff, checkForZero, shortenValue };
+function divisionFloor(x: number, y: number): number {
+  const result = Math.trunc(x / y);
+  return result;
+}
+
+export { elemsDiff, checkForZero, shortenValue, divisionFloor };

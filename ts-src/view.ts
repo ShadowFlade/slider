@@ -227,6 +227,7 @@ class View extends EventMixin {
     } else if (isNormallyDragged) {
       coordsForUse = this.reactOnDrag(newCoords);
       newLeft = coordsForUse.newLeft;
+      console.log('🚀 ~ View ~ refreshCoords ~ newLeft', newLeft);
     } else {
       const { newLeft: nl, value: v } = this.pinnedDrag(newCoords);
       newLeft = nl;

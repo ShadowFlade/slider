@@ -1,12 +1,7 @@
 import EventMixin from './eventemitter';
 import { Temp } from './pres';
-
+import { divisionFloor } from './utils';
 const has = Object.prototype.hasOwnProperty;
-
-function divisionFloor(x: number, y: number): number {
-  const result = Math.trunc(x / y);
-  return result;
-}
 type Ori = 'horizontal' | 'vertical';
 type Type = 'double' | 'single';
 
@@ -187,10 +182,8 @@ class Model extends EventMixin {
     const minValue = this._settings.minValue;
     if (dataFroValidation.main >= max) {
       dataFroValidation.main = max;
-      dataFroValidation.value = maxValue; // TODO figure out why we need this workaround,main mean does not work
     } else if (dataFroValidation.main <= min) {
       dataFroValidation.main = min;
-      dataFroValidation.value = minValue;
     }
     if (dataFroValidation.value > maxValue) {
       dataFroValidation.value = maxValue;
@@ -278,9 +271,17 @@ class Model extends EventMixin {
           ) +
         this._settings.minValue;
     }
-    const main = (value * this._settings.pxPerValue) / this._settings.stepSize;
+    // const main =
+    //   (nValue * this._settings.pxPerValue - this._settings.minValue) /
+    //   this._settings.stepSize;
+    const main =
+      (nValue * this._settings.stepSize * 10) /
+      (this._settings.minValue * this._settings.pxPerValue);
+    console.log(this._settings);
     this.coords.main = main;
+    console.log('🚀 ~ Model ~ calcMain ~ main', main);
     this.coords.value = nValue;
+    console.log('🚀 ~ Model ~ calcMain ~ nValue', nValue);
     this.coords.target = target;
     this.coords.caller = 'model';
     const validatedCoords = this.validate(this.coords);

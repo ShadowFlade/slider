@@ -114,7 +114,7 @@ class PresBuilder {
       }
 
       if (!altDrag) {
-        const value = behavior.stepSize * (i + 1);
+        const value = listOfValues[j];
         majorMarker.dataset.value = value.toString();
         markerValue.dataset.value = value.toString();
         markerValue.textContent = value.toString();
@@ -225,6 +225,7 @@ class PresBuilder {
       const value = ss * i + behavior.minValue;
       valuesForMarkers.push(value);
     }
+    console.log(valuesForMarkers, 'VALUES FRO MARKERS');
     const margin = widthOrHeight / valuesForMarkers.length;
     return { valuesForMarkers, majorMarkers, altDrag, margin };
   }
