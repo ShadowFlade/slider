@@ -15,8 +15,6 @@ $.fn.slider = function slider(
       return this;
     };
     $.fn.slider.scale = (option: boolean | undefined) => {
-      console.log(option);
-
       if (option == undefined) {
         states.scale = !states.scale;
         app.scale(states.scale);
@@ -74,7 +72,6 @@ $.fn.slider = function slider(
     $.fn.slider.setStep = (value) => {
       $(this).slider.destroy();
       app.setStep(value);
-      console.log($(this).data());
 
       $(this).slider.restore();
 
@@ -109,9 +106,6 @@ $.fn.slider = function slider(
       tip: app._model.getSetting('toolTip'),
       stick: app._view._elements._tooltipsSticks[0].style.display !== 'none',
     };
-    console.log(states, 'states');
-    // const range = ;
-    // console.log('🚀 ~ range', range);
   });
 };
 const data = {

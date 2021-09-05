@@ -20,44 +20,54 @@ interface JQuery {
   [x: string]: any;
   slider: JQuery;
 }
-function bindFuncToQwe(elementID, func) {
-  const div = document.getElementById(elementID);
-  div.onchange = func;
-}
 
-bindFuncToQwe('orientation', () => {
-  $('qwe').slider.tilt();
-});
+class Panel {
+  item: HTMLElement;
+  name: string;
+  constructor(nameOfSliderDiv) {
+    this.item = document.getElementById(nameOfSliderDiv);
+    this.name = nameOfSliderDiv;
+  }
+  bindToDiv(nameOfElement, func: Function | string, nameOfElement2?) {
+    const element = document.querySelector(nameOfElement);
+    const element2 = document.querySelector(nameOfElement2);
+    if (element.type === 'checkbox') {
+      element.onchange = func;
+      return true;
+    }
 
-bindFuncToQwe('range', () => {
-  $('qwe').slider.range();
-});
-
-bindFuncToQwe('scale', () => {
-  $('qwe').slider.scale();
-});
-
-bindFuncToQwe('bar', () => {
-  $('qwe').slider.bar();
-});
-
-bindFuncToQwe('tip', () => {
-  $('qwe').slider.tip();
-});
-
-const minItem = document.getElementById('min') as HTMLInputElement;
-const maxItem = document.getElementById('max') as HTMLInputElement;
-const min = Number(minItem.value);
-const max = Number(maxItem.value);
-function handleChangeLimits(this: HTMLFormElement, e) {
-  if (e.keyCode == 13) {
-    // keycode for enter is 13
-    $('qwe').slider.setLimits(minItem.value, maxItem.value);
-    return false;
+    [element, element2].forEach((item) => {
+      item.onkeydown = (e) => {
+        const f = func as string;
+        if (e.keyCode === 13) {
+          // console.log(element.value, 'element value', element);
+          // console.log(element2.value, 'element2 value', element2);
+          // console.log(this.item);
+          $(this.name).slider[f](Number(element.value), Number(element2.value));
+        }
+      };
+    });
   }
 }
-maxItem.onkeydown = handleChangeLimits;
-minItem.onkeydown = handleChangeLimits;
+
+const qwe = new Panel('qwe');
+qwe.bindToDiv('#min', 'setLimits', '#max');
+
+qwe.bindToDiv('#orientation', () => {
+  $('qwe').slider.tilt();
+});
+qwe.bindToDiv('#range', () => {
+  $('qwe').slider.range();
+});
+qwe.bindToDiv('#scale', () => {
+  $('qwe').slider.scale();
+});
+qwe.bindToDiv('#bar', () => {
+  $('qwe').slider.bar();
+});
+qwe.bindToDiv('#tip', () => {
+  $('qwe').slider.tip();
+});
 
 const from = document.getElementById('from') as HTMLInputElement;
 const to = document.getElementById('to') as HTMLInputElement;

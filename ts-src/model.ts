@@ -228,7 +228,8 @@ class Model extends EventMixin {
     }
     this.coords.main = axis - margin;
     this.coords.value =
-      divisionFloor(this.coords.main, pxPerValue) * this._settings.stepSize;
+      divisionFloor(this.coords.main, pxPerValue) * this._settings.stepSize +
+      this._settings.minValue;
 
     const validatedCoords = this.validate(this.coords);
     this.coords.prevMain = this.coords.main;

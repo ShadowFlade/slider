@@ -88,10 +88,16 @@ class App {
   }
 
   public setLimits(min: number, max: number): void {
-    this._model.setOptions({
-      maxValue: max,
-      minValue: min,
-    });
+    if (min) {
+      this._model.setOptions({
+        minValue: min,
+      });
+    }
+    if (max) {
+      this._model.setOptions({
+        maxValue: max,
+      });
+    }
     this._pres.init();
     this._pres.onMouseDown();
   }

@@ -110,7 +110,7 @@ class PresBuilder {
       if (i === 0) {
         majorMarker.style[marginCss] = margin - handle1.offsetWidth / 2 + 'px';
       } else {
-        majorMarker.style[marginCss] = margin + 'px';
+        majorMarker.style[marginCss] = margin - handle1.offsetWidth / 2 + 'px';
       }
 
       if (!altDrag) {
@@ -166,11 +166,7 @@ class PresBuilder {
     this._view._elements._tooltipContainers.push(tooltipContainer);
     handle.after(range);
     range.after(handleCLone);
-    const stick = this._view.fetchHTMLEl(
-      'tooltipStick',
-      true,
-      handleCLone
-    ) as HTMLElement;
+    const stick = this._view.fetchHTMLEl('tooltipStick', true) as HTMLElement;
     viewEls._tooltipsSticks.push(stick);
     viewEls._handles.push(handleCLone);
     if (this._model._settings.built) {
@@ -188,7 +184,6 @@ class PresBuilder {
     } else if (orient === 'vertical') {
       viewEls._range.style.top = '0px';
     }
-
     viewEls._handles[0].before(viewEls._range);
     viewEls._handles[1].remove();
     viewEls._handles = viewEls._handles.slice(0, 1);
@@ -200,6 +195,7 @@ class PresBuilder {
 
   private calcPins(behavior, widthOrHeight) {
     let altDrag: boolean;
+
     let majorMarkers = Math.trunc(
       (behavior.maxValue - behavior.minValue) / behavior.stepSize
     );
@@ -210,18 +206,29 @@ class PresBuilder {
         altDrag: altDrag,
       });
       majorMarkers = this._model._settings._minPins;
+      console.log('🚀 ~ PresBuilder ~ calcPins ~ majorMarkers', majorMarkers);
     }
 
     const diff = this._model._settings.maxMinDifference;
     const ss = this._model._settings.stepSize;
-    const n = checkForZero(Math.trunc(diff / (ss * majorMarkers))); // каждый n-ый элемент из возможныъ value будет помещен на scale
+    // console.log(
+    //   '🚀 ~ PresBuilder ~ calcPins ~ n',
+    //   Math.trunc(diff / (ss * majorMarkers)),
+    //   diff,
+    //   ss,
+    //   majorMarkers
+    // );
+
+    const n = checkForZero(Math.round(diff / (ss * majorMarkers))); // каждый n-ый элемент из возможныъ value будет помещен на scale
+    console.log('🚀 ~ PresBuilder ~ calcPins ~ n', n);
 
     const valuesForMarkers = [];
     for (let i = n; i < diff / ss; i += n) {
-      const value = ss * i;
+      const value = ss * i + behavior.minValue;
       valuesForMarkers.push(value);
+      console.log(i, value);
     }
-    const margin = (valuesForMarkers[0] / diff) * widthOrHeight;
+    const margin = widthOrHeight / valuesForMarkers.length;
     return { valuesForMarkers, majorMarkers, altDrag, margin };
   }
 }

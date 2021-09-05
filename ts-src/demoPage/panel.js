@@ -1,35 +1,47 @@
-function bindFuncToQwe(elementID, func) {
-    var div = document.getElementById(elementID);
-    div.onchange = func;
-}
-bindFuncToQwe('orientation', function () {
+var Panel = /** @class */ (function () {
+    function Panel(nameOfSliderDiv) {
+        this.item = document.getElementById(nameOfSliderDiv);
+        this.name = nameOfSliderDiv;
+    }
+    Panel.prototype.bindToDiv = function (nameOfElement, func, nameOfElement2) {
+        var _this = this;
+        var element = document.querySelector(nameOfElement);
+        var element2 = document.querySelector(nameOfElement2);
+        if (element.type === 'checkbox') {
+            element.onchange = func;
+            return true;
+        }
+        [element, element2].forEach(function (item) {
+            item.onkeydown = function (e) {
+                var f = func;
+                if (e.keyCode === 13) {
+                    // console.log(element.value, 'element value', element);
+                    // console.log(element2.value, 'element2 value', element2);
+                    // console.log(this.item);
+                    $(_this.name).slider[f](Number(element.value), Number(element2.value));
+                }
+            };
+        });
+    };
+    return Panel;
+}());
+var qwe = new Panel('qwe');
+qwe.bindToDiv('#min', 'setLimits', '#max');
+qwe.bindToDiv('#orientation', function () {
     $('qwe').slider.tilt();
 });
-bindFuncToQwe('range', function () {
+qwe.bindToDiv('#range', function () {
     $('qwe').slider.range();
 });
-bindFuncToQwe('scale', function () {
+qwe.bindToDiv('#scale', function () {
     $('qwe').slider.scale();
 });
-bindFuncToQwe('bar', function () {
+qwe.bindToDiv('#bar', function () {
     $('qwe').slider.bar();
 });
-bindFuncToQwe('tip', function () {
+qwe.bindToDiv('#tip', function () {
     $('qwe').slider.tip();
 });
-var minItem = document.getElementById('min');
-var maxItem = document.getElementById('max');
-var min = Number(minItem.value);
-var max = Number(maxItem.value);
-function handleChangeLimits(e) {
-    if (e.keyCode == 13) {
-        // keycode for enter is 13
-        $('qwe').slider.setLimits(minItem.value, maxItem.value);
-        return false;
-    }
-}
-maxItem.onkeydown = handleChangeLimits;
-minItem.onkeydown = handleChangeLimits;
 var from = document.getElementById('from');
 var to = document.getElementById('to');
 from.onkeydown = handleChangeFrom;
