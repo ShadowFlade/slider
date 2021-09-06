@@ -2,31 +2,80 @@ var Panel = /** @class */ (function () {
     function Panel(nameOfSliderDiv) {
         this.item = document.getElementById(nameOfSliderDiv);
         this.name = nameOfSliderDiv;
+        this.elements = [];
+        if (this.to) {
+            this.checkForRange();
+        }
     }
     Panel.prototype.bindToDiv = function (nameOfElement, func, nameOfElement2) {
-        var _this = this;
         var element = document.querySelector(nameOfElement);
-        var element2 = document.querySelector(nameOfElement2);
+        this.elements.push(element);
+        this.bindCheckboxs();
         if (element.type === 'checkbox') {
             element.onchange = func;
             return true;
         }
-        [element, element2].forEach(function (item) {
+    };
+    Panel.prototype.bindCheckboxs = function () {
+        var _this = this;
+        console.log(this.elements);
+        this.elements.forEach(function (item) {
+            item.addEventListener('change', function () {
+                _this.checkForRange();
+            });
+        });
+    };
+    Panel.prototype.checkForRange = function () {
+        if ($(this.name).slider.isRange()) {
+            this.to.disabled = false;
+        }
+        else {
+            this.to.disabled = true;
+        }
+    };
+    Panel.prototype.bindMinMax = function (elementID1, elementID2) {
+        var _this = this;
+        var el1 = document.querySelector(elementID1);
+        var el2 = document.querySelector(elementID2);
+        [el1, el2].forEach(function (item) {
             item.onkeydown = function (e) {
-                var f = func;
                 if (e.keyCode === 13) {
-                    // console.log(element.value, 'element value', element);
-                    // console.log(element2.value, 'element2 value', element2);
-                    // console.log(this.item);
-                    $(_this.name).slider[f](Number(element.value), Number(element2.value));
+                    $(_this.name).slider.setLimits(Number(el1.value), Number(el2.value));
                 }
             };
         });
     };
+    Panel.prototype.bindFromTo = function (elementID1, elementID2) {
+        var _this = this;
+        var el1 = document.querySelector(elementID1);
+        var el2 = document.querySelector(elementID2);
+        this.to = el2;
+        el1.onkeydown = function (e) {
+            if (e.keyCode === 13) {
+                $(_this.name).slider.setValue(Number(el1.value), 1);
+            }
+        };
+        el2.onkeydown = function (e) {
+            if (e.keyCode === 13) {
+                $(_this.name).slider.setValue(Number(el2.value), 2);
+            }
+        };
+    };
+    Panel.prototype.bindStep = function (elementID) {
+        var _this = this;
+        var el = document.querySelector(elementID);
+        el.onkeydown = function (e) {
+            if (e.keyCode === 13) {
+                $(_this.name).slider.setStep(el.value);
+            }
+        };
+    };
     return Panel;
 }());
 var qwe = new Panel('qwe');
-qwe.bindToDiv('#min', 'setLimits', '#max');
+qwe.bindMinMax('#min', '#max');
+qwe.bindFromTo('#from', '#to');
+qwe.bindStep('#step');
 qwe.bindToDiv('#orientation', function () {
     $('qwe').slider.tilt();
 });
@@ -41,39 +90,4 @@ qwe.bindToDiv('#bar', function () {
 });
 qwe.bindToDiv('#tip', function () {
     $('qwe').slider.tip();
-});
-var from = document.getElementById('from');
-var to = document.getElementById('to');
-from.onkeydown = handleChangeFrom;
-to.onkeydown = handleChangeTo;
-function handleChangeFrom(e) {
-    if (e.keyCode == 13) {
-        // keycode for enter is 13
-        $('qwe').slider.setValue(from.value, 1);
-        return false;
-    }
-}
-function handleChangeTo(e) {
-    if (e.keyCode == 13) {
-        // keycode for enter is 13
-        $('qwe').slider.setValue(to.value, 2);
-        return false;
-    }
-}
-var step = document.getElementById('step');
-step.onkeydown = handleStep;
-function handleStep(e) {
-    if (e.keyCode == 13) {
-        // keycode for enter is 13
-        $('qwe').slider.setStep(step.value);
-        return false;
-    }
-}
-document.addEventListener('DOMContentLoaded', function () {
-    if ($('#qwe').slider.isRange()) {
-        to.disabled = false;
-    }
-    else {
-        to.disabled = true;
-    }
 });

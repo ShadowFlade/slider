@@ -266,7 +266,6 @@ class Model extends EventMixin {
     } else {
       widthOrHeight = 'sliderHeight';
     }
-    console.log(value, 'value from calcmain');
     let nValue;
     if ((value - this._settings.minValue) % this._settings.stepSize === 0) {
       nValue = value;
@@ -281,12 +280,8 @@ class Model extends EventMixin {
     const main =
       (nValue * this._settings.styles[widthOrHeight]) /
       this._settings.maxMinDifference;
-    console.log(main, 'MAIN');
-    console.log(this._settings);
     this.coords.main = main;
-    console.log('🚀 ~ Model ~ calcMain ~ main', main);
     this.coords.value = nValue;
-    console.log('🚀 ~ Model ~ calcMain ~ nValue', nValue);
     this.coords.target = target;
     this.coords.caller = 'model';
     const validatedCoords = this.validate(this.coords);
