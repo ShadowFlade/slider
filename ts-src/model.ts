@@ -260,6 +260,13 @@ class Model extends EventMixin {
   }
 
   public calcMain(value: number, target: HTMLDivElement): void {
+    let widthOrHeight;
+    if (this._settings.orientation == 'horizontal') {
+      widthOrHeight = 'sliderWidth';
+    } else {
+      widthOrHeight = 'sliderHeight';
+    }
+    console.log(value, 'value from calcmain');
     let nValue;
     if ((value - this._settings.minValue) % this._settings.stepSize === 0) {
       nValue = value;
@@ -271,12 +278,10 @@ class Model extends EventMixin {
           ) +
         this._settings.minValue;
     }
-    // const main =
-    //   (nValue * this._settings.pxPerValue - this._settings.minValue) /
-    //   this._settings.stepSize;
     const main =
-      (nValue * this._settings.stepSize * 10) /
-      (this._settings.minValue * this._settings.pxPerValue);
+      (nValue * this._settings.styles[widthOrHeight]) /
+      this._settings.maxMinDifference;
+    console.log(main, 'MAIN');
     console.log(this._settings);
     this.coords.main = main;
     console.log('🚀 ~ Model ~ calcMain ~ main', main);

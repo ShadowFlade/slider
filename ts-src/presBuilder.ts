@@ -225,7 +225,6 @@ class PresBuilder {
       const value = ss * i + behavior.minValue;
       valuesForMarkers.push(value);
     }
-    console.log(valuesForMarkers, 'VALUES FRO MARKERS');
     const margin = widthOrHeight / valuesForMarkers.length;
     return { valuesForMarkers, majorMarkers, altDrag, margin };
   }
