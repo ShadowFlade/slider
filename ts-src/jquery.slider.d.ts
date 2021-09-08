@@ -47,9 +47,6 @@ interface ExamplePlugin
  * Extend the jQuery result declaration with the example plugin.
  */
 interface JQuery {
-  /**
-   * Extension of the example plugin.
-   */
   slider: Function;
 }
 export class Controller {}

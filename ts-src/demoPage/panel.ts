@@ -1,50 +1,63 @@
-interface ExamplePluginOptions {
-  outputSelector: string;
-
-  outputColor?: string;
-}
-
-interface ExamplePluginGlobalOptions {
-  options: ExamplePluginOptions;
-}
-
-interface ExamplePluginFunction {
-  (options: ExamplePluginOptions): JQuery;
-}
-
-interface ExamplePlugin
-  extends ExamplePluginGlobalOptions,
-    ExamplePluginFunction {}
-
+type IOptions = {
+  className: string;
+  orientation: string;
+  type: string;
+  stepSize: number;
+  maxValue: number;
+  minValue: number;
+  toolTip: boolean;
+  marker: boolean;
+  progressBarColor: string;
+  sliderColor: string;
+  sliderWidth: number;
+  sliderHeight: number;
+  pinTextColor: string;
+  toolTextColor: string;
+};
+type IPlugin = {
+  (options?: Partial<IOptions>): IPlugin;
+  tilt: Function;
+  range: Function;
+  scale: Function;
+  bar: Function;
+  tip: Function;
+  isRange: Function;
+  setLimits: Function;
+  setValue: Function;
+  setStep: Function;
+};
 interface JQuery {
-  [x: string]: any;
-  slider: JQuery;
+  slider: IPlugin;
+
+  tilt: JQuery;
 }
 
 class Panel {
   item: HTMLElement;
   elements: HTMLElement[];
   to: HTMLInputElement;
+  slider: JQuery;
   name: string;
-  constructor(nameOfSliderDiv) {
-    this.item = document.getElementById(nameOfSliderDiv);
+  constructor(nameOfSliderDiv, slider) {
+    this.item = document.querySelector(nameOfSliderDiv);
     this.name = nameOfSliderDiv;
     this.elements = [];
     if (this.to) {
       this.checkForRange();
     }
+    this.slider = slider;
   }
-  public bindToDiv(nameOfElement, func: Function | string, nameOfElement2?) {
+  public bindToDiv(nameOfElement, func: string, nameOfElement2?) {
+    console.log(this.slider);
     const element = document.querySelector(nameOfElement);
     this.elements.push(element);
     this.bindCheckboxs();
     if (element.type === 'checkbox') {
-      element.onchange = func;
+      element.onchange = $(this.name).slider[func];
       return true;
     }
   }
   private bindCheckboxs() {
-    console.log(this.elements);
     this.elements.forEach((item) => {
       item.addEventListener('change', () => {
         this.checkForRange();
@@ -98,22 +111,70 @@ class Panel {
   }
 }
 
-const qwe = new Panel('qwe');
-qwe.bindMinMax('#min', '#max');
-qwe.bindFromTo('#from', '#to');
-qwe.bindStep('#step');
-qwe.bindToDiv('#orientation', () => {
-  $('qwe').slider.tilt();
-});
-qwe.bindToDiv('#range', () => {
-  $('qwe').slider.range();
-});
-qwe.bindToDiv('#scale', () => {
-  $('qwe').slider.scale();
-});
-qwe.bindToDiv('#bar', () => {
-  $('qwe').slider.bar();
-});
-qwe.bindToDiv('#tip', () => {
-  $('qwe').slider.tip();
+document.addEventListener('DOMContentLoaded', () => {
+  const slider3 = $('#slider3').slider();
+
+  const slider2 = $('#slider2').slider();
+  const qwer = $('#qwe').slider({
+    minValue: 0,
+    maxValue: 1360,
+  });
+  const qwe = new Panel('#qwe', qwer);
+  qwe.bindMinMax('#min', '#max');
+  qwe.bindFromTo('#from', '#to');
+  qwe.bindStep('#step');
+  qwe.bindToDiv('#orientation', 'tilt');
+  // qwe.bindToDiv('#range', () => {
+  //   $('qwe').slider.range();
+  // });
+  // qwe.bindToDiv('#scale', () => {
+  //   $('qwe').slider.scale();
+  // });
+  // qwe.bindToDiv('#bar', () => {
+  //   $('qwe').slider.bar();
+  // });
+  // qwe.bindToDiv('#tip', () => {
+  //   $('qwe').slider.tip();
+  // });
+
+  const panel2 = new Panel('#slider2', slider2);
+  panel2.bindMinMax('#min2', '#max2');
+  panel2.bindFromTo('#from2', '#to2');
+  panel2.bindStep('#step2');
+  panel2.bindToDiv('#orientation2', 'tilt');
+  // panel2.bindToDiv('#range2', () => {
+  //   $('#slider2').slider.range();
+  // });
+  // panel2.bindToDiv('#scale2', () => {
+  //   $('#slider2').slider.scale();
+  // });
+  // panel2.bindToDiv('#bar2', () => {
+  //   $('#slider2').slider.bar();
+  // });
+  // panel2.bindToDiv('#tip2', () => {
+  //   $('#slider2').slider.tip();
+  // });
+
+  const panel3 = new Panel('#slider3', slider3);
+  panel3.bindMinMax('#min3', '#max3');
+  panel3.bindFromTo('#from3', '#to3');
+  panel3.bindStep('#step3');
+  panel3.bindToDiv('#orientation3', 'tilt');
+  // panel3.bindToDiv('#range3', () => {
+  //   $('#slider3').slider.range();
+  // });
+  // panel3.bindToDiv('#scale3', () => {
+  //   $('#slider3').slider.scale();
+  // });
+  // panel3.bindToDiv('#bar3', () => {
+  //   $('#slider3').slider.bar();
+  // });
+  // panel3.bindToDiv('#tip3', () => {
+  //   $('#slider3').slider.tip();
+  // });
+
+  console.log(panel2.slider.data());
+  console.log(panel3.slider.data());
+  console.log(slider2, 'SLIDRE');
+  console.log(slider3, 'SLIDER@');
 });

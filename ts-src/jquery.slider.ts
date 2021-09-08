@@ -1,17 +1,28 @@
 import App from './app';
 import './style.scss';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
+const plugins = new Map();
+class plugin {
+  item: HTMLElement;
+  constructor(HTMLElement) {
+    this.item = HTMLElement;
+  }
+}
 declare let $: any;
 $.fn.slider = function slider(
   this: JQuery,
   options?: Record<string, unknown>
 ): JQuery {
+  const app = new App(this[0], options);
+
+  plugins.set(this[0], { plugin: $(this), app: app });
+
   return this.each(function () {
-    const app = new App(this, options);
     $.fn.slider.tilt = () => {
-      $(this).slider.destroy();
-      app.tilt();
-      $(this).slider.restore();
+      console.log(plugins.get(this));
+      plugins.get(this).plugin.slider.destroy();
+      plugins.get(this).app.tilt();
+      plugins.get(this).plugin.slider.restore();
       return this;
     };
     $.fn.slider.scale = (option: boolean | undefined) => {
@@ -108,6 +119,7 @@ $.fn.slider = function slider(
     };
   });
 };
+
 const data = {
   className: 'slider',
   orientation: 'horizontal',
