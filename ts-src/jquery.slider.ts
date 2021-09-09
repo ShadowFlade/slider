@@ -1,140 +1,222 @@
 import App from './app';
+
 import './style.scss';
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const plugins = new Map();
-class plugin {
-  item: HTMLElement;
-  constructor(HTMLElement) {
-    this.item = HTMLElement;
-  }
-}
+
 declare let $: any;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+const plugins = new Map();
+
+class Plugin extends $ {
+  item: HTMLElement;
+
+  states: Record<string, any>;
+
+  app: App;
+
+  $item: any;
+
+  data: any;
+
+  constructor(HTMLElement, app) {
+    super();
+
+    this.item = HTMLElement;
+
+    this.states = {
+      progressBar: app._view._elements._range.style.display !== 'none',
+
+      range: app.isRange(),
+
+      orientation: app._model.getSetting('orientation'),
+
+      scale: app._model.getSetting('marker'),
+
+      tip: app._model.getSetting('toolTip'),
+
+      stick: app._view._elements._tooltipsSticks[0].style.display !== 'none',
+    };
+
+    this.app = app;
+
+    this.$item = $(HTMLElement);
+  }
+
+  tilt = () => {
+    this.destroy();
+
+    this.app.tilt();
+
+    this.restore();
+
+    return this;
+  };
+
+  scale = (option: boolean | undefined) => {
+    if (typeof option !== 'boolean') {
+      this.states.scale = !this.states.scale;
+
+      this.app.scale(this.states.scale);
+
+      return this;
+    }
+
+    this.states.scale = !this.states.scale;
+
+    this.app.scale(option);
+
+    return this;
+  };
+
+  bar = (option: boolean | undefined) => {
+    if (typeof option !== 'boolean') {
+      this.states.progressBar = !this.states.progressBar;
+
+      this.app.bar(this.states.progressBar);
+
+      return this;
+    }
+
+    this.states.progressBar = !this.states.progressBar;
+
+    this.app.bar(option);
+
+    return this;
+  };
+
+  tip = (option: boolean | undefined) => {
+    if (typeof option !== 'boolean') {
+      this.states.tip = !this.states.tip;
+
+      this.app.tip(this.states.tip);
+
+      return this;
+    }
+
+    this.states.tip = !this.states.tip;
+
+    this.app.tip(option);
+
+    return this;
+  };
+
+  range = (option: boolean | undefined) => {
+    if (typeof option !== 'boolean') {
+      this.states.range = !this.states.range;
+
+      this.app.range(this.states.range);
+
+      return this;
+    }
+
+    this.states.range = !this.states.range;
+
+    this.app.range(option);
+
+    return this;
+  };
+
+  setValue = (value: number, number: 1 | 2) => {
+    this.app.setValue(value, number);
+
+    return this;
+  };
+
+  setLimits = (min: number, max: number) => {
+    this.destroy();
+
+    this.app.setLimits(min, max);
+
+    this.restore();
+
+    return this;
+  };
+
+  isRange = () => {
+    return this.app.isRange();
+  };
+
+  setStep = (value) => {
+    this.destroy();
+
+    this.app.setStep(value);
+
+    this.restore();
+
+    return this;
+  };
+
+  stick = (option: boolean) => {
+    this.app.stick(option);
+
+    return this;
+  };
+
+  destroy = () => {
+    this.$item.data('handle1', this.app.getValue(1));
+
+    if (this.isRange()) {
+      this.$item.data('handle2', this.app.getValue(2));
+    }
+
+    this.$item.html('');
+  };
+
+  restore = () => {
+    if (Object.keys(this.$item.data()).length === 0) {
+      return this.$item;
+    }
+
+    this.setValue(this.$item.data('handle1'), 1);
+
+    if (this.isRange()) {
+      this.setValue(this.$item.data('handle2'), 2);
+    }
+
+    return false;
+  };
+}
+
 $.fn.slider = function slider(
   this: JQuery,
   options?: Record<string, unknown>
-): JQuery {
+): Plugin {
   const app = new App(this[0], options);
-
   plugins.set(this[0], { plugin: $(this), app: app });
-
-  return this.each(function () {
-    $.fn.slider.tilt = () => {
-      console.log(plugins.get(this));
-      plugins.get(this).plugin.slider.destroy();
-      plugins.get(this).app.tilt();
-      plugins.get(this).plugin.slider.restore();
-      return this;
-    };
-    $.fn.slider.scale = (option: boolean | undefined) => {
-      if (option == undefined) {
-        states.scale = !states.scale;
-        app.scale(states.scale);
-        return this;
-      }
-      states.scale = !states.scale;
-      app.scale(option);
-      return this;
-    };
-    $.fn.slider.bar = (option: boolean | undefined) => {
-      if (option == undefined) {
-        states.progressBar = !states.progressBar;
-        app.bar(states.progressBar);
-        return this;
-      }
-      states.progressBar = !states.progressBar;
-
-      app.bar(option);
-      return this;
-    };
-    $.fn.slider.tip = (option: boolean | undefined) => {
-      if (option == undefined) {
-        states.tip = !states.tip;
-        app.tip(states.tip);
-        return this;
-      }
-      states.tip = !states.tip;
-
-      app.tip(option);
-      return this;
-    };
-    $.fn.slider.range = (option: boolean | undefined) => {
-      if (option == undefined) {
-        states.range = !states.range;
-        app.range(states.range);
-        return this;
-      }
-      states.range = !states.range;
-      app.range(option);
-      return this;
-    };
-    $.fn.slider.setValue = (value: number, number: 1 | 2) => {
-      app.setValue(value, number);
-      return this;
-    };
-    $.fn.slider.setLimits = (min: number, max: number) => {
-      $(this).slider.destroy();
-      app.setLimits(min, max);
-      $(this).slider.restore();
-      return this;
-    };
-    $.fn.slider.isRange = () => {
-      return app.isRange();
-    };
-    $.fn.slider.setStep = (value) => {
-      $(this).slider.destroy();
-      app.setStep(value);
-
-      $(this).slider.restore();
-
-      return this;
-    };
-    $.fn.slider.stick = (option: boolean) => {
-      app.stick(option);
-      return this;
-    };
-    $.fn.slider.destroy = () => {
-      $(this).data('handle1', app.getValue(1));
-      if ($(this).slider.isRange()) {
-        $(this).data('handle2', app.getValue(2));
-      }
-      $(this).html('');
-    };
-    $.fn.slider.restore = () => {
-      if (Object.keys($(this).data()).length === 0) {
-        return $(this);
-      }
-      $(this).slider.setValue($(this).data('handle1'), 1);
-      if ($(this).slider.isRange()) {
-        $(this).slider.setValue($(this).data('handle2'), 2);
-      }
-      return false;
-    };
-    const states = {
-      progressBar: app._view._elements._range.style.display !== 'none',
-      range: app.isRange(),
-      orientation: app._model.getSetting('orientation'),
-      scale: app._model.getSetting('marker'),
-      tip: app._model.getSetting('toolTip'),
-      stick: app._view._elements._tooltipsSticks[0].style.display !== 'none',
-    };
-  });
+  return new Plugin(this[0], app);
 };
 
 const data = {
   className: 'slider',
+
   orientation: 'horizontal',
+
   type: 'single',
+
   stepSize: 90,
+
   maxValue: 400,
+
   minValue: 0,
+
   toolTip: true,
+
   marker: true,
+
   progressBarColor: 'brown',
+
   sliderColor: 'red',
+
   sliderWidth: 5,
+
   sliderHeight: 200,
+
   pinTextColor: 'green',
+
   toolTextColor: 'red',
 };
 
-$('#slider').slider(data);
+// $('#slider').slider(data);
+
+export default Plugin;

@@ -30,7 +30,6 @@ class App {
   }
 
   public tilt(): void {
-    console.log(this._item);
     if (this._model.getSettings().orientation === 'vertical') {
       this._model.setOption('orientation', 'horizontal');
       // this.states.ori
