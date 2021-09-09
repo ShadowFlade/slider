@@ -10,7 +10,7 @@
     "lint": "eslint --debug ts-src/",
     "lint:write": "eslint --debug ts-src/ --fix",
     "test": "jest --coverage",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d ."
   },
   "keywords": [],
   "author": "",
