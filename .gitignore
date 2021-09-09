@@ -1,6 +1,11 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> 17edb721cdb2ae18983f684e1fedbbcbc565ebb3
 node_modules
 .vscode
 coverage
 ts-src
 !ts-src/demoPage
+
+
