@@ -1,6 +1,3 @@
-
 node_modules
 .vscode
 coverage
-ts-src
-!ts-src/demoPage
