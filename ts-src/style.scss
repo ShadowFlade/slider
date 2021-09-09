@@ -48,8 +48,13 @@ $shadow: 2px -2px 2px #7e7e7e;
   position: absolute;
   left: 0;
   top: 50%;
-  &:active {
+  &:hover {
     background-color: lighten($bgc, 30%);
+    box-shadow: 0px 0px 3px 5px lighten($bgc, 15%);
+  }
+  &:active {
+    background-color: lighten($bgc, 50%);
+    box-shadow: none;
     &::after {
       content: '';
       position: absolute;

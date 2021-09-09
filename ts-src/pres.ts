@@ -204,19 +204,21 @@ class Pres extends EventMixin {
         shift = event[client] - target.getBoundingClientRect()[direction];
 
         const mouseMove = (e) => {
-          this.transferData(
-            {
-              y: e.clientY,
-              x: e.clientX,
-              shift: shift,
-              marginLeft: marginLeft,
-              clicked: false,
-              marginTop: marginTop,
-              target: event.target,
-            },
-            ori,
-            type
-          );
+          if (e.target === handle) {
+            this.transferData(
+              {
+                y: e.clientY,
+                x: e.clientX,
+                shift: shift,
+                marginLeft: marginLeft,
+                clicked: false,
+                marginTop: marginTop,
+                target: e.target,
+              },
+              ori,
+              type
+            );
+          }
         };
         const onMouseUp = (e) => {
           document.removeEventListener('pointermove', mouseMove);
