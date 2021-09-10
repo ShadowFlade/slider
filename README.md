@@ -2,6 +2,8 @@
 
 Customizable JQuery plugin
 
+![slider](docs/example.png)
+
 ## Installing
 
 1. `git clone https://github.com/ShadowFlade/slider.git`
@@ -10,9 +12,9 @@ Customizable JQuery plugin
 
 ## Setup
 
-In the **dist** folder you will find **plugin.js** and **plugin.min.css** fils. You will need both of them for the plugin to work.
+In the **dist** folder you will find **plugin.js** and **plugin.min.css** files. You will need both of them for the plugin to work.
 
-1. You are going to need `JQuery` in your page for the plugin to work. You can checkout many options on their site https://jquery.com/download/ or just insert this line into your HTML file `<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>`.
+1. You are going to need `JQuery` in your page for the plugin to work. You can checkout many options on their site https://jquery.com/download/ or just insert this line into your HTML file `<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>`.
 2. Insert **plugin.min.css** into your HTML/PUG file.
 3. Insert **plugin.js** file into your HTML/PUG file **after** `JQuery`.
 
@@ -111,12 +113,11 @@ Is used to change orientation. Look up [`orientation`](###settings) in **setting
 
 `$('#slider').slider.noStick(option)` Removes stick element if option is `false`.
 
-> All those methods return `this`(_plugin itself_) dictated by **JQuery** best practices.
-> _Except `isRange`,it returns boolean variable_
-
 ## Demo page
 
-You can find demo page in `ts-src/demoPage/` . You can play around with it to find the setup that suits you best. //TODO insdert a pic of demopage.
+You can find demo page in `ts-src/demoPage/` or at https://shadowflade.github.io/slider/. You can play around with it to find the setup that suits you best. //TODO insdert a pic of demopage.
+
+![demoPage](docs/ex2.png)
 
 ## P.S.
 

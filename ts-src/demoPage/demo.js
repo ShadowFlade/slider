@@ -1,3 +1,6 @@
+"use strict";
+// exports.__esModule = true;
+// require("./demo.css");
 var Panel = /** @class */ (function () {
     function Panel(nameOfSliderDiv, slider) {
         this.item = document.querySelector(nameOfSliderDiv);
