@@ -1,3 +1,8 @@
+/******/ (() => { // webpackBootstrap
+var __webpack_exports__ = {};
+/*!*********************************!*\
+  !*** ./ts-src/demoPage/demo.js ***!
+  \*********************************/
 var Panel = /** @class */ (function () {
     function Panel(nameOfSliderDiv, slider) {
         this.item = document.querySelector(nameOfSliderDiv);
@@ -109,3 +114,7 @@ document.addEventListener('DOMContentLoaded', function () {
     panel3.bindToDiv('#bar3', 'bar');
     panel3.bindToDiv('#tip3', 'tip');
 });
+
+/******/ })()
+;
+//# sourceMappingURL=index.js.map
