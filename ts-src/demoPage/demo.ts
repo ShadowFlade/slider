@@ -1,3 +1,9 @@
+import './demo.css';
+declare global {
+  interface JQuery {
+    slider: (options?) => IPlugin;
+  }
+}
 type IOptions = {
   className: string;
   orientation: string;
@@ -28,8 +34,6 @@ type IPlugin = {
 };
 interface JQuery {
   slider: IPlugin;
-
-  tilt: JQuery;
 }
 
 class Panel {
