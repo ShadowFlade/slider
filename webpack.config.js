@@ -3,6 +3,7 @@ var webpack = require('webpack')
 const ESLintPlugin = require('eslint-webpack-plugin')
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const isDev = process.env.NODE_ENV === 'development'
 const isProd = !isDev
@@ -16,6 +17,7 @@ module.exports = {
 
   entry: {
     plugin:'./ts-src/jquery.slider.ts',
+    index:'./ts-src/demoPage/demo.js'
 
   },
   output: {
@@ -31,13 +33,7 @@ module.exports = {
       }
     )],
   },
-  plugins: [
-    // new webpack.ProvidePlugin({
-    //   $: 'jquery',
-    //   jQuery: 'jquery',
-    // }),
-    new ESLintPlugin(),
-  ],
+
   module: {
     rules: [
       {
@@ -88,8 +84,14 @@ module.exports = {
   plugins:[
     new MiniCssExtractPlugin({
       filename: `[name].min.css`
-    }
-    ),
+    }),
+    // new HtmlWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      filename: 'index.html',
+      template: 'ts-src/demoPage/demo.html'
+    }),
+    // new ESLintPlugin(),
+
   ],
   resolve: {
     extensions: ['.ts','.js','.webpack.js', '.web.js',  ],

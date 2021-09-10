@@ -25,7 +25,6 @@ var Panel = /** @class */ (function () {
         });
     };
     Panel.prototype.checkForRange = function () {
-        console.log('hello');
         if (this.slider.isRange()) {
             this.to.disabled = false;
         }
@@ -61,7 +60,6 @@ var Panel = /** @class */ (function () {
             }
         };
         if (this.to) {
-            console.log('checking');
             this.checkForRange();
         }
     };

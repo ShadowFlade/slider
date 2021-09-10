@@ -7,5 +7,5 @@
     "downlevelIteration": true,
     "allowSyntheticDefaultImports": true
   },
-  "files": ["ts-src/jquery.slider.ts", "ts-src/demoPage/panel.ts"]
+  "files": ["ts-src/jquery.slider.ts", "ts-src/demoPage/demo.ts"]
 }
