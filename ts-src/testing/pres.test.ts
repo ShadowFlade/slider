@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { Model, Settings, Ori, Type } from '../model';
+import { Model } from '../model';
 import View from '../view';
 import { test, describe, jest } from '@jest/globals';
 import { Pres } from '../pres';
@@ -73,9 +73,9 @@ describe('Pres: independent methods', () => {
     expect(pres._view).toEqual(view);
   });
   test('should return a div element with children and class slider-main', () => {
-    for (const ori of oriVars) {
-      for (const type of typeVars) {
-        for (const marker of markerVars) {
+    oriVars.forEach((ori) => {
+      typeVars.forEach((type) => {
+        markerVars.forEach((marker) => {
           settings.orientation = ori;
           settings.type = type;
           settings.marker = marker;
@@ -84,9 +84,9 @@ describe('Pres: independent methods', () => {
           expect(main.tagName).toBe('DIV');
           expect(main.children.length).toBeGreaterThan(0);
           expect(String(main.className)).toMatch(/slider-main/);
-        }
-      }
-    }
+        });
+      });
+    });
   });
 
   test('should return a div element with children and class slider-marker', () => {
@@ -94,9 +94,9 @@ describe('Pres: independent methods', () => {
     const div2 = document.createElement('div');
     view._elements._handles.push(div1);
     view._elements._handles.push(div2);
-    for (const ori of oriVars) {
-      for (const type of typeVars) {
-        for (const marker of markerVars) {
+    oriVars.forEach((ori) => {
+      typeVars.forEach((type) => {
+        markerVars.forEach((marker) => {
           settings.orientation = ori;
           settings.type = type;
           settings.marker = marker;
@@ -107,9 +107,9 @@ describe('Pres: independent methods', () => {
           expect(markerDiv.tagName).toBe('DIV');
           expect(markerDiv.children.length).toBeGreaterThan(0);
           expect(String(markerDiv.className)).toMatch(/slider-marker/);
-        }
-      }
-    }
+        });
+      });
+    });
   });
 
   test('should return valid options', () => {
@@ -134,9 +134,9 @@ describe('Pres: independent methods', () => {
   });
   test('should return valid settings', () => {
     const mockSettings = model.getSettings();
-    for (const ori of oriVars) {
-      for (const type of typeVars) {
-        for (const marker of markerVars) {
+    oriVars.forEach((ori) => {
+      typeVars.forEach((type) => {
+        markerVars.forEach((marker) => {
           model._settings.orientation = ori;
           model._settings.type = type;
           model._settings.marker = marker;
@@ -144,9 +144,9 @@ describe('Pres: independent methods', () => {
           mockSettings.type = type;
           mockSettings.marker = marker;
           expect(mockSettings).toEqual(pres.getSettings());
-        }
-      }
-    }
+        });
+      });
+    });
   });
 });
 
@@ -182,11 +182,11 @@ describe('Pres:changing the elements', () => {
       'slider-marker',
       'tooltipContainer',
     ];
-    for (const i of classes) {
+    classes.forEach((i) => {
       const div = document.createElement('div');
       div.className = String(i);
       item.appendChild(div);
-    }
+    });
     const handle1 = document.createElement('div');
     handle1.className = 'slider-handle--horizontal';
     item.appendChild(handle1);
@@ -264,7 +264,9 @@ describe('Pres:changing the elements', () => {
 
   test('callback are called when listeners are attached', () => {
     const handle = view._elements._handles[0];
-    pres.firstRefresh = jest.fn(() => {});
+    pres.firstRefresh = jest.fn(() => {
+      return true;
+    });
     pres.onMouseDown();
     const evt = document.createEvent('MouseEvents');
     evt.initMouseEvent(
@@ -284,9 +286,9 @@ describe('Pres:changing the elements', () => {
       0,
       null
     );
-    const transferData = jest
-      .spyOn(model, 'renew')
-      .mockImplementation(() => {});
+    const transferData = jest.spyOn(model, 'renew').mockImplementation(() => {
+      return true;
+    });
 
     const event = document.createEvent('MouseEvent');
     event.initEvent('mousedown', true, true);
@@ -303,10 +305,10 @@ describe('Pres:changing the elements', () => {
       marginTop: 0,
       target: view._elements._handles[0],
     };
-
-    document.addEventListener('mousemove', () => {
+    const onMouseMove = () => {
       model.renew(data, 'horizontal', 'double');
-    });
+    };
+    document.addEventListener('mousemove', onMouseMove);
     handle.dispatchEvent(event);
     handle.dispatchEvent(event2);
     expect(transferData).toBeCalled();

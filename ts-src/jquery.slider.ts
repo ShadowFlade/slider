@@ -1,7 +1,9 @@
+/* eslint-disable no-irregular-whitespace */
 import App from './app';
 
 import './style.scss';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare let $: any;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -15,11 +17,9 @@ class Plugin extends $ {
 
   app: App;
 
-  $item: any;
+  $item: JQuery;
 
-  data: any;
-
-  constructor(HTMLElement, app) {
+  constructor(HTMLElement: HTMLElement, app: App) {
     super();
 
     this.item = HTMLElement;
@@ -43,7 +43,7 @@ class Plugin extends $ {
     this.$item = $(HTMLElement);
   }
 
-  tilt = () => {
+  tilt = (): this => {
     this.destroy();
 
     this.app.tilt();
@@ -53,7 +53,7 @@ class Plugin extends $ {
     return this;
   };
 
-  scale = (option: boolean | undefined) => {
+  scale = (option: boolean | undefined): this => {
     if (typeof option !== 'boolean') {
       this.states.scale = !this.states.scale;
 
@@ -69,7 +69,7 @@ class Plugin extends $ {
     return this;
   };
 
-  bar = (option: boolean | undefined) => {
+  bar = (option: boolean | undefined): this => {
     if (typeof option !== 'boolean') {
       this.states.progressBar = !this.states.progressBar;
 
@@ -85,7 +85,7 @@ class Plugin extends $ {
     return this;
   };
 
-  tip = (option: boolean | undefined) => {
+  tip = (option: boolean | undefined): this => {
     if (typeof option !== 'boolean') {
       this.states.tip = !this.states.tip;
 
@@ -101,7 +101,7 @@ class Plugin extends $ {
     return this;
   };
 
-  range = (option: boolean | undefined) => {
+  range = (option: boolean | undefined): this => {
     if (typeof option !== 'boolean') {
       this.states.range = !this.states.range;
 
@@ -117,13 +117,13 @@ class Plugin extends $ {
     return this;
   };
 
-  setValue = (value: number, number: 1 | 2) => {
+  setValue = (value: number, number: 1 | 2): this => {
     this.app.setValue(value, number);
 
     return this;
   };
 
-  setLimits = (min: number, max: number) => {
+  setLimits = (min: number, max: number): this => {
     this.destroy();
 
     this.app.setLimits(min, max);
@@ -133,11 +133,11 @@ class Plugin extends $ {
     return this;
   };
 
-  isRange = () => {
+  isRange = (): boolean => {
     return this.app.isRange();
   };
 
-  setStep = (value) => {
+  setStep = (value: number): this => {
     this.destroy();
 
     this.app.setStep(value);
@@ -147,13 +147,13 @@ class Plugin extends $ {
     return this;
   };
 
-  stick = (option: boolean) => {
+  stick = (option: boolean): this => {
     this.app.stick(option);
 
     return this;
   };
 
-  destroy = () => {
+  destroy = (): void => {
     this.$item.data('handle1', this.app.getValue(1));
 
     if (this.isRange()) {
@@ -163,7 +163,7 @@ class Plugin extends $ {
     this.$item.html('');
   };
 
-  restore = () => {
+  restore = (): void | JQuery | boolean => {
     if (Object.keys(this.$item.data()).length === 0) {
       return this.$item;
     }
@@ -186,37 +186,5 @@ $.fn.slider = function slider(
   plugins.set(this[0], { plugin: $(this), app: app });
   return new Plugin(this[0], app);
 };
-
-const data = {
-  className: 'slider',
-
-  orientation: 'horizontal',
-
-  type: 'single',
-
-  stepSize: 90,
-
-  maxValue: 400,
-
-  minValue: 0,
-
-  toolTip: true,
-
-  marker: true,
-
-  progressBarColor: 'brown',
-
-  sliderColor: 'red',
-
-  sliderWidth: 5,
-
-  sliderHeight: 200,
-
-  pinTextColor: 'green',
-
-  toolTextColor: 'red',
-};
-
-// $('#slider').slider(data);
 
 export default Plugin;

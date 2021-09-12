@@ -1,70 +1,82 @@
 import './demo.css';
 declare global {
+  type IOptions = {
+    className: string;
+    orientation: string;
+    type: string;
+    stepSize: number;
+    maxValue: number;
+    minValue: number;
+    toolTip: boolean;
+    marker: boolean;
+    progressBarColor: string;
+    sliderColor: string;
+    sliderWidth: number;
+    sliderHeight: number;
+    pinTextColor: string;
+    toolTextColor: string;
+  };
+  type IPlugin = {
+    (options?: Partial<IOptions>): IPlugin;
+    tilt: () => IPlugin;
+    range: () => IPlugin;
+    scale: () => IPlugin;
+    bar: () => IPlugin;
+    tip: () => IPlugin;
+    isRange: () => boolean;
+    setLimits: (val1: number, val2: number) => IPlugin;
+    setValue: (value: number, numOfHandle: number | string) => IPlugin;
+    setStep: (str: string) => IPlugin;
+  };
   interface JQuery {
     slider: (options?) => IPlugin;
   }
 }
-type IOptions = {
-  className: string;
-  orientation: string;
-  type: string;
-  stepSize: number;
-  maxValue: number;
-  minValue: number;
-  toolTip: boolean;
-  marker: boolean;
-  progressBarColor: string;
-  sliderColor: string;
-  sliderWidth: number;
-  sliderHeight: number;
-  pinTextColor: string;
-  toolTextColor: string;
-};
-type IPlugin = {
-  (options?: Partial<IOptions>): IPlugin;
-  tilt: Function;
-  range: Function;
-  scale: Function;
-  bar: Function;
-  tip: Function;
-  isRange: Function;
-  setLimits: Function;
-  setValue: Function;
-  setStep: Function;
-};
+
 interface JQuery {
   slider: IPlugin;
 }
 
 class Panel {
   item: HTMLElement;
+
   elements: HTMLElement[];
+
   to: HTMLInputElement;
+
   name: string;
+
   slider: IPlugin;
+
   constructor(nameOfSliderDiv, slider) {
-    this.item = document.querySelector(nameOfSliderDiv);
+    this.fetchItem(nameOfSliderDiv);
     this.name = nameOfSliderDiv;
     this.elements = [];
     this.slider = slider;
   }
-  public bindToDiv(nameOfElement, func: string, nameOfElement2?) {
+
+  private fetchItem(name: string) {
+    this.item = document.querySelector(name);
+  }
+
+  public bindToDiv(nameOfElement, func: string): boolean {
     const element = document.querySelector(nameOfElement);
     this.bindCheckboxs();
     this.elements.push(element);
     if (element.type === 'checkbox') {
       element.onchange = this.slider[func];
-      if (func === 'range') {
-      }
 
       return true;
     }
+    return false;
   }
+
   private bindCheckboxs() {
+    const onChange = () => {
+      this.checkForRange();
+    };
     this.elements.forEach((item) => {
-      item.addEventListener('change', () => {
-        this.checkForRange();
-      });
+      item.addEventListener('change', onChange);
     });
   }
 
@@ -107,6 +119,7 @@ class Panel {
       this.checkForRange();
     }
   }
+
   public bindStep(elementID) {
     const el = document.querySelector(elementID);
     el.onkeydown = (e) => {
@@ -116,8 +129,7 @@ class Panel {
     };
   }
 }
-
-document.addEventListener('DOMContentLoaded', () => {
+const onDOMLoaded = () => {
   const slider3 = $('#slider3').slider();
 
   const slider2 = $('#slider2').slider();
@@ -154,4 +166,5 @@ document.addEventListener('DOMContentLoaded', () => {
   panel3.bindToDiv('#scale3', 'scale');
   panel3.bindToDiv('#bar3', 'bar');
   panel3.bindToDiv('#tip3', 'tip');
-});
+};
+document.addEventListener('DOMContentLoaded', onDOMLoaded);

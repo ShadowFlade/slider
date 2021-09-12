@@ -239,9 +239,9 @@ class Model extends EventMixin {
   }
 
   public calcValue(
-    target: HTMLDivElement,
+    target: HTMLElement,
     offset: number
-  ): { value: number; target: HTMLDivElement } {
+  ): { value: number; target: HTMLElement } {
     let margin;
     if (this._settings.orientation === 'horizontal') {
       margin = 'marginLeft';
@@ -261,7 +261,7 @@ class Model extends EventMixin {
 
   public calcMain(value: number, target: HTMLDivElement): void {
     let widthOrHeight;
-    if (this._settings.orientation == 'horizontal') {
+    if (this._settings.orientation === 'horizontal') {
       widthOrHeight = 'sliderWidth';
     } else {
       widthOrHeight = 'sliderHeight';
@@ -298,6 +298,7 @@ class Model extends EventMixin {
   public setOption(key: string, value: string | number | boolean): void {
     if (has.call(this._settings, key)) {
       this._settings[key] = value;
+      console.log(value);
       this.trigger('settings changed');
     }
   }

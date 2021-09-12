@@ -15,5 +15,38 @@
   <body>
     <div id="slider"></div>
     <script src="/dist/plugin.js"></script>
+    <script>
+      const data = {
+        className: 'slider',
+
+        orientation: 'horizontal',
+
+        type: 'single',
+
+        stepSize: 90,
+
+        maxValue: 400,
+
+        minValue: 0,
+
+        toolTip: true,
+
+        marker: true,
+
+        progressBarColor: 'brown',
+
+        sliderColor: 'red',
+
+        sliderWidth: 5,
+
+        sliderHeight: 200,
+
+        pinTextColor: 'green',
+
+        toolTextColor: 'red',
+      };
+
+      $('#slider').slider(data);
+    </script>
   </body>
 </html>

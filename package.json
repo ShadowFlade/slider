@@ -31,6 +31,7 @@
     "css-mqpacker": "^7.0.0",
     "cssnano": "^4.1.11",
     "eslint": "^7.30.0",
+    "eslint-plugin-fsd": "^1.0.1",
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-webpack-plugin": "^2.5.4",
     "file-loader": "^4.2.0",

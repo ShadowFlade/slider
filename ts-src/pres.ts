@@ -51,7 +51,7 @@ class Pres extends EventMixin {
     let widthOrHeight: number;
     if (orientation === 'horizontal') {
       widthOrHeight = this._model.getStyle('sliderWidth') as number;
-    } else if (orientation == 'vertical') {
+    } else if (orientation === 'vertical') {
       widthOrHeight = this._model.getStyle('sliderHeight') as number;
     }
     const options = this.convertOptions(this._model.getStyles());
@@ -63,8 +63,8 @@ class Pres extends EventMixin {
       container.appendChild(marker);
     }
     this.fetchDivs();
-    this._view.implementStyles(options, this._model._settings.orientation);
-    this._model.setOptions(this._view.getOffsetsAndLimits(orientation as Ori));
+    this._view.implementStyles(options);
+    this._model.setOptions(this._view.getOffsetsAndLimits());
     this._model.setOption('built', true);
     this._view.rangeInterval();
   }
@@ -97,7 +97,7 @@ class Pres extends EventMixin {
     });
   }
 
-  public showValue(handle) {
+  public showValue(handle: HTMLElement): void {
     const { direction } = this.temp;
     const offset = handle.getBoundingClientRect()[direction];
     const { value, target } = this._model.calcValue(handle, offset);
@@ -194,7 +194,8 @@ class Pres extends EventMixin {
       handle.ondragstart = () => {
         return false;
       };
-      handle.addEventListener('pointerdown', (event) => {
+
+      const onPointerDown = (event) => {
         ori = this._model._settings.orientation;
         type = this._model._settings.type;
         event.preventDefault();
@@ -224,10 +225,10 @@ class Pres extends EventMixin {
         };
         document.addEventListener('pointermove', mouseMove);
         document.addEventListener('pointerup', onMouseUp);
-      });
+      };
+      handle.addEventListener('pointerdown', onPointerDown);
     });
-
-    container.addEventListener('click', (event) => {
+    const handleContainerClick = (event) => {
       ori = this._model._settings.orientation;
       type = this._model._settings.type;
       const target = event.target as HTMLElement;
@@ -249,7 +250,8 @@ class Pres extends EventMixin {
           type
         );
       }
-    });
+    };
+    container.addEventListener('click', handleContainerClick);
   }
 
   private transferData(data, ori?: Ori, type?: Type): void {
@@ -305,7 +307,7 @@ class Pres extends EventMixin {
     return this._model.getSettings();
   }
 
-  private renewTemp() {
+  private renewTemp(): void {
     Object.keys(this.temp).forEach((key) => {
       if (has.call(this._model._settings, key)) {
         this.temp[key] = this._model._settings[key];

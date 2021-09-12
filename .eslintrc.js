@@ -10,13 +10,14 @@ module.exports = {
     'airbnb-base/legacy',
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
+    'plugin:fsd/all'
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 12,
     sourceType: 'module',
   },
-  plugins: ['@typescript-eslint', 'prettier'],
+  plugins: ['@typescript-eslint', 'prettier','fsd'],
   rules: {
 
     'prettier/prettier': [0, { singleQuote: true, parser: 'flow' }],

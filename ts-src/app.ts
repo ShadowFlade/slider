@@ -5,6 +5,7 @@ import { Pres } from './pres';
 import PresBuilder from './presBuilder';
 class App {
   _item: HTMLElement;
+
   states: {
     range: boolean;
     orientation: string;
@@ -12,6 +13,7 @@ class App {
     tip: boolean;
     stick: boolean;
   };
+
   constructor(item: HTMLElement, options: Record<string, unknown>) {
     this._item = item;
     this._model = new Model(options, item);

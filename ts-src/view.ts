@@ -1,7 +1,7 @@
 import EventMixin from './eventemitter';
 import { Pres } from './pres';
 import { shortenValue } from './utils';
-import { Type, Ori } from './model';
+import { Type, Ori, ICoords } from './model';
 type Elements<T> = {
   _slider: T;
   _sliderMain: T;
@@ -47,15 +47,20 @@ class View extends EventMixin {
     _pins: [],
   };
 
-  constructor(pres, options, item) {
+  constructor(pres: Pres, options: Record<string, unknown>, item: HTMLElement) {
     super();
     this._pres = pres;
     this._item = item;
+    console.log('🚀 ~ View ~ constructor ~ this._item', this._item);
   }
 
-  public implementStyles(options, pos) {
+  public implementStyles(options: Record<string, unknown>): {
+    slider: HTMLElement;
+    range: HTMLElement;
+    handles: HTMLElement[];
+    wrapper: HTMLElement;
+  } {
     this.initiateOptions(options);
-    // this.temp.orientation = pos;
     const tooltipLeftOffset =
       this._elements._tooltips[0].getBoundingClientRect().left;
     if (tooltipLeftOffset < 0) {
@@ -84,7 +89,7 @@ class View extends EventMixin {
     where.append(element);
   }
 
-  public getOffsetsAndLimits(ori: Ori): Record<string, number> {
+  public getOffsetsAndLimits(): Record<string, number> {
     const { offsetLength } = this.temp;
     const mainMax =
       this._elements._sliderMain[offsetLength] -
@@ -114,7 +119,7 @@ class View extends EventMixin {
     return nodes as HTMLElement[];
   }
 
-  public fetchDivs(orientation: Ori, defClassName: string) {
+  public fetchDivs(orientation: Ori, defClassName: string): void {
     this._elements._sliderMain = this.fetchHTMLEl(
       `${defClassName}-main`,
       true
@@ -205,7 +210,7 @@ class View extends EventMixin {
     });
   }
 
-  public refreshCoords(data, ori: Ori, type: Type): void {
+  public refreshCoords(data: ICoords, ori: Ori, type: Type): void {
     const isClickedOnPin = data.clicked;
     const isNormallyDragged = data.altDrag;
     let newLeft: number;
@@ -239,9 +244,8 @@ class View extends EventMixin {
       range.style[widthOrHeight] = newLeft + handle.offsetWidth / 2 + 'px';
     }
     if (!isClickedOnPin) {
-      handle.dataset.value = value;
-      value = shortenValue(value);
-      toolTip.textContent = value;
+      handle.dataset.value = String(value);
+      toolTip.textContent = shortenValue(Number(value));
     }
   }
 
@@ -336,7 +340,7 @@ class View extends EventMixin {
       length + handle1.offsetWidth / 2 + 'px';
   }
 
-  public showValue(target: HTMLDivElement, value: number): void {
+  public showValue(target: HTMLElement, value: number): void {
     const tool = target.getElementsByClassName('tooltip')[0];
     target.dataset.value = String(Math.abs(value));
     tool.textContent = String(Math.abs(value));

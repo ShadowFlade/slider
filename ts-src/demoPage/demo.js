@@ -3,28 +3,31 @@
 // require("./demo.css");
 var Panel = /** @class */ (function () {
     function Panel(nameOfSliderDiv, slider) {
-        this.item = document.querySelector(nameOfSliderDiv);
+        this.fetchItem(nameOfSliderDiv);
         this.name = nameOfSliderDiv;
         this.elements = [];
         this.slider = slider;
     }
-    Panel.prototype.bindToDiv = function (nameOfElement, func, nameOfElement2) {
+    Panel.prototype.fetchItem = function (name) {
+        this.item = document.querySelector(name);
+    };
+    Panel.prototype.bindToDiv = function (nameOfElement, func) {
         var element = document.querySelector(nameOfElement);
         this.bindCheckboxs();
         this.elements.push(element);
         if (element.type === 'checkbox') {
             element.onchange = this.slider[func];
-            if (func === 'range') {
-            }
             return true;
         }
+        return false;
     };
     Panel.prototype.bindCheckboxs = function () {
         var _this = this;
+        var onChange = function () {
+            _this.checkForRange();
+        };
         this.elements.forEach(function (item) {
-            item.addEventListener('change', function () {
-                _this.checkForRange();
-            });
+            item.addEventListener('change', onChange);
         });
     };
     Panel.prototype.checkForRange = function () {
@@ -77,7 +80,7 @@ var Panel = /** @class */ (function () {
     };
     return Panel;
 }());
-document.addEventListener('DOMContentLoaded', function () {
+var onDOMLoaded = function () {
     var slider3 = $('#slider3').slider();
     var slider2 = $('#slider2').slider();
     var qweSlider = $('#qwe').slider({
@@ -111,4 +114,5 @@ document.addEventListener('DOMContentLoaded', function () {
     panel3.bindToDiv('#scale3', 'scale');
     panel3.bindToDiv('#bar3', 'bar');
     panel3.bindToDiv('#tip3', 'tip');
-});
+};
+document.addEventListener('DOMContentLoaded', onDOMLoaded);

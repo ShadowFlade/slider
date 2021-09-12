@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { Model, Type } from '../model';
+import { Model } from '../model';
 import View from '../view';
 import { test, describe, jest } from '@jest/globals';
 import { Pres } from '../pres';
@@ -33,11 +33,11 @@ describe('View:', () => {
       'slider-marker',
       'tooltipContainer',
     ];
-    for (const i of classes) {
+    classes.forEach((i) => {
       const div = document.createElement('div');
       div.className = String(i);
       item.appendChild(div);
-    }
+    });
     const handle1 = document.createElement('div');
     handle1.className = 'slider-handle--horizontal';
     item.appendChild(handle1);
@@ -61,17 +61,6 @@ describe('View:', () => {
     const min = document.createElement('div');
     min.classList.add('slider-min--vertical');
     item.append(min);
-    const position = 'horizontal';
-    const options = {
-      slider: {
-        color: 'black',
-        'background-color': 'black',
-      },
-      progressBar: {
-        color: 'green',
-        'background-color': 'green',
-      },
-    };
     pres.fetchDivs();
   });
 
@@ -82,7 +71,6 @@ describe('View:', () => {
   });
 
   test('should render the element', () => {
-    const el = document.createElement('div');
     const el2 = document.createElement('div');
     el2.classList.add('slider-handle');
     document.body.appendChild(el2);
@@ -126,6 +114,7 @@ describe('View:refresh coordinates new', () => {
   let view;
   let data;
   beforeEach(() => {
+    // eslint-disable-next-line no-global-assign
     document = dom.window.document;
     item = document.createElement('div');
     document.body.appendChild(item);
@@ -144,11 +133,11 @@ describe('View:refresh coordinates new', () => {
       'slider-marker',
       'tooltipContainer',
     ];
-    for (const i of classes) {
+    classes.forEach((i) => {
       const div = document.createElement('div');
       div.className = String(i);
       item.appendChild(div);
-    }
+    });
     const handle1 = document.createElement('div');
     handle1.className = 'slider-handle--horizontal';
     item.appendChild(handle1);
@@ -169,24 +158,9 @@ describe('View:refresh coordinates new', () => {
     js2.classList.add('jsSlider-clickable');
     js1.textContent = '19';
     js2.textContent = '20';
-    const position = 'horizontal';
-    const options = {
-      slider: {
-        color: 'black',
-        'background-color': 'black',
-      },
-      progressBar: {
-        color: 'green',
-        'background-color': 'green',
-      },
-    };
     pres.fetchDivs();
     const xs = [200, 15, 10, 100, 199];
     const values = [100, 1000, 1361];
-    const handles = [
-      Array.from(view._elements._handles)[0],
-      Array.from(view._elements._handles)[1],
-    ];
     data = {
       main: 20,
       prevMain: 0,
@@ -203,17 +177,18 @@ describe('View:refresh coordinates new', () => {
     const handleLeft1 = view._elements._handles[0].style.left;
     const handleLeft2 = view._elements._handles[1].style.left;
     const toolTipiValue = view._elements._tooltips.textContent;
+    // eslint-disable-next-line func-names
     deepCheck = function (data, handle, ori, type, targetFocClick?) {
-      data.target = !!targetFocClick ? targetFocClick : handle;
-      for (const i of xs) {
-        for (const j of values) {
+      data.target = targetFocClick || handle;
+      xs.forEach((i) => {
+        values.forEach((j) => {
           data.main = i;
           data.value = j;
           view.refreshCoords(data, ori, type);
 
           let handleReceiver;
           let numOfHandle;
-          if (handle == view._elements._handles[0]) {
+          if (handle === view._elements._handles[0]) {
             handleReceiver = handleLeft1;
             numOfHandle = 0;
           } else {
@@ -225,8 +200,8 @@ describe('View:refresh coordinates new', () => {
           expect(toolTipiValue).not.toEqual(
             view._elements._tooltips[numOfHandle].textContent
           );
-        }
-      }
+        });
+      });
     };
   });
   test('should refresh coordinates on drag,horizontal,single', () => {
@@ -258,7 +233,7 @@ describe('View:refresh coordinates new', () => {
     };
     const mains = [50, 100, 150, 200];
     const offsets = [];
-    for (const i of mains) {
+    mains.forEach((i) => {
       const div: HTMLElement = document.createElement('div');
       const div2 = document.createElement('div');
       div2.textContent = String(i * 30);
@@ -295,9 +270,9 @@ describe('View:refresh coordinates new', () => {
         };
       });
       offsets.push({ div: div, value: div.textContent, offset: i });
-    }
+    });
     view.pinsCoordinatesItems = offsets;
-    const nums = offsets.map((item) => item.offset);
+    const nums = offsets.map((num) => num.offset);
     view.pinsCoordinates = nums;
 
     deepCheck(d, view._elements._handles[0], 'horizontal', 'single');
@@ -307,7 +282,7 @@ describe('View:refresh coordinates new', () => {
     view._elements._range.style.width = '0px';
 
     const mains = [50, 100, 150, 200];
-    for (const i of mains) {
+    mains.forEach((i) => {
       const div = document.createElement('div');
       const div2 = document.createElement('div');
       div2.textContent = String(i * 30);
@@ -364,7 +339,7 @@ describe('View:refresh coordinates new', () => {
         'single',
         div2
       );
-    }
+    });
   });
 });
 

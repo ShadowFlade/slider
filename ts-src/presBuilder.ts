@@ -113,23 +113,13 @@ class PresBuilder {
         majorMarker.style[marginCss] = margin - handle1.offsetWidth / 2 + 'px';
       }
 
-      if (!altDrag) {
-        const value = listOfValues[j];
-        majorMarker.dataset.value = value.toString();
-        markerValue.dataset.value = value.toString();
-        markerValue.textContent = value.toString();
-        majorMarker.append(markerValue);
-      } else {
-        const value = listOfValues[j];
-        majorMarker.dataset.value = value.toString();
-        markerValue.dataset.value = value.toString();
-        markerValue.textContent = value.toString();
-        majorMarker.append(markerValue);
-        j += 1;
-      }
+      const value = listOfValues[i];
+      majorMarker.dataset.value = value.toString();
+      markerValue.dataset.value = value.toString();
+      markerValue.textContent = value.toString();
+      majorMarker.append(markerValue);
     }
     markerDiv.className = `slider-marker slider-marker--${orientation}`;
-
     return markerDiv;
   }
 
@@ -199,6 +189,8 @@ class PresBuilder {
     let majorMarkers = Math.trunc(
       (behavior.maxValue - behavior.minValue) / behavior.stepSize
     );
+    console.log('🚀 ~ PresBuilder ~ calcPins ~ majorMarkers', majorMarkers);
+
     // 40px between pins is the optimal number,if it is smaller,we make it 40
     if (widthOrHeight / majorMarkers < 40) {
       altDrag = true;
@@ -210,21 +202,19 @@ class PresBuilder {
 
     const diff = this._model._settings.maxMinDifference;
     const ss = this._model._settings.stepSize;
-    // console.log(
-    //   '🚀 ~ PresBuilder ~ calcPins ~ n',
-    //   Math.trunc(diff / (ss * majorMarkers)),
-    //   diff,
-    //   ss,
-    //   majorMarkers
-    // );
-
     const n = checkForZero(Math.round(diff / (ss * majorMarkers))); // каждый n-ый элемент из возможныъ value будет помещен на scale
+    console.log('🚀 ~ PresBuilder ~ calcPins ~ n', n);
 
     const valuesForMarkers = [];
     for (let i = n; i < diff / ss; i += n) {
       const value = ss * i + behavior.minValue;
       valuesForMarkers.push(value);
     }
+    console.log(
+      '🚀 ~ PresBuilder ~ calcPins ~ valuesForMarkers',
+      valuesForMarkers
+    );
+
     const margin = widthOrHeight / valuesForMarkers.length;
     return { valuesForMarkers, majorMarkers, altDrag, margin };
   }
