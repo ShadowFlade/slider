@@ -2,7 +2,15 @@ import EventMixin from './eventemitter';
 import { Temp } from './pres';
 import { divisionFloor } from './utils';
 const has = Object.prototype.hasOwnProperty;
+function isOri(arg: any): arg is Ori {
+  return arg == 'horizontal' || arg == 'vertical';
+}
 type Ori = 'horizontal' | 'vertical';
+// enum OriEnum {
+//   horizontal = 'horizontal',
+//   vertical = 'vertical',
+// }
+// type Ori = Record<OriEnum,string>
 type Type = 'double' | 'single';
 
 type IStyles = {
@@ -50,7 +58,7 @@ type ICoords = {
   caller: string;
   clicked: boolean;
   altDrag: boolean;
-  target: HTMLDivElement;
+  target: HTMLElement;
 };
 
 class Model extends EventMixin {
@@ -259,7 +267,7 @@ class Model extends EventMixin {
     };
   }
 
-  public calcMain(value: number, target: HTMLDivElement): void {
+  public calcMain(value: number, target: HTMLElement): void {
     let widthOrHeight;
     if (this._settings.orientation === 'horizontal') {
       widthOrHeight = 'sliderWidth';
@@ -314,11 +322,11 @@ class Model extends EventMixin {
     return this._settings.styles;
   }
 
-  public getStyle(option: string): string | number | boolean {
+  public getStyle(option: string): number | string {
     return this._settings.styles[option];
   }
 
-  public getSetting(option: string): string | number | boolean {
+  public getSetting(option: string): number | string | boolean {
     return this._settings[option];
   }
 

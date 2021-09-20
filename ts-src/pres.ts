@@ -42,17 +42,17 @@ class Pres extends EventMixin {
 
   public init(): void {
     this._model.validateOptions();
-    const orientation = this._model.getSetting('orientation');
-    this.temp = this.determineMetrics(orientation as Ori);
+    const orientation = this._model.getSetting('orientation') as Ori;
+    this.temp = this.determineMetrics(orientation);
     this.temp.ori = this._model._settings.orientation;
     this.temp.type = this._model._settings.type;
     this._model.temp = this.temp;
     this._view.temp = this.temp;
     let widthOrHeight: number;
     if (orientation === 'horizontal') {
-      widthOrHeight = this._model.getStyle('sliderWidth') as number;
+      widthOrHeight = Number(this._model.getStyle('sliderWidth'));
     } else if (orientation === 'vertical') {
-      widthOrHeight = this._model.getStyle('sliderHeight') as number;
+      widthOrHeight = Number(this._model.getStyle('sliderHeight'));
     }
     const options = this.convertOptions(this._model.getStyles());
     const behavior = this._model.getSettings();
@@ -87,10 +87,10 @@ class Pres extends EventMixin {
     coords.caller = 'model';
     console.log(this._view._elements._handles);
     this._view._elements._handles.forEach((item) => {
-      coords.target = item as HTMLDivElement;
+      coords.target = item;
       coords.main = start;
       coords.value = this._model.calcValue(
-        item as HTMLDivElement,
+        item,
         item.getBoundingClientRect()[direction]
       ).value;
       this.transferData(coords, ori, type); // почему если здесь поставить this._view.refreshCoord, то будет ошибка maximum call stack exceeded
@@ -200,7 +200,7 @@ class Pres extends EventMixin {
     const ori = this._model._settings.orientation;
     const type = this._model._settings.type;
     event.preventDefault();
-    const target = event.target as HTMLDivElement;
+    const target = event.target;
     const { direction, client } = this.temp;
     const shift = event[client] - target.getBoundingClientRect()[direction];
 
@@ -233,11 +233,9 @@ class Pres extends EventMixin {
     const marginTop = slider.getBoundingClientRect().top;
     const ori = this._model._settings.orientation;
     const type = this._model._settings.type;
-    const target = event.target as HTMLElement;
+    const target = event.target;
     if (target.className.includes('jsSlider-clickable')) {
-      const value =
-        (target.getElementsByClassName('marker-value')[0] as HTMLElement) ||
-        target;
+      const value = target.getElementsByClassName('marker-value')[0] || target;
       this.transferData(
         {
           y: event.clientY,
@@ -265,12 +263,12 @@ class Pres extends EventMixin {
 
   public setValue(value: number, target: HandleNum): void {
     const viewEls = this._view._elements;
-    let handle: HTMLDivElement;
+    let handle: HTMLElement;
     if (target === 1) {
-      handle = viewEls._handles[0] as HTMLDivElement;
+      handle = viewEls._handles[0];
     } else if (target === 2) {
       if (this.temp.type === 'double') {
-        handle = viewEls._handles[1] as HTMLDivElement;
+        handle = viewEls._handles[1];
       } else {
         throw new ReferenceError('Can not reference absent handle');
       }

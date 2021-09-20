@@ -2,6 +2,20 @@ import EventMixin from './eventemitter';
 import { Pres } from './pres';
 import { shortenValue } from './utils';
 import { Type, Ori, ICoords } from './model';
+
+type Fetch = {
+  fetchHTMLEl(
+    className: string,
+    single: boolean,
+    elem: ParentNode
+  ): HTMLElement | HTMLElement[];
+  fetchHTMLEl(className: string, single: true, elem: ParentNode): HTMLElement;
+  fetchHTMLEl(
+    className: string,
+    single: false,
+    elem: ParentNode
+  ): HTMLElement[];
+};
 type Elements<T> = {
   _slider: T;
   _sliderMain: T;
@@ -104,7 +118,7 @@ class View extends EventMixin {
     };
   }
 
-  public fetchHTMLEl(
+  public fetchHTMLEl<Fetch>(
     className: string,
     single: boolean,
     elem: ParentNode = this._item
