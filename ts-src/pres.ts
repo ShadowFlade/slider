@@ -85,6 +85,7 @@ class Pres extends EventMixin {
     const start = start1 || start2;
     const coords = this._model.coords;
     coords.caller = 'model';
+    console.log(this._view._elements._handles);
     this._view._elements._handles.forEach((item) => {
       coords.target = item as HTMLDivElement;
       coords.main = start;
@@ -181,77 +182,76 @@ class Pres extends EventMixin {
   public onMouseDown(): void {
     const handles = this._view._elements._handles;
     const container = this._view._elements._sliderContainer;
-    const slider = this._view._elements._slider;
-    const marginLeft = slider.getBoundingClientRect().left; // TODO should take from model?
-    const marginTop = slider.getBoundingClientRect().top;
-    let ori: Ori;
-    let type: Type;
-    let shift: number;
     this._model.on('coords changed', this.transferData.bind(this));
     this._model.on('settings changed', this.renewTemp.bind(this));
-
     handles.forEach((handle) => {
       handle.ondragstart = () => {
         return false;
       };
-
-      const onPointerDown = (event) => {
-        ori = this._model._settings.orientation;
-        type = this._model._settings.type;
-        event.preventDefault();
-
-        const target = event.target as HTMLDivElement;
-        const { direction, client } = this.temp;
-        shift = event[client] - target.getBoundingClientRect()[direction];
-
-        const mouseMove = (e) => {
-          this.transferData(
-            {
-              y: e.clientY,
-              x: e.clientX,
-              shift: shift,
-              marginLeft: marginLeft,
-              clicked: false,
-              marginTop: marginTop,
-              target: event.target,
-            },
-            ori,
-            type
-          );
-        };
-        const onMouseUp = (e) => {
-          document.removeEventListener('pointermove', mouseMove);
-          document.removeEventListener('pointerup', onMouseUp);
-        };
-        document.addEventListener('pointermove', mouseMove);
-        document.addEventListener('pointerup', onMouseUp);
-      };
-      handle.addEventListener('pointerdown', onPointerDown);
+      handle.addEventListener('pointerdown', this.onPointerDown.bind(this));
     });
-    const handleContainerClick = (event) => {
-      ori = this._model._settings.orientation;
-      type = this._model._settings.type;
-      const target = event.target as HTMLElement;
-      if (target.className.includes('jsSlider-clickable')) {
-        const value =
-          (target.getElementsByClassName('marker-value')[0] as HTMLElement) ||
-          target;
-        this.transferData(
-          {
-            y: event.clientY,
-            x: target.getBoundingClientRect().left,
-            value: value.dataset.value,
-            clicked: true,
-            target: target,
-            marginLeft: marginLeft,
-            marginTop: marginTop,
-          },
-          ori,
-          type
-        );
-      }
+    container.addEventListener('click', this.handleContainerClick.bind(this));
+  }
+
+  private onPointerDown(event) {
+    const slider = this._view._elements._slider;
+    const marginLeft = slider.getBoundingClientRect().left;
+    const marginTop = slider.getBoundingClientRect().top;
+    const ori = this._model._settings.orientation;
+    const type = this._model._settings.type;
+    event.preventDefault();
+    const target = event.target as HTMLDivElement;
+    const { direction, client } = this.temp;
+    const shift = event[client] - target.getBoundingClientRect()[direction];
+
+    const mouseMove = (e) => {
+      this.transferData(
+        {
+          y: e.clientY,
+          x: e.clientX,
+          shift: shift,
+          marginLeft: marginLeft,
+          clicked: false,
+          marginTop: marginTop,
+          target: event.target,
+        },
+        ori,
+        type
+      );
     };
-    container.addEventListener('click', handleContainerClick);
+    const onMouseUp = (e) => {
+      document.removeEventListener('pointermove', mouseMove);
+      document.removeEventListener('pointerup', onMouseUp);
+    };
+    document.addEventListener('pointermove', mouseMove);
+    document.addEventListener('pointerup', onMouseUp);
+  }
+
+  private handleContainerClick(event) {
+    const slider = this._view._elements._slider;
+    const marginLeft = slider.getBoundingClientRect().left;
+    const marginTop = slider.getBoundingClientRect().top;
+    const ori = this._model._settings.orientation;
+    const type = this._model._settings.type;
+    const target = event.target as HTMLElement;
+    if (target.className.includes('jsSlider-clickable')) {
+      const value =
+        (target.getElementsByClassName('marker-value')[0] as HTMLElement) ||
+        target;
+      this.transferData(
+        {
+          y: event.clientY,
+          x: target.getBoundingClientRect().left,
+          value: value.dataset.value,
+          clicked: true,
+          target: target,
+          marginLeft: marginLeft,
+          marginTop: marginTop,
+        },
+        ori,
+        type
+      );
+    }
   }
 
   private transferData(data, ori?: Ori, type?: Type): void {

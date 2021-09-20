@@ -218,7 +218,6 @@ describe('Pres:changing the elements', () => {
       },
     };
     pres.fetchDivs();
-
     view.implementStyles(options, position);
   });
   test('transfer data should call mode.renew', () => {
@@ -244,7 +243,6 @@ describe('Pres:changing the elements', () => {
     const mock = jest.spyOn(model, 'calcMain');
     pres.temp.ori = model._settings.orientation;
     pres.temp.type = model._settings.type;
-    console.log(pres.temp);
     pres.setValue(180, '2');
     expect(mock).toBeCalled();
   });
@@ -294,7 +292,7 @@ describe('Pres:changing the elements', () => {
     });
 
     const event = document.createEvent('MouseEvent');
-    event.initEvent('mousedown', true, true);
+    event.initEvent('pointerdown', true, true);
     const event2 = document.createEvent('MouseEvent');
 
     event2.initEvent('mousemove', true, true, dom.window, 0, 0, 0, 80, 20);
@@ -315,6 +313,11 @@ describe('Pres:changing the elements', () => {
     handle.dispatchEvent(event);
     handle.dispatchEvent(event2);
     expect(transferData).toBeCalled();
+    const pointerDown = jest
+      .spyOn(pres, 'onPointerDown')
+      .mockImplementation(() => {
+        return true;
+      });
   });
   test('inits properly', () => {
     pres.init();
@@ -347,26 +350,57 @@ describe('Pres:changing the elements', () => {
     expect(Ipres.temp).toEqual(tempForVertical);
   });
 
-  test('first refresh', () => {});
+  test('first refresh', () => {
+    const setValue = jest.spyOn(pres, 'setValue').mockImplementation(() => {
+      return true;
+    });
+    pres.firstRefresh();
+    expect(setValue).toBeCalled();
+  });
 
-  // test('determine metrics works with orientation vertical', () => {
+  test('first refresh if startValues==0', () => {
+    let Iitem;
+    let Imodel;
+    let Iview;
+    let Ipres;
+    let Idocument;
+    Idocument = dom.window.document;
+    Iitem = Idocument.createElement('div');
+    Idocument.body.appendChild(Iitem);
+    Imodel = new Model({ startValue1: 0, startValue2: 0 }, Iitem);
+    Ipres = new Pres(Imodel, Iitem);
+    Iview = new View(Ipres, { startValue1: 0, startValue2: 0 }, Iitem);
+    Ipres.temp = Ipres.determineMetrics('horizontal');
+    Iview.temp = Ipres.temp;
+    Imodel.temp = Ipres.temp;
+    Ipres.builder = new PresBuilder({
+      view: Iview,
+      model: Imodel,
+      settings: Imodel.getSettings(),
+      pres: Ipres,
+    });
+    Ipres.getView(Iview);
+    const transferData = jest
+      .spyOn(Ipres, 'transferData')
+      .mockImplementation(() => {
+        return true;
+      });
+    console.log(Imodel.getSettings(), 'SETTINGS');
 
-  //   pres.builder = new PresBuilder({
-  //     view: view,
-  //     model: model,
-  //     settings: model.getSettings(),
-  //     pres: pres,
-  //   });
+    const handle1 = document.createElement('div');
+    handle1.className = 'slider-handle--horizontal';
+    Iitem.appendChild(handle1);
+    const tool1 = document.createElement('div');
+    tool1.classList.add('tooltip');
+    handle1.appendChild(tool1);
 
-  //   pres.init();
-  //   const verticalOptions = {
-  //     offset: 'offsetTop',
-  //     widthOrHeight: 'height',
-  //     direction: 'top',
-  //     margin: 'marginTop',
-  //     client: 'clientY',
-  //     offsetLength: 'offsetHeight',
-  //   };
-  //   expect(verticalOptions).toEqual(pres.temp);
-  // });
+    const handle2 = document.createElement('div');
+    handle2.className = 'slider-handle--horizontal';
+    Iitem.appendChild(handle2);
+    Ipres.fetchDivs();
+    // Iview.implementStyles(options, position);
+
+    Ipres.firstRefresh();
+    expect(transferData).toBeCalled();
+  });
 });
