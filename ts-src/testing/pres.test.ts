@@ -242,6 +242,9 @@ describe('Pres:changing the elements', () => {
   });
   test('set value(handle=2) should  trigger model.calcMain', () => {
     const mock = jest.spyOn(model, 'calcMain');
+    pres.temp.ori = model._settings.orientation;
+    pres.temp.type = model._settings.type;
+    console.log(pres.temp);
     pres.setValue(180, '2');
     expect(mock).toBeCalled();
   });
@@ -317,6 +320,34 @@ describe('Pres:changing the elements', () => {
     pres.init();
     expect(pres.temp).toBeDefined();
   });
+  test('inits properly with vertical orientation', () => {
+    const tempForVertical = {
+      offset: 'offsetTop',
+      widthOrHeight: 'height',
+      direction: 'top',
+      margin: 'marginTop',
+      client: 'clientY',
+      offsetLength: 'offsetHeight',
+    };
+    const Iitem = document.createElement('div');
+    document.body.appendChild(item);
+    const Imodel = new Model({}, item);
+    const Ipres = new Pres(model, item);
+    const Iview = new View(pres, {}, item);
+    Ipres.temp = pres.determineMetrics('vertical');
+    Iview.temp = pres.temp;
+    Imodel.temp = pres.temp;
+    Ipres.builder = new PresBuilder({
+      view: view,
+      model: model,
+      settings: model.getSettings(),
+      pres,
+    });
+    Ipres.getView(view);
+    expect(Ipres.temp).toEqual(tempForVertical);
+  });
+
+  test('first refresh', () => {});
 
   // test('determine metrics works with orientation vertical', () => {
 

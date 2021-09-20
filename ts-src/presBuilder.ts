@@ -189,7 +189,6 @@ class PresBuilder {
     let majorMarkers = Math.trunc(
       (behavior.maxValue - behavior.minValue) / behavior.stepSize
     );
-    console.log('🚀 ~ PresBuilder ~ calcPins ~ majorMarkers', majorMarkers);
 
     // 40px between pins is the optimal number,if it is smaller,we make it 40
     if (widthOrHeight / majorMarkers < 40) {
@@ -203,17 +202,12 @@ class PresBuilder {
     const diff = this._model._settings.maxMinDifference;
     const ss = this._model._settings.stepSize;
     const n = checkForZero(Math.round(diff / (ss * majorMarkers))); // каждый n-ый элемент из возможныъ value будет помещен на scale
-    console.log('🚀 ~ PresBuilder ~ calcPins ~ n', n);
 
     const valuesForMarkers = [];
     for (let i = n; i < diff / ss; i += n) {
       const value = ss * i + behavior.minValue;
       valuesForMarkers.push(value);
     }
-    console.log(
-      '🚀 ~ PresBuilder ~ calcPins ~ valuesForMarkers',
-      valuesForMarkers
-    );
 
     const margin = widthOrHeight / valuesForMarkers.length;
     return { valuesForMarkers, majorMarkers, altDrag, margin };

@@ -51,7 +51,6 @@ class View extends EventMixin {
     super();
     this._pres = pres;
     this._item = item;
-    console.log('🚀 ~ View ~ constructor ~ this._item', this._item);
   }
 
   public implementStyles(options: Record<string, unknown>): {

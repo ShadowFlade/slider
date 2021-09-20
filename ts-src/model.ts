@@ -298,7 +298,6 @@ class Model extends EventMixin {
   public setOption(key: string, value: string | number | boolean): void {
     if (has.call(this._settings, key)) {
       this._settings[key] = value;
-      console.log(value);
       this.trigger('settings changed');
     }
   }
