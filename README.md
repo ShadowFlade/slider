@@ -119,6 +119,4 @@ You can find demo page in `ts-src/demoPage/` or at https://shadowflade.github.io
 
 ![demoPage](docs/ex2.png)
 
-## P.S.
-
-First test initialization can take about 20-25 seconds.
+[Architecture](docs/architecture.md)
