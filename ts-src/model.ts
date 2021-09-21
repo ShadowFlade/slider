@@ -141,7 +141,7 @@ class Model extends EventMixin {
     this.correctOptions();
   }
 
-  private correctOptions() {
+  private correctOptions(): void {
     this.coords.altDrag = this._settings.altDrag;
     this.coords.mainMax = this._settings.mainMax;
     this._settings.maxMinDifference =
@@ -182,7 +182,7 @@ class Model extends EventMixin {
     }
   }
 
-  private validate(data: ICoords) {
+  private validate(data: ICoords): ICoords {
     const dataFroValidation = { ...data };
     const max = this._settings.mainMax;
     const min = this._settings.mainMin;

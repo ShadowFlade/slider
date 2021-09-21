@@ -47,3 +47,5 @@ This entitity is responsible for the rendering of the result of **Model** calcul
 ## How it works
 
 **Presenter** listens with `eventListeners` for the manipulation with the handle (or it might be a click on a scale), sends the data to **Model** , it calulates necessary data,validates it and sends back to presenter, which then sends it to **View** to render.
+
+![Architecture](/docs/plugin2.svg)

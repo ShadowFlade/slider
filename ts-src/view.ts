@@ -118,7 +118,7 @@ class View extends EventMixin {
     };
   }
 
-  public fetchHTMLEl<Fetch>(
+  public fetchHTMLEl(
     className: string,
     single: boolean,
     elem: ParentNode = this._item
