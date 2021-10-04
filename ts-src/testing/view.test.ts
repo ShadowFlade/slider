@@ -38,19 +38,19 @@ describe('View:', () => {
       div.className = String(i);
       item.appendChild(div);
     });
-    const handle1 = document.createElement('div');
-    handle1.className = 'slider-handle--horizontal';
-    item.appendChild(handle1);
+    const handleLeft = document.createElement('div');
+    handleLeft.className = 'slider-handle--horizontal';
+    item.appendChild(handleLeft);
     const tool1 = document.createElement('div');
     tool1.classList.add('tooltip');
-    handle1.appendChild(tool1);
+    handleLeft.appendChild(tool1);
 
-    const handle2 = document.createElement('div');
-    handle2.className = 'slider-handle--horizontal';
-    item.appendChild(handle2);
+    const handleRight = document.createElement('div');
+    handleRight.className = 'slider-handle--horizontal';
+    item.appendChild(handleRight);
     const tool2 = document.createElement('div');
     tool2.classList.add('tooltip');
-    handle2.appendChild(tool2);
+    handleRight.appendChild(tool2);
 
     const js1 = document.createElement('div');
     const js2 = document.createElement('div');
@@ -138,19 +138,19 @@ describe('View:refresh coordinates new', () => {
       div.className = String(i);
       item.appendChild(div);
     });
-    const handle1 = document.createElement('div');
-    handle1.className = 'slider-handle--horizontal';
-    item.appendChild(handle1);
+    const handleLeft = document.createElement('div');
+    handleLeft.className = 'slider-handle--horizontal';
+    item.appendChild(handleLeft);
     const tool1 = document.createElement('div');
     tool1.classList.add('tooltip');
-    handle1.appendChild(tool1);
+    handleLeft.appendChild(tool1);
 
-    const handle2 = document.createElement('div');
-    handle2.className = 'slider-handle--horizontal';
-    item.appendChild(handle2);
+    const handleRight = document.createElement('div');
+    handleRight.className = 'slider-handle--horizontal';
+    item.appendChild(handleRight);
     const tool2 = document.createElement('div');
     tool2.classList.add('tooltip');
-    handle2.appendChild(tool2);
+    handleRight.appendChild(tool2);
 
     const js1 = document.createElement('div');
     const js2 = document.createElement('div');

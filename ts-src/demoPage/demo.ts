@@ -24,7 +24,7 @@ declare global {
     bar: () => IPlugin;
     tip: () => IPlugin;
     isRange: () => boolean;
-    setLimits: (val1: number, val2: number) => IPlugin;
+    setLimits: (valMin: number, valMax: number) => IPlugin;
     setValue: (value: number, numOfHandle: number | string) => IPlugin;
     setStep: (str: string) => IPlugin;
   };
@@ -88,9 +88,9 @@ class Panel {
     }
   }
 
-  public bindMinMax(elementID1: string, elementID2: string) {
-    const el1: HTMLInputElement = document.querySelector(elementID1);
-    const el2: HTMLInputElement = document.querySelector(elementID2);
+  public bindMinMax(minDivID: string, maxDivID: string) {
+    const el1: HTMLInputElement = document.querySelector(minDivID);
+    const el2: HTMLInputElement = document.querySelector(maxDivID);
 
     [el1, el2].forEach((item: HTMLInputElement) => {
       item.onkeydown = (e) => {
@@ -101,9 +101,9 @@ class Panel {
     });
   }
 
-  public bindFromTo(elementID1, elementID2) {
-    const el1: HTMLInputElement = document.querySelector(elementID1);
-    const el2: HTMLInputElement = document.querySelector(elementID2);
+  public bindFromTo(fromDivID, toDivID) {
+    const el1: HTMLInputElement = document.querySelector(fromDivID);
+    const el2: HTMLInputElement = document.querySelector(toDivID);
     this.to = el2;
     el1.onkeydown = (e) => {
       if (e.keyCode === 13) {
@@ -120,8 +120,8 @@ class Panel {
     }
   }
 
-  public bindStep(elementID) {
-    const el = document.querySelector(elementID);
+  public bindStep(stepDivID) {
+    const el = document.querySelector(stepDivID);
     el.onkeydown = (e) => {
       if (e.keyCode === 13) {
         this.slider.setStep(el.value);

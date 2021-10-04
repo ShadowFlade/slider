@@ -26,10 +26,6 @@ class EventMixin implements eventmixin {
     }
   }
 
-  // unsubscribe(eventName, callback) {
-  //   this.events[eventName] = this.events[eventName].filter(eventCallback => callback !== eventCallback);
-  // }
-
   trigger(eventName: string, ...args): void {
     if (!this._eventHandlers || !this._eventHandlers[eventName]) {
       return;

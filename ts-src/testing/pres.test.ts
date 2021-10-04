@@ -187,19 +187,19 @@ describe('Pres:changing the elements', () => {
       div.className = String(i);
       item.appendChild(div);
     });
-    const handle1 = document.createElement('div');
-    handle1.className = 'slider-handle--horizontal';
-    item.appendChild(handle1);
+    const handleLeft = document.createElement('div');
+    handleLeft.className = 'slider-handle--horizontal';
+    item.appendChild(handleLeft);
     const tool1 = document.createElement('div');
     tool1.classList.add('tooltip');
-    handle1.appendChild(tool1);
+    handleLeft.appendChild(tool1);
 
-    const handle2 = document.createElement('div');
-    handle2.className = 'slider-handle--horizontal';
-    item.appendChild(handle2);
+    const handleRight = document.createElement('div');
+    handleRight.className = 'slider-handle--horizontal';
+    item.appendChild(handleRight);
     const tool2 = document.createElement('div');
     tool2.classList.add('tooltip');
-    handle2.appendChild(tool2);
+    handleRight.appendChild(tool2);
     const js1 = document.createElement('div');
     const js2 = document.createElement('div');
     js1.classList.add('jsSlider-clickable');
@@ -367,9 +367,16 @@ describe('Pres:changing the elements', () => {
     Idocument = dom.window.document;
     Iitem = Idocument.createElement('div');
     Idocument.body.appendChild(Iitem);
-    Imodel = new Model({ startValue1: 0, startValue2: 0 }, Iitem);
+    Imodel = new Model(
+      { startValueLeftHandle: 0, startValueRightHandle: 0 },
+      Iitem
+    );
     Ipres = new Pres(Imodel, Iitem);
-    Iview = new View(Ipres, { startValue1: 0, startValue2: 0 }, Iitem);
+    Iview = new View(
+      Ipres,
+      { startValueLeftHandle: 0, startValueRightHandle: 0 },
+      Iitem
+    );
     Ipres.temp = Ipres.determineMetrics('horizontal');
     Iview.temp = Ipres.temp;
     Imodel.temp = Ipres.temp;
@@ -387,18 +394,17 @@ describe('Pres:changing the elements', () => {
       });
     console.log(Imodel.getSettings(), 'SETTINGS');
 
-    const handle1 = document.createElement('div');
-    handle1.className = 'slider-handle--horizontal';
-    Iitem.appendChild(handle1);
+    const handleLeft = document.createElement('div');
+    handleLeft.className = 'slider-handle--horizontal';
+    Iitem.appendChild(handleLeft);
     const tool1 = document.createElement('div');
     tool1.classList.add('tooltip');
-    handle1.appendChild(tool1);
+    handleLeft.appendChild(tool1);
 
-    const handle2 = document.createElement('div');
-    handle2.className = 'slider-handle--horizontal';
-    Iitem.appendChild(handle2);
+    const handleRight = document.createElement('div');
+    handleRight.className = 'slider-handle--horizontal';
+    Iitem.appendChild(handleRight);
     Ipres.fetchDivs();
-    // Iview.implementStyles(options, position);
 
     Ipres.firstRefresh();
     expect(transferData).toBeCalled();

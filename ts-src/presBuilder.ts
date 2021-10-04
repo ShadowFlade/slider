@@ -90,7 +90,7 @@ class PresBuilder {
 
   public makeMarker(behavior: Settings, widthOrHeight: number): HTMLElement {
     const orientation = this._pres.temp.ori;
-    const handle1 = this._view._elements._handles[0];
+    const handleLeft = this._view._elements._handles[0];
     const { margin: marginCss } = this._pres.temp;
     const markerDiv = document.createElement('div');
     const { valuesForMarkers, altDrag, margin } = this.calcPins(
@@ -108,9 +108,11 @@ class PresBuilder {
       markerDiv.classList.add(`slider-marker--${orientation}`);
       majorMarker.className = `jsOffset marker--major marker--major--${orientation}`;
       if (i === 0) {
-        majorMarker.style[marginCss] = margin - handle1.offsetWidth / 2 + 'px';
+        majorMarker.style[marginCss] =
+          margin - handleLeft.offsetWidth / 2 + 'px';
       } else {
-        majorMarker.style[marginCss] = margin - handle1.offsetWidth / 2 + 'px';
+        majorMarker.style[marginCss] =
+          margin - handleLeft.offsetWidth / 2 + 'px';
       }
 
       const value = listOfValues[i];

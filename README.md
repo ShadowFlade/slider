@@ -65,13 +65,13 @@ const data={
 
 **minValue**. **Default** option is //TODO.
 
-**startPos1** determines start position of the first handle in pixels.
+**startPosLeftHandle** determines start position of the first handle in pixels.
 
-**startPos2** determines start position of the second handle in pixels.
+**startPosRightHandle** determines start position of the second handle in pixels.
 
-**startValue1** determines start position of the first handle infered from the handed value.
+**startValueLeftHandle** determines start position of the first handle infered from the handed value.
 
-**startValue2** determines start position of the second handle infered from the handed value.
+**startValueRightHandle** determines start position of the second handle infered from the handed value.
 
 > Note: **startValue** settings will overwrite **startPos** settings. Do not use them together to avoid confusion.
 

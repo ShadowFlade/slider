@@ -1,4 +1,3 @@
-// import * as $ from 'jquery'
 import { Model } from './model';
 import View from './view';
 import { Pres } from './pres';
@@ -34,7 +33,6 @@ class App {
   public tilt(): void {
     if (this._model.getSettings().orientation === 'vertical') {
       this._model.setOption('orientation', 'horizontal');
-      // this.states.ori
     } else if (this._model.getSettings().orientation === 'horizontal') {
       this._model.setOption('orientation', 'vertical');
     }

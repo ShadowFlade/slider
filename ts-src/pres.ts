@@ -15,7 +15,7 @@ type Temp = {
   client: string;
   pinTextColor?: string;
   ori?: Ori;
-  type?: Type; // TODO how to tell ts that there will be those paramteters later?
+  type?: Type;
 };
 class Pres extends EventMixin {
   _item: Element;
@@ -71,10 +71,10 @@ class Pres extends EventMixin {
 
   public firstRefresh(): void {
     const { direction, ori, type } = this.temp;
-    let start1 = this._model._settings.startPos1;
-    const start2 = this._model._settings.startPos2;
-    const startValue1 = this._model._settings.startValue1;
-    const startValue2 = this._model._settings.startValue2;
+    let start1 = this._model._settings.startPosLeftHandle;
+    const start2 = this._model._settings.startPosRightHandle;
+    const startValue1 = this._model._settings.startValueLeftHandle;
+    const startValue2 = this._model._settings.startValueRightHandle;
     if (startValue1 !== 0 || startValue2 !== 0) {
       this.setValue(startValue1, 1);
       if (type === 'double') {

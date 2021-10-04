@@ -6,11 +6,6 @@ function isOri(arg: any): arg is Ori {
   return arg == 'horizontal' || arg == 'vertical';
 }
 type Ori = 'horizontal' | 'vertical';
-// enum OriEnum {
-//   horizontal = 'horizontal',
-//   vertical = 'vertical',
-// }
-// type Ori = Record<OriEnum,string>
 type Type = 'double' | 'single';
 
 type IStyles = {
@@ -37,10 +32,10 @@ type Settings = {
   _minPins: number;
   mainMax: number;
   mainMin: number;
-  startPos1: number;
-  startPos2: number;
-  startValue1: number;
-  startValue2: number;
+  startPosLeftHandle: number;
+  startPosRightHandle: number;
+  startValueLeftHandle: number;
+  startValueRightHandle: number;
   valueWidth: number;
   toolTip: boolean;
   altDrag: boolean;
@@ -99,13 +94,13 @@ class Model extends EventMixin {
     minValue: 0,
     maxMinDifference: 0,
     betweenMarkers: 40,
-    _minPins: 5, // optimal maximum number of pins
+    _minPins: 5, // optimal minumum number of pins
     mainMax: 200,
     mainMin: 0,
-    startPos1: 0,
-    startPos2: 100,
-    startValue1: 810,
-    startValue2: 0,
+    startPosLeftHandle: 0,
+    startPosRightHandle: 100,
+    startValueLeftHandle: 810,
+    startValueRightHandle: 0,
     valueWidth: 0,
     toolTip: true,
     marker: true,
@@ -160,7 +155,7 @@ class Model extends EventMixin {
   }
 
   public validateOptions(): void {
-    // fixing user's mistake in input/contradictions in input
+    // fixing user's mistake in input or contradictions in input
     if (
       this._settings.orientation === 'vertical' &&
       this._settings.styles.sliderWidth > this._settings.styles.sliderHeight
@@ -183,23 +178,23 @@ class Model extends EventMixin {
   }
 
   private validate(data: ICoords): ICoords {
-    const dataFroValidation = { ...data };
+    const dataForValidation = { ...data };
     const max = this._settings.mainMax;
     const min = this._settings.mainMin;
     const maxValue = this._settings.maxValue;
     const minValue = this._settings.minValue;
-    if (dataFroValidation.main >= max) {
-      dataFroValidation.main = max;
-    } else if (dataFroValidation.main <= min) {
-      dataFroValidation.main = min;
+    if (dataForValidation.main >= max) {
+      dataForValidation.main = max;
+    } else if (dataForValidation.main <= min) {
+      dataForValidation.main = min;
     }
-    if (dataFroValidation.value > maxValue) {
-      dataFroValidation.value = maxValue;
-    } else if (dataFroValidation.value < minValue) {
-      dataFroValidation.value = minValue;
+    if (dataForValidation.value > maxValue) {
+      dataForValidation.value = maxValue;
+    } else if (dataForValidation.value < minValue) {
+      dataForValidation.value = minValue;
     }
 
-    return dataFroValidation;
+    return dataForValidation;
   }
 
   public renew(
@@ -214,12 +209,12 @@ class Model extends EventMixin {
 
     if (this._settings.orientation === 'vertical') {
       axis = data.y;
-      margin = data.marginTop; // if it was mode.settings.marginTop it would be wrong
+      margin = data.marginTop;
     } else if (this._settings.orientation === 'horizontal') {
       axis = data.x;
       margin = this._settings.marginLeft;
     }
-    this.coords.caller = 'model'; // TODO this shouldnt be here,have to think of a better way
+    this.coords.caller = 'model';
     Object.keys(data).forEach((i) => {
       this.coords[i] = data[i];
     });
@@ -294,7 +289,6 @@ class Model extends EventMixin {
     this.coords.caller = 'model';
     const validatedCoords = this.validate(this.coords);
 
-    // it should not do that(single responsability principle)
     this.trigger(
       'coords changed',
       validatedCoords,
@@ -337,21 +331,5 @@ class Model extends EventMixin {
   public getItem(): Element {
     return this._item;
   }
-  // public calcInterval(data): object {
-  //   const interval = this.interval;
-
-  //   interval.set(data.target, data.value);
-
-  //   const value = Number(Array.from(interval.values())[0]);
-  //   const value2 = Number(Array.from(interval.values())[1]);
-
-  //   const floor = Math.min(value, value2);
-  //   const ceil = Math.max(value, value2);
-
-  //   return {
-  //     floor,
-  //     ceil,
-  //   };
-  // }
 }
 export { Model, ICoords, Settings, Type, Ori, has };

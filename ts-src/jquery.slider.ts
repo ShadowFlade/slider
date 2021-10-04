@@ -154,10 +154,10 @@ class Plugin extends $ {
   };
 
   destroy = (): void => {
-    this.$item.data('handle1', this.app.getValue(1));
+    this.$item.data('handleLeft', this.app.getValue(1));
 
     if (this.isRange()) {
-      this.$item.data('handle2', this.app.getValue(2));
+      this.$item.data('handleRight', this.app.getValue(2));
     }
 
     this.$item.html('');
@@ -168,10 +168,10 @@ class Plugin extends $ {
       return this.$item;
     }
 
-    this.setValue(this.$item.data('handle1'), 1);
+    this.setValue(this.$item.data('handleLeft'), 1);
 
     if (this.isRange()) {
-      this.setValue(this.$item.data('handle2'), 2);
+      this.setValue(this.$item.data('handleRight'), 2);
     }
 
     return false;

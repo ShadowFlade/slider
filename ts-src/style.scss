@@ -105,9 +105,7 @@ $shadow: 2px -2px 2px #7e7e7e;
   align-items: center;
   flex-direction: column;
 }
-/* .slider-container--vertical {
 
-} */
 .slider-container--vertical--corrected {
   justify-content: space-between;
   flex-direction: row-reverse;
@@ -151,9 +149,7 @@ $shadow: 2px -2px 2px #7e7e7e;
 .marker--major--vertical:first-child {
   margin-top: 0;
 }
-/* .marker--major:last-child {
-  margin-right: 0;
-} */
+
 .marker-value {
   position: absolute;
   top: 150%;
@@ -168,7 +164,6 @@ $shadow: 2px -2px 2px #7e7e7e;
   left: -300%;
 }
 .tooltip {
-  /* position: absolute; */
   left: 50%;
   border-radius: 50%;
   border: 1px solid black;
@@ -187,9 +182,6 @@ $shadow: 2px -2px 2px #7e7e7e;
   top: -210%;
   color: green;
 }
-
-/* .tooltip--vertical {
-} */
 
 .tooltipStick {
   text-align: center;

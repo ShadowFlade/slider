@@ -169,7 +169,6 @@ class View extends EventMixin {
       'jsSlider-clickable',
       false
     ) as HTMLElement[];
-    // TODO Array.from
     const divsContainingValues: { div: HTMLElement; value: string }[] =
       Array.from(this._item.getElementsByClassName('jsSlider-clickable')).map(
         (item: HTMLElement) => {
@@ -182,11 +181,9 @@ class View extends EventMixin {
 
     this.divsContainingValues = divsContainingValues;
     this.valuesFromDivs = divsContainingValues.map((item) => item.value);
-    // console.log(this.temp);
 
     const { offset } = this.temp;
     const pinsCoordinatesItems = Array.from(
-      // TODO Array.from
       this._item.getElementsByClassName('jsOffset')
     ).map((item: HTMLElement) => {
       return { div: item, offset: item[offset] };
@@ -335,13 +332,13 @@ class View extends EventMixin {
   }
 
   public rangeInterval(): void {
-    const handle1 = this._elements._handles[0];
-    const handle2 = this._elements._handles[1];
+    const handleLeft = this._elements._handles[0];
+    const handleRight = this._elements._handles[1];
     const { widthOrHeight, direction } = this.temp;
-    const minOffset = parseFloat(handle1.style[direction]);
+    const minOffset = parseFloat(handleLeft.style[direction]);
     let maxOffset: number | null;
-    if (handle2) {
-      maxOffset = parseFloat(handle2.style[direction]); // only works if style.left is in pxs
+    if (handleRight) {
+      maxOffset = parseFloat(handleRight.style[direction]); // only works if style.left is in pxs
     } else {
       maxOffset = null;
     }
@@ -350,7 +347,7 @@ class View extends EventMixin {
     this._elements._range.style[direction] = handleOffset + 'px';
 
     this._elements._range.style[widthOrHeight] =
-      length + handle1.offsetWidth / 2 + 'px';
+      length + handleLeft.offsetWidth / 2 + 'px';
   }
 
   public showValue(target: HTMLElement, value: number): void {
