@@ -262,7 +262,7 @@ class Model extends EventMixin {
     };
   }
 
-  public calcMain(value: number, target: HTMLElement): void {
+  public calcMain(value: number, target: HTMLElement): ICoords {
     let widthOrHeight;
     if (this._settings.orientation === 'horizontal') {
       widthOrHeight = 'sliderWidth';
@@ -288,13 +288,14 @@ class Model extends EventMixin {
     this.coords.target = target;
     this.coords.caller = 'model';
     const validatedCoords = this.validate(this.coords);
+    return validatedCoords;
 
-    this.trigger(
-      'coords changed',
-      validatedCoords,
-      this._settings.orientation,
-      this._settings.type
-    );
+    // this.trigger(
+    //   'coords changed',
+    //   validatedCoords,
+    //   this._settings.orientation,
+    //   this._settings.type
+    // );
   }
 
   public setOption(key: string, value: string | number | boolean): void {

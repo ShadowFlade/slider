@@ -273,7 +273,8 @@ class Pres extends EventMixin {
         throw new ReferenceError('Can not reference absent handle');
       }
     }
-    this._model.calcMain(value, handle);
+    const coords = this._model.calcMain(value, handle);
+    this.transferData(coords, this.temp.ori, this.temp.type);
   }
 
   private determineMetrics(orientation: Ori) {
