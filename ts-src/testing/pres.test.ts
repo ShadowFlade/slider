@@ -202,8 +202,8 @@ describe('Pres:changing the elements', () => {
     handleRight.appendChild(tool2);
     const js1 = document.createElement('div');
     const js2 = document.createElement('div');
-    js1.classList.add('jsSlider-clickable');
-    js2.classList.add('jsSlider-clickable');
+    js1.classList.add('js-Slider-clickable');
+    js2.classList.add('js-Slider-clickable');
     js1.textContent = '19';
     js2.textContent = '20';
     const position = 'horizontal';

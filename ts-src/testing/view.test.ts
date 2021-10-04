@@ -54,8 +54,8 @@ describe('View:', () => {
 
     const js1 = document.createElement('div');
     const js2 = document.createElement('div');
-    js1.classList.add('jsSlider-clickable');
-    js2.classList.add('jsSlider-clickable');
+    js1.classList.add('js-Slider-clickable');
+    js2.classList.add('js-Slider-clickable');
     js1.textContent = '19';
     js2.textContent = '20';
     const min = document.createElement('div');
@@ -154,8 +154,8 @@ describe('View:refresh coordinates new', () => {
 
     const js1 = document.createElement('div');
     const js2 = document.createElement('div');
-    js1.classList.add('jsSlider-clickable');
-    js2.classList.add('jsSlider-clickable');
+    js1.classList.add('js-Slider-clickable');
+    js2.classList.add('js-Slider-clickable');
     js1.textContent = '19';
     js2.textContent = '20';
     pres.fetchDivs();
@@ -237,7 +237,7 @@ describe('View:refresh coordinates new', () => {
       const div: HTMLElement = document.createElement('div');
       const div2 = document.createElement('div');
       div2.textContent = String(i * 30);
-      div2.classList.add('jsSlider-clickable');
+      div2.classList.add('js-Slider-clickable');
       div.appendChild(div2);
       div.classList.add('jsOffset');
       div.textContent = String(i * 30);
@@ -286,7 +286,7 @@ describe('View:refresh coordinates new', () => {
       const div = document.createElement('div');
       const div2 = document.createElement('div');
       div2.textContent = String(i * 30);
-      div2.classList.add('jsSlider-clickable');
+      div2.classList.add('js-Slider-clickable');
       div.textContent = String(i * 30);
       div.dataset.value = String(i * 30);
       div.appendChild(div2);

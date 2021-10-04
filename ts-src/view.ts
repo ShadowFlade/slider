@@ -134,43 +134,43 @@ class View extends EventMixin {
 
   public fetchDivs(orientation: Ori, defClassName: string): void {
     this._elements._sliderMain = this.fetchHTMLEl(
-      `${defClassName}-main`,
+      `js-${defClassName}-main`,
       true
     ) as HTMLElement;
     this._elements._slider = this.fetchHTMLEl(
-      defClassName,
+      `js-${defClassName}`,
       true
     ) as HTMLElement;
     this._elements._range = this.fetchHTMLEl(
-      `${defClassName}-range`,
+      `js-${defClassName}-range`,
       true
     ) as HTMLElement;
     this._elements._handles = this.fetchHTMLEl(
-      `${defClassName}-handle--${orientation}`,
+      `js-${defClassName}-handle--${orientation}`,
       false
     ) as HTMLElement[];
     this._elements._tooltips = this.fetchHTMLEl(
-      `tooltip`,
+      `js-tooltip`,
       false
     ) as HTMLElement[];
     this._elements._sliderContainer = this.fetchHTMLEl(
-      `${defClassName}-container`,
+      `js-${defClassName}-container`,
       true
     ) as HTMLElement;
     this._elements._scale = this.fetchHTMLEl(
-      `${defClassName}-marker`,
+      `js-${defClassName}-marker`,
       true
     ) as HTMLElement;
     this._elements._tooltipContainers = this.fetchHTMLEl(
-      'tooltipContainer',
+      'js-tooltipContainer',
       false
     ) as HTMLElement[];
     this._elements._pins = this.fetchHTMLEl(
-      'jsSlider-clickable',
+      'js-Slider-clickable',
       false
     ) as HTMLElement[];
     const divsContainingValues: { div: HTMLElement; value: string }[] =
-      Array.from(this._item.getElementsByClassName('jsSlider-clickable')).map(
+      Array.from(this._item.getElementsByClassName('js-Slider-clickable')).map(
         (item: HTMLElement) => {
           return {
             div: item,

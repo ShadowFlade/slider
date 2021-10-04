@@ -35,12 +35,12 @@ class PresBuilder {
     const viewEls = this._view._elements;
     const { ori, direction } = this._pres.temp;
     const main = document.createElement('div');
-    main.classList.add('slider-main');
+    main.classList.add('slider-main', 'js-slider-main');
     const container = document.createElement('div');
     const slider = document.createElement('div');
-    slider.classList.add('slider');
+    slider.classList.add('slider', 'js-slider');
     const range = document.createElement('div');
-    range.classList.add('slider-range');
+    range.classList.add('slider-range', 'js-slider-range');
 
     const handle = document.createElement('div');
     if (ori === 'horizontal') {
@@ -52,7 +52,7 @@ class PresBuilder {
     }
     const tool = document.createElement('div');
     const tooltipContainer = document.createElement('div');
-    tooltipContainer.className = `tooltipContainer tooltipContainer--${ori}`;
+    tooltipContainer.className = `tooltipContainer tooltipContainer--${ori} js-tooltipContainer`;
     const tooltipStick = document.createElement('div');
     tooltipStick.className = `tooltipStick tooltipStick--${ori}`;
     tooltipContainer.append(tooltipStick);
@@ -60,19 +60,19 @@ class PresBuilder {
     tooltipContainer.append(tool);
     handle.append(tooltipContainer);
     const min = document.createElement('span');
-    min.className = 'jsOffset values jsSlider-clickable';
+    min.className = 'jsOffset values js-Slider-clickable';
     const max = document.createElement('span');
-    max.className = 'jsOffset values jsSlider-clickable';
+    max.className = 'jsOffset values js-Slider-clickable';
     main.append(min);
     container.append(slider);
     main.append(container);
     main.append(max);
     slider.appendChild(range);
     slider.appendChild(handle);
-    handle.className = `slider-handle slider-handle--${ori}`;
+    handle.className = `slider-handle slider-handle--${ori} js-slider-handle--${ori}`;
     viewEls._handles.push(handle);
-    container.className = `slider-container slider-container--${ori}`;
-    tool.className = `tooltip tooltip--${ori}`;
+    container.className = `slider-container slider-container--${ori} js-slider-container`;
+    tool.className = `tooltip tooltip--${ori} js-tooltip`;
 
     if (behavior.type !== 'single') {
       this.addHandle(handle, range, direction);
@@ -104,8 +104,12 @@ class PresBuilder {
       const majorMarker = document.createElement('div');
       markerDiv.append(majorMarker);
       const markerValue = document.createElement('label');
-      markerValue.className = `jsSlider-clickable marker-value marker-value--${orientation}`;
-      markerDiv.classList.add(`slider-marker--${orientation}`);
+      markerValue.className = `js-Slider-clickable marker-value marker-value--${orientation} `;
+      markerDiv.classList.add(
+        `slider-marker--${orientation}`,
+        'slider-marker',
+        'js-slider-marker'
+      );
       majorMarker.className = `jsOffset marker--major marker--major--${orientation}`;
       if (i === 0) {
         majorMarker.style[marginCss] =
