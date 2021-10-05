@@ -344,38 +344,3 @@ describe('View:refresh coordinates new', () => {
     });
   });
 });
-
-// test('should select a pin inferring from main', () => {
-//   jest.mock('../view');
-//   const view=new View({},{},'item')
-//   view.matchHandleAndPin.mockImplementation((main) => {
-//     const offsetsNums = offsets.map((item) => {
-//       return item.offset;
-//     });
-//     let minDiff = Infinity;
-//     let pinOffset: number;
-//     for (const offset of offsetsNums) {
-//       const leastDiff = Math.abs(main - Number(offset));
-//       if (leastDiff < minDiff) {
-//         minDiff = leastDiff;
-//         pinOffset = Number(offset);
-//       }
-//     }
-//     let pin;
-
-//     for (const i of offsets) {
-//       const item = i;
-//       if (pinOffset == item.offset) {
-//         pin = item.div;
-//         return pin;
-//       }
-//     }
-//   });
-//   // view.divsContainingValues = divs;
-//   // console.log(view.divsContainingValues[0].offsetLeft);
-//   const mainsForCheck = [0, 1, 9, 10, 99, 100, 101, 157, 199, 200, 201];
-//   for (let i of mainsForCheck) {
-//     const pin = view.matchHandleAndPin(i, 'horizontal');
-//     expect(pin).toBeDefined();
-//   }
-// });

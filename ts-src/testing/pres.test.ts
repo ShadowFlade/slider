@@ -51,7 +51,7 @@ describe('Pres: independent methods', () => {
       minValue: 0,
       maxMinDifference: 0,
       betweenMarkers: 40,
-      _minPins: 5, // optimal maximum number of pins
+      _minPins: 5,
       mainMax: 200,
       mainMin: 0,
       valueWidth: 0,

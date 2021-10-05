@@ -92,7 +92,7 @@ class Pres extends EventMixin {
         item,
         item.getBoundingClientRect()[direction]
       ).value;
-      this.transferData(coords, ori, type); // почему если здесь поставить this._view.refreshCoord, то будет ошибка maximum call stack exceeded
+      this.transferData(coords, ori, type);
       start1 = undefined;
     });
   }
