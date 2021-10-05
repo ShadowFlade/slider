@@ -193,42 +193,42 @@ class Pres extends EventMixin {
   }
 
   private onPointerDown(event) {
-    // if (
-    //   event.target === this._view._elements._handles[0] ||
-    //   event.target === this._view._elements._handles[0]
-    // ) {
-    const slider = this._view._elements._slider;
-    const marginLeft = slider.getBoundingClientRect().left;
-    const marginTop = slider.getBoundingClientRect().top;
-    const ori = this._model._settings.orientation;
-    const type = this._model._settings.type;
-    event.preventDefault();
-    const target = event.target;
-    const { direction, client } = this.temp;
-    const shift = event[client] - target.getBoundingClientRect()[direction];
+    if (
+      event.target === this._view._elements._handles[0] ||
+      event.target === this._view._elements._handles[1]
+    ) {
+      const slider = this._view._elements._slider;
+      const marginLeft = slider.getBoundingClientRect().left;
+      const marginTop = slider.getBoundingClientRect().top;
+      const ori = this._model._settings.orientation;
+      const type = this._model._settings.type;
+      event.preventDefault();
+      const target = event.target;
+      const { direction, client } = this.temp;
+      const shift = event[client] - target.getBoundingClientRect()[direction];
 
-    const mouseMove = (e) => {
-      this.transferData(
-        {
-          y: e.clientY,
-          x: e.clientX,
-          shift: shift,
-          marginLeft: marginLeft,
-          clicked: false,
-          marginTop: marginTop,
-          target: event.target,
-        },
-        ori,
-        type
-      );
-    };
-    const onMouseUp = (e) => {
-      document.removeEventListener('pointermove', mouseMove);
-      document.removeEventListener('pointerup', onMouseUp);
-    };
-    document.addEventListener('pointermove', mouseMove);
-    document.addEventListener('pointerup', onMouseUp);
-    // }
+      const mouseMove = (e) => {
+        this.transferData(
+          {
+            y: e.clientY,
+            x: e.clientX,
+            shift: shift,
+            marginLeft: marginLeft,
+            clicked: false,
+            marginTop: marginTop,
+            target: event.target,
+          },
+          ori,
+          type
+        );
+      };
+      const onMouseUp = (e) => {
+        document.removeEventListener('pointermove', mouseMove);
+        document.removeEventListener('pointerup', onMouseUp);
+      };
+      document.addEventListener('pointermove', mouseMove);
+      document.addEventListener('pointerup', onMouseUp);
+    }
   }
 
   private handleContainerClick(event) {
