@@ -17,7 +17,7 @@ module.exports = {
 
   entry: {
     plugin:'./ts-src/jquery.slider.ts',
-    index:'./ts-src/demoPage/demo.js'
+    index:'./ts-src/demoPage/demo.ts'
 
   },
   output: {

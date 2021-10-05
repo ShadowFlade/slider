@@ -5,7 +5,12 @@
     "target": "ES6",
     "lib": ["DOM", "ES6", "DOM.Iterable"],
     "downlevelIteration": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "module": "AMD"
   },
-  "files": ["ts-src/jquery.slider.ts", "ts-src/demoPage/demo.ts"]
+  "files": [
+    "ts-src/jquery.slider.ts",
+    "ts-src/demoPage/demo.ts",
+    "ts-src/demoPage/panel.ts"
+  ]
 }

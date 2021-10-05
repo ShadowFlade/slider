@@ -102,14 +102,11 @@ class PresBuilder {
 
     for (let i = 0; i < valuesForMarkers.length - 1; i += 1) {
       const majorMarker = document.createElement('div');
+
       markerDiv.append(majorMarker);
       const markerValue = document.createElement('label');
       markerValue.className = `js-Slider-clickable marker-value js-marker-value marker-value--${orientation} `;
-      markerDiv.classList.add(
-        `slider-marker--${orientation}`,
-        'slider-marker',
-        'js-slider-marker'
-      );
+
       majorMarker.className = `js-Offset marker--major marker--major--${orientation}`;
       if (i === 0) {
         majorMarker.style[marginCss] =
@@ -125,7 +122,7 @@ class PresBuilder {
       markerValue.textContent = value.toString();
       majorMarker.append(markerValue);
     }
-    markerDiv.className = `slider-marker slider-marker--${orientation}`;
+    markerDiv.className = `slider-marker js-slider-marker slider-marker--${orientation}`;
     return markerDiv;
   }
 

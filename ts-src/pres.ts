@@ -193,6 +193,10 @@ class Pres extends EventMixin {
   }
 
   private onPointerDown(event) {
+    // if (
+    //   event.target === this._view._elements._handles[0] ||
+    //   event.target === this._view._elements._handles[0]
+    // ) {
     const slider = this._view._elements._slider;
     const marginLeft = slider.getBoundingClientRect().left;
     const marginTop = slider.getBoundingClientRect().top;
@@ -224,6 +228,7 @@ class Pres extends EventMixin {
     };
     document.addEventListener('pointermove', mouseMove);
     document.addEventListener('pointerup', onMouseUp);
+    // }
   }
 
   private handleContainerClick(event) {

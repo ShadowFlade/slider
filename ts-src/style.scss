@@ -92,6 +92,7 @@ $shadow: 2px -2px 2px #7e7e7e;
   display: flex;
   justify-content: flex-start;
   position: absolute;
+  user-select: none;
 }
 .values--corrected {
   justify-content: flex-end;
@@ -177,6 +178,7 @@ $shadow: 2px -2px 2px #7e7e7e;
   justify-content: center;
   align-items: center;
   box-shadow: $shadow;
+  user-select: none;
 }
 .tooltip--horizontal {
   top: -210%;
