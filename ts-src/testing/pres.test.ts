@@ -316,11 +316,6 @@ describe('Pres:changing the elements', () => {
     handle.dispatchEvent(event);
     handle.dispatchEvent(event2);
     expect(transferData).toBeCalled();
-    const pointerDown = jest
-      .spyOn(pres, 'onPointerDown')
-      .mockImplementation(() => {
-        return true;
-      });
   });
   test('inits properly', () => {
     pres.init();
@@ -336,7 +331,7 @@ describe('Pres:changing the elements', () => {
       offsetLength: 'offsetHeight',
     };
     const Iitem = document.createElement('div');
-    document.body.appendChild(item);
+    document.body.appendChild(Iitem);
     const Imodel = new Model({}, item);
     const Ipres = new Pres(model, item);
     const Iview = new View(pres, {}, item);
@@ -362,20 +357,15 @@ describe('Pres:changing the elements', () => {
   });
 
   test('first refresh if startValues==0', () => {
-    let Iitem;
-    let Imodel;
-    let Iview;
-    let Ipres;
-    let Idocument;
-    Idocument = dom.window.document;
-    Iitem = Idocument.createElement('div');
+    const Idocument = dom.window.document;
+    const Iitem = Idocument.createElement('div');
     Idocument.body.appendChild(Iitem);
-    Imodel = new Model(
+    const Imodel = new Model(
       { startValueLeftHandle: 0, startValueRightHandle: 0 },
       Iitem
     );
-    Ipres = new Pres(Imodel, Iitem);
-    Iview = new View(
+    const Ipres = new Pres(Imodel, Iitem);
+    const Iview = new View(
       Ipres,
       { startValueLeftHandle: 0, startValueRightHandle: 0 },
       Iitem

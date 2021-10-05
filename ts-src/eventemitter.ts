@@ -26,7 +26,7 @@ class EventMixin implements eventmixin {
     }
   }
 
-  trigger(eventName: string, ...args): void {
+  trigger(eventName: string, ...args: unknown[]): void {
     if (!this._eventHandlers || !this._eventHandlers[eventName]) {
       return;
     }

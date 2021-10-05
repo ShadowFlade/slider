@@ -1,4 +1,4 @@
-function elemsDiff(arr: number[]) {
+function elemsDiff(arr: number[]): number[] {
   const res = [];
   for (let i = 0; i < arr.length - 1; i += 1) {
     const result = +arr[i + 1] - +arr[i];
@@ -7,7 +7,7 @@ function elemsDiff(arr: number[]) {
   return res;
 }
 
-function checkForZero(number: number) {
+function checkForZero(number: number): number {
   if (number > 0) {
     return number;
   }

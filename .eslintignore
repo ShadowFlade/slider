@@ -2,4 +2,4 @@
 /.vscode
 node_modules
 ./dist
-./ts-src/testing
+ts-src/testing

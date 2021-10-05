@@ -1,10 +1,11 @@
 import App from './app';
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare let $: any;
 
 class Plugin extends $ {
   item: HTMLElement;
 
-  states: Record<string, any>;
+  states: Record<string, boolean | string | number>;
 
   app: App;
 

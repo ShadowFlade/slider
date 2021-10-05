@@ -222,7 +222,7 @@ class Pres extends EventMixin {
           type
         );
       };
-      const onMouseUp = (e) => {
+      const onMouseUp = () => {
         document.removeEventListener('pointermove', mouseMove);
         document.removeEventListener('pointerup', onMouseUp);
       };

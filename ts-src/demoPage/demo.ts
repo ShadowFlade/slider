@@ -1,13 +1,9 @@
 import './demo.css';
-import { Panel, IPlugin, IOptions } from './panel';
+import { Panel, IPlugin } from './panel';
 declare global {
   interface JQuery {
     slider: (options?) => IPlugin;
   }
-}
-
-interface JQuery {
-  slider: IPlugin;
 }
 
 const onDOMLoaded = () => {

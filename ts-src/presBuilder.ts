@@ -93,12 +93,8 @@ class PresBuilder {
     const handleLeft = this._view._elements._handles[0];
     const { margin: marginCss } = this._pres.temp;
     const markerDiv = document.createElement('div');
-    const { valuesForMarkers, altDrag, margin } = this.calcPins(
-      behavior,
-      widthOrHeight
-    );
+    const { valuesForMarkers, margin } = this.calcPins(behavior, widthOrHeight);
     const listOfValues = valuesForMarkers;
-    let j = 0;
 
     for (let i = 0; i < valuesForMarkers.length - 1; i += 1) {
       const majorMarker = document.createElement('div');

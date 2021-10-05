@@ -37,7 +37,7 @@ class Panel {
 
   slider: IPlugin;
 
-  constructor(nameOfSliderDiv, slider) {
+  constructor(nameOfSliderDiv: string, slider: IPlugin) {
     this.fetchItem(nameOfSliderDiv);
     this.name = nameOfSliderDiv;
     this.elements = [];
@@ -48,8 +48,8 @@ class Panel {
     this.item = document.querySelector(name);
   }
 
-  public bindToDiv(nameOfElement, func: string): boolean {
-    const element = document.querySelector(nameOfElement);
+  public bindToDiv(nameOfElement: string, func: string): boolean {
+    const element: HTMLInputElement = document.querySelector(nameOfElement);
     this.bindCheckboxs();
     this.elements.push(element);
     if (element.type === 'checkbox') {
@@ -77,7 +77,7 @@ class Panel {
     }
   }
 
-  public bindMinMax(minDivID: string, maxDivID: string) {
+  public bindMinMax(minDivID: string, maxDivID: string): void {
     const el1: HTMLInputElement = document.querySelector(minDivID);
     const el2: HTMLInputElement = document.querySelector(maxDivID);
 
@@ -90,7 +90,7 @@ class Panel {
     });
   }
 
-  public bindFromTo(fromDivID, toDivID) {
+  public bindFromTo(fromDivID: string, toDivID: string): void {
     const el1: HTMLInputElement = document.querySelector(fromDivID);
     const el2: HTMLInputElement = document.querySelector(toDivID);
     this.to = el2;
@@ -109,8 +109,8 @@ class Panel {
     }
   }
 
-  public bindStep(stepDivID) {
-    const el = document.querySelector(stepDivID);
+  public bindStep(stepDivID: string): void {
+    const el: HTMLInputElement = document.querySelector(stepDivID);
     el.onkeydown = (e) => {
       if (e.keyCode === 13) {
         this.slider.setStep(el.value);

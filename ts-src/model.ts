@@ -2,9 +2,7 @@ import EventMixin from './eventemitter';
 import { Temp } from './pres';
 import { divisionFloor } from './utils';
 const has = Object.prototype.hasOwnProperty;
-function isOri(arg: any): arg is Ori {
-  return arg == 'horizontal' || arg == 'vertical';
-}
+
 type Ori = 'horizontal' | 'vertical';
 type Type = 'double' | 'single';
 

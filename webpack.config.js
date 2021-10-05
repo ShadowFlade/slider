@@ -1,6 +1,5 @@
 var path = require('path')
 var webpack = require('webpack')
-const ESLintPlugin = require('eslint-webpack-plugin')
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -26,7 +25,7 @@ module.exports = {
     clean:true
   },
   optimization: {
-    minimize: isProd ? true : false,
+    minimize: isProd,
     minimizer: [new TerserPlugin(
       {
         parallel: true,
@@ -85,12 +84,10 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: `[name].min.css`
     }),
-    // new HtmlWebpackPlugin(),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: 'ts-src/demoPage/demo.html'
     }),
-    // new ESLintPlugin(),
 
   ],
   resolve: {
