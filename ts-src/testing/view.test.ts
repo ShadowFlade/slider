@@ -26,12 +26,12 @@ describe('View:', () => {
     pres.getView(view);
 
     const classes = [
-      'slider',
-      'slider-main',
-      'slider-range',
-      'slider-container',
-      'slider-marker',
-      'tooltipContainer',
+      'js-slider',
+      'js-slider-main',
+      'js-slider-range',
+      'js-slider-container',
+      'js-slider-marker',
+      'js-tooltipContainer',
     ];
     classes.forEach((i) => {
       const div = document.createElement('div');
@@ -39,17 +39,17 @@ describe('View:', () => {
       item.appendChild(div);
     });
     const handleLeft = document.createElement('div');
-    handleLeft.className = 'slider-handle--horizontal';
+    handleLeft.className = 'js-slider-handle--horizontal';
     item.appendChild(handleLeft);
     const tool1 = document.createElement('div');
     tool1.classList.add('tooltip');
     handleLeft.appendChild(tool1);
 
     const handleRight = document.createElement('div');
-    handleRight.className = 'slider-handle--horizontal';
+    handleRight.className = 'js-slider-handle--horizontal';
     item.appendChild(handleRight);
     const tool2 = document.createElement('div');
-    tool2.classList.add('tooltip');
+    tool2.classList.add('js-tooltip');
     handleRight.appendChild(tool2);
 
     const js1 = document.createElement('div');
@@ -74,7 +74,9 @@ describe('View:', () => {
     const el2 = document.createElement('div');
     el2.classList.add('slider-handle');
     document.body.appendChild(el2);
-    const handle = document.getElementsByClassName('slider-handle');
+    const handle = document.getElementsByClassName(
+      'js-slider-handle--horizontal'
+    );
     view.renderElement(el2);
     expect(item.children.length).toBeGreaterThan(0);
     expect(handle).toBeDefined();
@@ -126,12 +128,12 @@ describe('View:refresh coordinates new', () => {
     model.temp = pres.temp;
     pres.getView(view);
     const classes = [
-      'slider',
-      'slider-main',
-      'slider-range',
-      'slider-container',
-      'slider-marker',
-      'tooltipContainer',
+      'js-slider',
+      'js-slider-main',
+      'js-slider-range',
+      'js-slider-container',
+      'js-slider-marker',
+      'js-tooltipContainer',
     ];
     classes.forEach((i) => {
       const div = document.createElement('div');
@@ -139,17 +141,17 @@ describe('View:refresh coordinates new', () => {
       item.appendChild(div);
     });
     const handleLeft = document.createElement('div');
-    handleLeft.className = 'slider-handle--horizontal';
+    handleLeft.className = 'js-slider-handle--horizontal';
     item.appendChild(handleLeft);
     const tool1 = document.createElement('div');
-    tool1.classList.add('tooltip');
+    tool1.classList.add('js-tooltip');
     handleLeft.appendChild(tool1);
 
     const handleRight = document.createElement('div');
-    handleRight.className = 'slider-handle--horizontal';
+    handleRight.className = 'js-slider-handle--horizontal';
     item.appendChild(handleRight);
     const tool2 = document.createElement('div');
-    tool2.classList.add('tooltip');
+    tool2.classList.add('js-tooltip');
     handleRight.appendChild(tool2);
 
     const js1 = document.createElement('div');
@@ -239,7 +241,7 @@ describe('View:refresh coordinates new', () => {
       div2.textContent = String(i * 30);
       div2.classList.add('js-Slider-clickable');
       div.appendChild(div2);
-      div.classList.add('jsOffset');
+      div.classList.add('js-Offset');
       div.textContent = String(i * 30);
       div.dataset.value = String(i * 30);
       item.appendChild(div);
@@ -290,7 +292,7 @@ describe('View:refresh coordinates new', () => {
       div.textContent = String(i * 30);
       div.dataset.value = String(i * 30);
       div.appendChild(div2);
-      div.classList.add('jsOffset');
+      div.classList.add('js-Offset');
       item.appendChild(div);
 
       div.getBoundingClientRect = jest.fn(() => {

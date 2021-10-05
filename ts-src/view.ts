@@ -184,7 +184,7 @@ class View extends EventMixin {
 
     const { offset } = this.temp;
     const pinsCoordinatesItems = Array.from(
-      this._item.getElementsByClassName('jsOffset')
+      this._item.getElementsByClassName('js-Offset')
     ).map((item: HTMLElement) => {
       return { div: item, offset: item[offset] };
     });
@@ -234,7 +234,11 @@ class View extends EventMixin {
       handle = data.target;
     }
     const range = this._elements._range;
-    const toolTip = this.fetchHTMLEl(`tooltip`, true, handle) as HTMLDivElement;
+    const toolTip = this.fetchHTMLEl(
+      `js-tooltip`,
+      true,
+      handle
+    ) as HTMLDivElement;
     const newCoords = { ...data };
     if (isClickedOnPin) {
       coordsForUse = this.reactOnClick(newCoords, ori, type);
@@ -247,6 +251,7 @@ class View extends EventMixin {
       newLeft = nl;
       value = v;
     }
+
     handle.style[direction] = newLeft + 'px';
     if (type === 'double') {
       this.rangeInterval();
@@ -351,7 +356,7 @@ class View extends EventMixin {
   }
 
   public showValue(target: HTMLElement, value: number): void {
-    const tool = target.getElementsByClassName('tooltip')[0];
+    const tool = target.getElementsByClassName('js-tooltip')[0];
     target.dataset.value = String(Math.abs(value));
     tool.textContent = String(Math.abs(value));
   }

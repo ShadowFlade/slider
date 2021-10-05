@@ -289,13 +289,6 @@ class Model extends EventMixin {
     this.coords.caller = 'model';
     const validatedCoords = this.validate(this.coords);
     return validatedCoords;
-
-    // this.trigger(
-    //   'coords changed',
-    //   validatedCoords,
-    //   this._settings.orientation,
-    //   this._settings.type
-    // );
   }
 
   public setOption(key: string, value: string | number | boolean): void {

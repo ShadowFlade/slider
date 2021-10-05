@@ -175,12 +175,12 @@ describe('Pres:changing the elements', () => {
     pres.getView(view);
 
     const classes = [
-      'slider',
-      'slider-main',
-      'slider-range',
-      'slider-container',
-      'slider-marker',
-      'tooltipContainer',
+      'js-slider',
+      'js-slider-main',
+      'js-slider-range',
+      'js-slider-container',
+      'js-slider-marker',
+      'js-tooltipContainer',
     ];
     classes.forEach((i) => {
       const div = document.createElement('div');
@@ -188,24 +188,26 @@ describe('Pres:changing the elements', () => {
       item.appendChild(div);
     });
     const handleLeft = document.createElement('div');
-    handleLeft.className = 'slider-handle--horizontal';
+    handleLeft.className = 'js-slider-handle--horizontal';
     item.appendChild(handleLeft);
     const tool1 = document.createElement('div');
-    tool1.classList.add('tooltip');
+    tool1.classList.add('js-tooltip');
     handleLeft.appendChild(tool1);
 
     const handleRight = document.createElement('div');
-    handleRight.className = 'slider-handle--horizontal';
-    item.appendChild(handleRight);
+    handleRight.className = 'js-slider-handle--horizontal';
+    item.append(handleRight);
     const tool2 = document.createElement('div');
-    tool2.classList.add('tooltip');
+    tool2.classList.add('js-tooltip');
     handleRight.appendChild(tool2);
     const js1 = document.createElement('div');
     const js2 = document.createElement('div');
-    js1.classList.add('js-Slider-clickable');
-    js2.classList.add('js-Slider-clickable');
+    js1.classList.add('js-Slider-clickable', 'js-Offset');
+    js2.classList.add('js-Slider-clickable', 'js-Offset');
     js1.textContent = '19';
     js2.textContent = '20';
+    item.append(js1);
+    item.append(js2);
     const position = 'horizontal';
     const options = {
       slider: {
@@ -219,6 +221,8 @@ describe('Pres:changing the elements', () => {
     };
     pres.fetchDivs();
     view.implementStyles(options, position);
+    pres.temp.ori = model._settings.orientation;
+    pres.temp.type = model._settings.type;
   });
   test('transfer data should call mode.renew', () => {
     const data = {
@@ -241,8 +245,7 @@ describe('Pres:changing the elements', () => {
   });
   test('set value(handle=2) should  trigger model.calcMain', () => {
     const mock = jest.spyOn(model, 'calcMain');
-    pres.temp.ori = model._settings.orientation;
-    pres.temp.type = model._settings.type;
+
     pres.setValue(180, '2');
     expect(mock).toBeCalled();
   });
@@ -392,17 +395,16 @@ describe('Pres:changing the elements', () => {
       .mockImplementation(() => {
         return true;
       });
-    console.log(Imodel.getSettings(), 'SETTINGS');
 
     const handleLeft = document.createElement('div');
-    handleLeft.className = 'slider-handle--horizontal';
+    handleLeft.className = 'js-slider-handle--horizontal';
     Iitem.appendChild(handleLeft);
     const tool1 = document.createElement('div');
-    tool1.classList.add('tooltip');
+    tool1.classList.add('js-tooltip');
     handleLeft.appendChild(tool1);
 
     const handleRight = document.createElement('div');
-    handleRight.className = 'slider-handle--horizontal';
+    handleRight.className = 'js-slider-handle--horizontal';
     Iitem.appendChild(handleRight);
     Ipres.fetchDivs();
 

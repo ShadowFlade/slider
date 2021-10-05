@@ -85,7 +85,6 @@ class Pres extends EventMixin {
     const start = start1 || start2;
     const coords = this._model.coords;
     coords.caller = 'model';
-    console.log(this._view._elements._handles);
     this._view._elements._handles.forEach((item) => {
       coords.target = item;
       coords.main = start;
@@ -235,7 +234,8 @@ class Pres extends EventMixin {
     const type = this._model._settings.type;
     const target = event.target;
     if (target.className.includes('js-Slider-clickable')) {
-      const value = target.getElementsByClassName('marker-value')[0] || target;
+      const value =
+        target.getElementsByClassName('js-marker-value')[0] || target;
       this.transferData(
         {
           y: event.clientY,
@@ -264,9 +264,9 @@ class Pres extends EventMixin {
   public setValue(value: number, target: HandleNum): void {
     const viewEls = this._view._elements;
     let handle: HTMLElement;
-    if (target === 1) {
+    if (Number(target) === 1) {
       handle = viewEls._handles[0];
-    } else if (target === 2) {
+    } else if (Number(target) === 2) {
       if (this.temp.type === 'double') {
         handle = viewEls._handles[1];
       } else {

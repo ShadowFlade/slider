@@ -60,9 +60,9 @@ class PresBuilder {
     tooltipContainer.append(tool);
     handle.append(tooltipContainer);
     const min = document.createElement('span');
-    min.className = 'jsOffset values js-Slider-clickable';
+    min.className = 'js-Offset values js-Slider-clickable';
     const max = document.createElement('span');
-    max.className = 'jsOffset values js-Slider-clickable';
+    max.className = 'js-Offset values js-Slider-clickable';
     main.append(min);
     container.append(slider);
     main.append(container);
@@ -104,13 +104,13 @@ class PresBuilder {
       const majorMarker = document.createElement('div');
       markerDiv.append(majorMarker);
       const markerValue = document.createElement('label');
-      markerValue.className = `js-Slider-clickable marker-value marker-value--${orientation} `;
+      markerValue.className = `js-Slider-clickable marker-value js-marker-value marker-value--${orientation} `;
       markerDiv.classList.add(
         `slider-marker--${orientation}`,
         'slider-marker',
         'js-slider-marker'
       );
-      majorMarker.className = `jsOffset marker--major marker--major--${orientation}`;
+      majorMarker.className = `js-Offset marker--major marker--major--${orientation}`;
       if (i === 0) {
         majorMarker.style[marginCss] =
           margin - handleLeft.offsetWidth / 2 + 'px';
@@ -157,7 +157,7 @@ class PresBuilder {
     const handleCLone: HTMLElement = handle.cloneNode(true) as HTMLElement;
     handleCLone.style[direction] = '20px';
     const tooltipContainer = handleCLone.getElementsByClassName(
-      'tooltipContainer'
+      'js-tooltipContainer'
     )[0] as HTMLElement;
     this._view._elements._tooltipContainers.push(tooltipContainer);
     handle.after(range);
