@@ -50,13 +50,13 @@
     "typescript": "^4.3.4",
     "webpack": "^5.41.1",
     "webpack-cli": "^4.5.0",
-    "webpack-dev-server": "^3.11.2"
-  },
-  "dependencies": {
+    "webpack-dev-server": "^3.11.2",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-prettier": "^8.3.0",
     "gh-pages": "^3.2.3",
-    "jquery": "^3.6.0",
     "node-sass": "^4.13.0"
+  },
+  "dependencies": {
+    "jquery": "^3.6.0"
   }
 }
