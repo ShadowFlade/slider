@@ -73,7 +73,7 @@ describe('Pres: independent methods', () => {
   test('pres should get the view', () => {
     expect(pres._view).toEqual(view);
   });
-  test('should return a div element with children and class slider-main', () => {
+  test('should return a div element with children and class slider__main', () => {
     oriVars.forEach((ori) => {
       typeVars.forEach((type) => {
         markerVars.forEach((marker) => {
@@ -84,13 +84,13 @@ describe('Pres: independent methods', () => {
 
           expect(main.tagName).toBe('DIV');
           expect(main.children.length).toBeGreaterThan(0);
-          expect(String(main.className)).toMatch(/slider-main/);
+          expect(String(main.className)).toMatch(/slider__main/);
         });
       });
     });
   });
 
-  test('should return a div element with children and class slider-marker', () => {
+  test('should return a div element with children and class slider__marker', () => {
     const div1 = document.createElement('div');
     const div2 = document.createElement('div');
     view._elements._handles.push(div1);
@@ -107,7 +107,7 @@ describe('Pres: independent methods', () => {
           );
           expect(markerDiv.tagName).toBe('DIV');
           expect(markerDiv.children.length).toBeGreaterThan(0);
-          expect(String(markerDiv.className)).toMatch(/slider-marker/);
+          expect(String(markerDiv.className)).toMatch(/slider__marker/);
         });
       });
     });
@@ -177,11 +177,11 @@ describe('Pres:changing the elements', () => {
 
     const classes = [
       'js-slider',
-      'js-slider-main',
-      'js-slider-range',
-      'js-slider-container',
-      'js-slider-marker',
-      'js-tooltipContainer',
+      'js-slider__main',
+      'js-slider__range',
+      'js-slider__container',
+      'js-slider__marker',
+      'js-tooltip__container',
     ];
     classes.forEach((i) => {
       const div = document.createElement('div');
@@ -189,22 +189,22 @@ describe('Pres:changing the elements', () => {
       item.appendChild(div);
     });
     const handleLeft = document.createElement('div');
-    handleLeft.className = 'js-slider-handle--horizontal';
+    handleLeft.className = 'js-slider__handle--horizontal';
     item.appendChild(handleLeft);
     const tool1 = document.createElement('div');
     tool1.classList.add('js-tooltip');
     handleLeft.appendChild(tool1);
 
     const handleRight = document.createElement('div');
-    handleRight.className = 'js-slider-handle--horizontal';
+    handleRight.className = 'js-slider__handle--horizontal';
     item.append(handleRight);
     const tool2 = document.createElement('div');
     tool2.classList.add('js-tooltip');
     handleRight.appendChild(tool2);
     const js1 = document.createElement('div');
     const js2 = document.createElement('div');
-    js1.classList.add('js-Slider-clickable', 'js-Offset');
-    js2.classList.add('js-Slider-clickable', 'js-Offset');
+    js1.classList.add('js-slider-clickable', 'js-offset');
+    js2.classList.add('js-slider-clickable', 'js-offset');
     js1.textContent = '19';
     js2.textContent = '20';
     item.append(js1);
@@ -388,14 +388,14 @@ describe('Pres:changing the elements', () => {
       });
 
     const handleLeft = document.createElement('div');
-    handleLeft.className = 'js-slider-handle--horizontal';
+    handleLeft.className = 'js-slider__handle--horizontal';
     Iitem.appendChild(handleLeft);
     const tool1 = document.createElement('div');
     tool1.classList.add('js-tooltip');
     handleLeft.appendChild(tool1);
 
     const handleRight = document.createElement('div');
-    handleRight.className = 'js-slider-handle--horizontal';
+    handleRight.className = 'js-slider__handle--horizontal';
     Iitem.appendChild(handleRight);
     Ipres.fetchDivs();
 

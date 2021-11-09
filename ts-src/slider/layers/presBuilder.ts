@@ -34,12 +34,12 @@ class PresBuilder {
     const viewEls = this._view._elements;
     const { ori, direction } = this._pres.temp;
     const main = document.createElement('div');
-    main.classList.add('slider-main', 'js-slider-main');
+    main.classList.add('slider__main', 'js-slider__main');
     const container = document.createElement('div');
     const slider = document.createElement('div');
     slider.classList.add('slider', 'js-slider');
     const range = document.createElement('div');
-    range.classList.add('slider-range', 'js-slider-range');
+    range.classList.add('slider__range', 'js-slider__range');
 
     const handle = document.createElement('div');
     if (ori === 'horizontal') {
@@ -51,26 +51,26 @@ class PresBuilder {
     }
     const tool = document.createElement('div');
     const tooltipContainer = document.createElement('div');
-    tooltipContainer.className = `tooltipContainer tooltipContainer--${ori} js-tooltipContainer`;
+    tooltipContainer.className = `tooltip__container tooltip__container--${ori} js-tooltip__container`;
     const tooltipStick = document.createElement('div');
-    tooltipStick.className = `tooltipStick tooltipStick--${ori}`;
+    tooltipStick.className = `tooltip__stick tooltip__stick--${ori}`;
     tooltipContainer.append(tooltipStick);
     this._view._elements._tooltipsSticks.push(tooltipStick);
     tooltipContainer.append(tool);
     handle.append(tooltipContainer);
     const min = document.createElement('span');
-    min.className = 'js-Offset values js-Slider-clickable';
+    min.className = 'js-offset  js-slider-clickable';
     const max = document.createElement('span');
-    max.className = 'js-Offset values js-Slider-clickable';
+    max.className = 'js-offset  js-slider-clickable';
     main.append(min);
     container.append(slider);
     main.append(container);
     main.append(max);
     slider.appendChild(range);
     slider.appendChild(handle);
-    handle.className = `slider-handle slider-handle--${ori} js-slider-handle--${ori}`;
+    handle.className = `slider__handle slider__handle--${ori} js-slider__handle--${ori}`;
     viewEls._handles.push(handle);
-    container.className = `slider-container slider-container--${ori} js-slider-container`;
+    container.className = `slider__container slider__container--${ori} js-slider__container`;
     tool.className = `tooltip tooltip--${ori} js-tooltip`;
 
     if (behavior.type !== 'single') {
@@ -80,9 +80,9 @@ class PresBuilder {
     min.dataset.value = min.textContent;
     max.textContent = String(behavior.maxValue);
     max.dataset.value = max.textContent;
-    min.classList.add(`slider-min--${ori}`);
-    max.classList.add(`slider-max--${ori}`);
-    main.classList.add(`slider-main--${ori}`);
+    min.classList.add('slider__min', `slider__min--${ori}`);
+    max.classList.add('slider__max', `slider__max--${ori}`);
+    main.classList.add('slider__main', `slider__main--${ori}`);
 
     return { main: main as Node, container, slider };
   }
@@ -100,9 +100,9 @@ class PresBuilder {
 
       markerDiv.append(majorMarker);
       const markerValue = document.createElement('label');
-      markerValue.className = `js-Slider-clickable marker-value js-marker-value marker-value--${orientation} `;
+      markerValue.className = `js-slider-clickable marker__value js-marker__value marker__value--${orientation} `;
 
-      majorMarker.className = `js-Offset marker--major marker--major--${orientation}`;
+      majorMarker.className = `js-offset marker__pin marker__pin--${orientation}`;
       if (i === 0) {
         majorMarker.style[marginCss] =
           margin - handleLeft.offsetWidth / 2 + 'px';
@@ -117,7 +117,7 @@ class PresBuilder {
       markerValue.textContent = value.toString();
       majorMarker.append(markerValue);
     }
-    markerDiv.className = `slider-marker js-slider-marker slider-marker--${orientation}`;
+    markerDiv.className = `slider__marker js-slider__marker slider__marker--${orientation}`;
     return markerDiv;
   }
 
@@ -149,12 +149,12 @@ class PresBuilder {
     const handleCLone: HTMLElement = handle.cloneNode(true) as HTMLElement;
     handleCLone.style[direction] = '20px';
     const tooltipContainer = handleCLone.getElementsByClassName(
-      'js-tooltipContainer'
+      'js-tooltip__container'
     )[0] as HTMLElement;
     this._view._elements._tooltipContainers.push(tooltipContainer);
     handle.after(range);
     range.after(handleCLone);
-    const stick = this._view.fetchHTMLEl('tooltipStick', true) as HTMLElement;
+    const stick = this._view.fetchHTMLEl('tooltip__stick', true) as HTMLElement;
     viewEls._tooltipsSticks.push(stick);
     viewEls._handles.push(handleCLone);
     if (this._model._settings.built) {

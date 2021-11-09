@@ -60,22 +60,30 @@ class View extends EventMixin {
     handles: HTMLElement[];
     wrapper: HTMLElement;
   } {
+    const settings = this._pres.getSettings();
     this.initiateOptions(options);
     const tooltipLeftOffset =
       this._elements._tooltips[0].getBoundingClientRect().left;
     if (tooltipLeftOffset < 0) {
       this._elements._sliderContainer.classList.add(
-        'slider-container--vertical--corrected'
+        'slider__container--corrected'
       );
-      const min = this.fetchHTMLEl('slider-min--vertical', true) as HTMLElement;
+      const min = this.fetchHTMLEl(
+        'slider__min--vertical',
+        true
+      ) as HTMLElement;
       min.style.left = '10px';
       this._elements._tooltipContainers.forEach((item) => {
-        item.classList.add('tooltipContainer--vertical--corrected');
+        item.classList.add('tooltip__container--corrected');
       });
     }
-    const valuesDivs = this.fetchHTMLEl('values', false) as HTMLElement[];
+    const valuesDivs = this.fetchHTMLEl('slider__min', false) as HTMLElement[];
+    valuesDivs.push(this.fetchHTMLEl('slider__max', true) as HTMLElement);
+
     valuesDivs.forEach((div) => {
-      div.classList.add('values--corrected');
+      const className = div.className;
+      const sliderValueClass = className.match(/slider__.{3}\b/i);
+      div.classList.add(`${sliderValueClass}--corrected`);
     });
     return {
       slider: this._elements._slider,
@@ -121,7 +129,7 @@ class View extends EventMixin {
 
   public fetchDivs(orientation: Ori, defClassName: string): void {
     this._elements._sliderMain = this.fetchHTMLEl(
-      `js-${defClassName}-main`,
+      `js-${defClassName}__main`,
       true
     ) as HTMLElement;
     this._elements._slider = this.fetchHTMLEl(
@@ -129,11 +137,11 @@ class View extends EventMixin {
       true
     ) as HTMLElement;
     this._elements._range = this.fetchHTMLEl(
-      `js-${defClassName}-range`,
+      `js-${defClassName}__range`,
       true
     ) as HTMLElement;
     this._elements._handles = this.fetchHTMLEl(
-      `js-${defClassName}-handle--${orientation}`,
+      `js-${defClassName}__handle--${orientation}`,
       false
     ) as HTMLElement[];
     this._elements._tooltips = this.fetchHTMLEl(
@@ -141,23 +149,23 @@ class View extends EventMixin {
       false
     ) as HTMLElement[];
     this._elements._sliderContainer = this.fetchHTMLEl(
-      `js-${defClassName}-container`,
+      `js-${defClassName}__container`,
       true
     ) as HTMLElement;
     this._elements._scale = this.fetchHTMLEl(
-      `js-${defClassName}-marker`,
+      `js-${defClassName}__marker`,
       true
     ) as HTMLElement;
     this._elements._tooltipContainers = this.fetchHTMLEl(
-      'js-tooltipContainer',
+      'js-tooltip__container',
       false
     ) as HTMLElement[];
     this._elements._pins = this.fetchHTMLEl(
-      'js-Slider-clickable',
+      `js-${defClassName}-clickable`,
       false
     ) as HTMLElement[];
     const divsContainingValues: { div: HTMLElement; value: string }[] =
-      Array.from(this._item.getElementsByClassName('js-Slider-clickable')).map(
+      Array.from(this._item.getElementsByClassName('js-slider-clickable')).map(
         (item: HTMLElement) => {
           return {
             div: item,
@@ -171,7 +179,7 @@ class View extends EventMixin {
 
     const { offset } = this.temp;
     const pinsCoordinatesItems = Array.from(
-      this._item.getElementsByClassName('js-Offset')
+      this._item.getElementsByClassName('js-offset')
     ).map((item: HTMLElement) => {
       return { div: item, offset: item[offset] };
     });
@@ -283,9 +291,9 @@ class View extends EventMixin {
     const value = Number(pin.dataset.value);
     const pinCoords = pin.getBoundingClientRect()[direction];
     newLeft = pinCoords - margin - handleWidth / 2;
-    if (pin.className.includes('slider-min')) {
+    if (pin.className.includes('slider__min')) {
       newLeft = 0;
-    } else if (pin.className.includes('slider-max')) {
+    } else if (pin.className.includes('slider__max')) {
       newLeft = data.mainMax - handleWidth / 2;
     }
 

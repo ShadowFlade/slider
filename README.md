@@ -115,7 +115,7 @@ Is used to change orientation. Look up [`orientation`](###settings) in **setting
 
 ## Demo page
 
-You can find demo page in `ts-src/demoPage/` or at https://shadowflade.github.io/slider/. You can play around with it to find the setup that suits you best. //TODO insdert a pic of demopage.
+You can find demo page in `ts-src/demoPage/` or at https://shadowflade.github.io/slider/. You can play around with it to find the setup that suits you best.
 
 ![demoPage](docs/ex2.png)
 

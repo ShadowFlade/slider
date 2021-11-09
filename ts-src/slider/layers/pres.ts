@@ -238,9 +238,9 @@ class Pres extends EventMixin {
     const ori = this._model._settings.orientation;
     const type = this._model._settings.type;
     const target = event.target;
-    if (target.className.includes('js-Slider-clickable')) {
+    if (target.className.includes('js-slider-clickable')) {
       const value =
-        target.getElementsByClassName('js-marker-value')[0] || target;
+        target.getElementsByClassName('js-marker__value')[0] || target;
       this.transferData(
         {
           y: event.clientY,

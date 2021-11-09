@@ -27,11 +27,11 @@ describe('View:', () => {
 
     const classes = [
       'js-slider',
-      'js-slider-main',
-      'js-slider-range',
-      'js-slider-container',
-      'js-slider-marker',
-      'js-tooltipContainer',
+      'js-slider__main',
+      'js-slider__range',
+      'js-slider__container',
+      'js-slider__marker',
+      'js-tooltip__container',
     ];
     classes.forEach((i) => {
       const div = document.createElement('div');
@@ -39,14 +39,14 @@ describe('View:', () => {
       item.appendChild(div);
     });
     const handleLeft = document.createElement('div');
-    handleLeft.className = 'js-slider-handle--horizontal';
+    handleLeft.className = 'js-slider__handle--horizontal';
     item.appendChild(handleLeft);
     const tool1 = document.createElement('div');
     tool1.classList.add('tooltip');
     handleLeft.appendChild(tool1);
 
     const handleRight = document.createElement('div');
-    handleRight.className = 'js-slider-handle--horizontal';
+    handleRight.className = 'js-slider__handle--horizontal';
     item.appendChild(handleRight);
     const tool2 = document.createElement('div');
     tool2.classList.add('js-tooltip');
@@ -54,12 +54,12 @@ describe('View:', () => {
 
     const js1 = document.createElement('div');
     const js2 = document.createElement('div');
-    js1.classList.add('js-Slider-clickable');
-    js2.classList.add('js-Slider-clickable');
+    js1.classList.add('js-slider-clickable');
+    js2.classList.add('js-slider-clickable');
     js1.textContent = '19';
     js2.textContent = '20';
     const min = document.createElement('div');
-    min.classList.add('slider-min--vertical');
+    min.classList.add('slider__min--vertical');
     item.append(min);
     pres.fetchDivs();
   });
@@ -72,10 +72,10 @@ describe('View:', () => {
 
   test('should render the element', () => {
     const el2 = document.createElement('div');
-    el2.classList.add('slider-handle');
+    el2.classList.add('slider__handle');
     document.body.appendChild(el2);
     const handle = document.getElementsByClassName(
-      'js-slider-handle--horizontal'
+      'js-slider__handle--horizontal'
     );
     view.renderElement(el2);
     expect(item.children.length).toBeGreaterThan(0);
@@ -83,9 +83,9 @@ describe('View:', () => {
   });
   test('should change styles if the scale does not fit on the left side', () => {
     const min = document.createElement('div');
-    min.classList.add('slider-min--vertical');
+    min.classList.add('slider__min--vertical');
     item.appendChild(min);
-    const styles = view.fetchHTMLEl('slider-min--vertical', true, item).style
+    const styles = view.fetchHTMLEl('slider__min--vertical', true, item).style
       .cssText;
 
     view._elements._tooltips[0].getBoundingClientRect = jest.fn(() => {
@@ -103,7 +103,7 @@ describe('View:', () => {
     });
     view.implementStyles({}, 'horizontal');
     expect(styles).not.toEqual(
-      view.fetchHTMLEl('slider-min--vertical', true, item).style.cssText
+      view.fetchHTMLEl('slider__min--vertical', true, item).style.cssText
     );
   });
 });
@@ -129,11 +129,11 @@ describe('View:refresh coordinates new', () => {
     pres.getView(view);
     const classes = [
       'js-slider',
-      'js-slider-main',
-      'js-slider-range',
-      'js-slider-container',
-      'js-slider-marker',
-      'js-tooltipContainer',
+      'js-slider__main',
+      'js-slider__range',
+      'js-slider__container',
+      'js-slider__marker',
+      'js-tooltip__container',
     ];
     classes.forEach((i) => {
       const div = document.createElement('div');
@@ -141,14 +141,14 @@ describe('View:refresh coordinates new', () => {
       item.appendChild(div);
     });
     const handleLeft = document.createElement('div');
-    handleLeft.className = 'js-slider-handle--horizontal';
+    handleLeft.className = 'js-slider__handle--horizontal';
     item.appendChild(handleLeft);
     const tool1 = document.createElement('div');
     tool1.classList.add('js-tooltip');
     handleLeft.appendChild(tool1);
 
     const handleRight = document.createElement('div');
-    handleRight.className = 'js-slider-handle--horizontal';
+    handleRight.className = 'js-slider__handle--horizontal';
     item.appendChild(handleRight);
     const tool2 = document.createElement('div');
     tool2.classList.add('js-tooltip');
@@ -156,8 +156,8 @@ describe('View:refresh coordinates new', () => {
 
     const js1 = document.createElement('div');
     const js2 = document.createElement('div');
-    js1.classList.add('js-Slider-clickable');
-    js2.classList.add('js-Slider-clickable');
+    js1.classList.add('js-slider-clickable');
+    js2.classList.add('js-slider-clickable');
     js1.textContent = '19';
     js2.textContent = '20';
     pres.fetchDivs();
@@ -239,9 +239,9 @@ describe('View:refresh coordinates new', () => {
       const div: HTMLElement = document.createElement('div');
       const div2 = document.createElement('div');
       div2.textContent = String(i * 30);
-      div2.classList.add('js-Slider-clickable');
+      div2.classList.add('js-slider-clickable');
       div.appendChild(div2);
-      div.classList.add('js-Offset');
+      div.classList.add('js-offset');
       div.textContent = String(i * 30);
       div.dataset.value = String(i * 30);
       item.appendChild(div);
@@ -288,11 +288,11 @@ describe('View:refresh coordinates new', () => {
       const div = document.createElement('div');
       const div2 = document.createElement('div');
       div2.textContent = String(i * 30);
-      div2.classList.add('js-Slider-clickable');
+      div2.classList.add('js-slider-clickable');
       div.textContent = String(i * 30);
       div.dataset.value = String(i * 30);
       div.appendChild(div2);
-      div.classList.add('js-Offset');
+      div.classList.add('js-offset');
       item.appendChild(div);
 
       div.getBoundingClientRect = jest.fn(() => {
