@@ -1,5 +1,5 @@
 /* eslint-disable no-irregular-whitespace */
-import './style.scss';
+import '../style.scss';
 import App from './app';
 import Plugin from './plugin';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

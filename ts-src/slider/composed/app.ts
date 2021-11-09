@@ -1,7 +1,7 @@
-import { Model } from './model';
-import View from './view';
-import { Pres } from './pres';
-import PresBuilder from './presBuilder';
+import { Model } from '../layers/model';
+import View from '../layers/view';
+import { Pres } from '../layers/pres';
+import PresBuilder from '../layers/presBuilder';
 class App {
   _item: HTMLElement;
 

@@ -1,10 +1,10 @@
 /**
  * @jest-environment jsdom
  */
-import { Model } from '../model';
-import View from '../view';
+import { Model } from '../slider/layers/model';
+import View from '../slider/layers/view';
+import { Pres } from '../slider/layers/pres';
 import { test, describe, jest } from '@jest/globals';
-import { Pres } from '../pres';
 import dom from './setup';
 
 describe('View:', () => {

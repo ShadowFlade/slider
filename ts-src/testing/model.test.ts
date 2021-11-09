@@ -1,5 +1,5 @@
 import { test, describe } from '@jest/globals';
-import { Model } from '../model';
+import { Model } from '../slider/layers/model';
 
 describe('Model with default settings:', () => {
   let settings;

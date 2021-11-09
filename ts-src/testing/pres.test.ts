@@ -1,11 +1,12 @@
 /**
  * @jest-environment jsdom
  */
-import { Model } from '../model';
-import View from '../view';
+import { Model } from '../slider/layers/model';
+import View from '../slider/layers/view';
+import { Pres } from '../slider/layers/pres';
+import PresBuilder from '../slider/layers/presBuilder';
+
 import { test, describe, jest } from '@jest/globals';
-import { Pres } from '../pres';
-import PresBuilder from '../presBuilder';
 import dom from './setup';
 
 describe('Pres: independent methods', () => {

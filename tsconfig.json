@@ -9,7 +9,7 @@
     "module": "AMD"
   },
   "files": [
-    "ts-src/jquery.slider.ts",
+    "ts-src/slider/composed/jquery.slider.ts",
     "ts-src/demoPage/demo.ts",
     "ts-src/demoPage/panel.ts"
   ]

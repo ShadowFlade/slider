@@ -1,8 +1,7 @@
 import View from './view';
 import { Settings, Model } from './model';
-import { Pres } from './pres';
-import { Temp } from './pres';
-import { checkForZero } from './utils';
+import { Pres, Temp } from './pres';
+import { checkForZero } from '../../utils';
 
 class PresBuilder {
   _view: View;

@@ -1,6 +1,6 @@
 import EventMixin from './eventemitter';
 import { Pres } from './pres';
-import { shortenValue } from './utils';
+import { shortenValue } from '../../utils';
 import { Type, Ori, ICoords } from './model';
 
 type Elements<T> = {

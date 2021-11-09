@@ -1,6 +1,6 @@
 import EventMixin from './eventemitter';
 import { Temp } from './pres';
-import { divisionFloor } from './utils';
+import { divisionFloor } from '../../utils';
 const has = Object.prototype.hasOwnProperty;
 
 type Ori = 'horizontal' | 'vertical';

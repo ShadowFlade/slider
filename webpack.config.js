@@ -15,7 +15,7 @@ module.exports = {
   devtool:  isDev ?'source-map' : false,
 
   entry: {
-    plugin:'./ts-src/jquery.slider.ts',
+    plugin:'./ts-src/slider/composed/jquery.slider.ts',
     index:'./ts-src/demoPage/demo.ts'
 
   },
