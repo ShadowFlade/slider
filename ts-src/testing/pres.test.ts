@@ -358,6 +358,14 @@ describe('Pres:changing the elements', () => {
   });
 
   test('first refresh if startValues==0', () => {
+    const testTemp = {
+      offset: 'offsetWidth',
+      offsetLength: '20px',
+      widthOrHeight: 'width',
+      direction: 'left',
+      margin: 'marginLeft',
+      client: 'clientX',
+    };
     const Idocument = dom.window.document;
     const Iitem = Idocument.createElement('div');
     Idocument.body.appendChild(Iitem);
@@ -371,7 +379,7 @@ describe('Pres:changing the elements', () => {
       { startValueLeftHandle: 0, startValueRightHandle: 0 },
       Iitem
     );
-    Ipres.temp = Ipres.determineMetrics('horizontal');
+    Ipres.temp = testTemp;
     Iview.temp = Ipres.temp;
     Imodel.temp = Ipres.temp;
     Ipres.builder = new PresBuilder({
