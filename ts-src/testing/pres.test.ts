@@ -203,8 +203,8 @@ describe('Pres:changing the elements', () => {
     handleRight.appendChild(tool2);
     const js1 = document.createElement('div');
     const js2 = document.createElement('div');
-    js1.classList.add('js-slider-clickable', 'js-offset');
-    js2.classList.add('js-slider-clickable', 'js-offset');
+    js1.classList.add('js-slider-clickable', 'js-offset', 'slider__min');
+    js2.classList.add('js-slider-clickable', 'js-offset', 'slider__max');
     js1.textContent = '19';
     js2.textContent = '20';
     item.append(js1);

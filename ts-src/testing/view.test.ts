@@ -54,13 +54,14 @@ describe('View:', () => {
 
     const js1 = document.createElement('div');
     const js2 = document.createElement('div');
-    js1.classList.add('js-slider-clickable');
-    js2.classList.add('js-slider-clickable');
+    js1.classList.add('js-slider-clickable', 'slider__max');
+    js2.classList.add('js-slider-clickable', 'slider__min');
     js1.textContent = '19';
     js2.textContent = '20';
     const min = document.createElement('div');
     min.classList.add('slider__min--vertical');
-    item.append(min);
+    item.append(min, js1, js2);
+
     pres.fetchDivs();
   });
 
